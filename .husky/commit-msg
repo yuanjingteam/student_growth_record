@@ -1,6 +1,38 @@
 #!/bin/sh
+# . "$(dirname "$0")/_/husky.sh"
 
-# shellcheck source=./_/husky.sh
-. "$(dirname "$0")/_/husky.sh"
+# npx --no-install commitlint --edit "$1"
 
-npx --no-install commitlint --edit "$1"
+
+
+
+
+
+#!/bin/sh
+
+# # shellcheck source=./_/husky.sh
+# . "$(dirname "$0")/_/husky.sh"
+
+# # Use the node executable from the project's dependencies
+# if [ -x "$(command -v npx)" ]; then
+#     npx --no-install commitlint --edit "$1"
+#     exit_code=$?
+# else
+#     node_exe="$(npm bin)/commitlint"
+#     if [ -x "$node_exe" ]; then
+#         "$node_exe" --edit "$1"
+#         exit_code=$?
+#     else
+#         echo "Error: 'commitlint' command not found. Please ensure it is installed as a project dependency."
+#         exit 1
+#     fi
+# fi
+
+# # Check the exit code of commitlint
+# if [ $exit_code -ne 0 ]; then
+#     echo "Error: commitlint script failed (code $exit_code)"
+#     exit $exit_code
+# fi
+
+# # If everything is successful, allow the commit to proceed
+# exit 0
