@@ -13,6 +13,7 @@ const props = defineProps<{
 
 <style scoped>
 .i-icon {
+  display: inline-block;
   width: 1em;
   height: 1em;
   vertical-align: -0.15em;

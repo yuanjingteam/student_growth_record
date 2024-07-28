@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "Inform",
         component: () => import("@/views/inform/index.vue"),
         meta: {
-          title: "通知",
+          title: "通知"
           //在路由更新时强制刷新页面内容，而不使用缓存中的数据。
           //控制页面是否需要被缓存。
           // noCache: true
@@ -45,6 +45,14 @@ const routes: Array<RouteRecordRaw> = [
         }
       }
     ]
+  },
+  {
+    path: "/ publish",
+    name: "Publish",
+    component: () => import("@/views/articlePublish/index.vue"),
+    meta: {
+      title: "发布文章"
+    }
   }
 ];
 
