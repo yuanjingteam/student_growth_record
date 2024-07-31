@@ -47,11 +47,67 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: "/ publish",
+    path: "/articleWait",
+    name: "articleWait",
+    component: () => import("@/views/articleWait/index.vue"),
+    meta: {
+      title: "消息通知"
+    }
+  },
+  {
+    path: "/publish",
     name: "Publish",
     component: () => import("@/views/articlePublish/index.vue"),
     meta: {
       title: "发布文章"
+    }
+  },
+  {
+    path: "/myPublish",
+    name: "myPublish",
+    component: () => import("@/views/myPublish/index.vue"),
+    meta: {
+      title: "我发布的内容"
+    }
+  },
+  {
+    path: "/myCollect",
+    name: "myCollect",
+    component: () => import("@/views/myCollect/index.vue"),
+    meta: {
+      title: "我的收藏"
+    }
+  },
+  {
+    path: "/selfIntroduce",
+    name: "selfIntroduce",
+    component: () => import("@/views/selfIntroduce/index.vue"),
+    meta: {
+      title: "个人介绍"
+    }
+  },
+  {
+    path: "/feedBack",
+    name: "feedBack",
+    component: () => import("@/views/feedBack/index.vue"),
+    meta: {
+      title: "意见反馈"
+    }
+  },
+  {
+    path: "/sets",
+    name: "sets",
+    component: () => import("@/views/sets/index.vue"),
+    meta: {
+      title: "设置"
+    }
+  },
+  {
+    path: "/otherInfo",
+    name: "otherInfo",
+    component: () => import("@/views/otherInfo/index.vue"),
+    meta: {
+      title: "他人信息"
     }
   }
 ];
