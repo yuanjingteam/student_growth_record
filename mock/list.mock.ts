@@ -25,5 +25,14 @@ export default defineMock([
       message: "ERROR",
       result: null
     }
+  },
+  {
+    url: "self/introduce",
+    delay: 1000,
+    body: {
+      code: 1,
+      message: "ERROR",
+      result: null
+    }
   }
 ]);

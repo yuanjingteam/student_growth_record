@@ -1,13 +1,18 @@
 <template>
   <!-- 本组件为页面底部导航栏 -->
-  <van-tabbar v-model="active" :placeholder="true" :route="true" fixed active-color="#000"
-      inactive-color="#999">
+  <van-tabbar
+    v-model="active"
+    :placeholder="true"
+    :route="true"
+    fixed
+    active-color="#000"
+    inactive-color="#999"
+  >
     <van-tabbar-item
       v-for="(item, index) in tabbarData"
       :key="index"
       :icon="item.icon"
       :to="item.to"
-      
     >
       {{ item.title }}
     </van-tabbar-item>

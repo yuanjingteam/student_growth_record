@@ -1,0 +1,364 @@
+<script setup>
+import { useRouter } from "vue-router";
+import { showConfirmDialog, showSuccessToast, Search, showToast } from "vant";
+import { reactive, ref, nextTick } from "vue";
+
+import { useCounterStoreHook } from "@/store/modules/useConter";
+const userStore = useCounterStoreHook();
+// 获取用户id
+const userId = userStore.userId;
+
+// 路由跳转
+const router = useRouter();
+
+// 提交回显框
+const submit_show = ref(false);
+
+// 选项回显框
+const choose_show = ref(false);
+
+// 小话题选项
+const small_show = ref(false);
+
+// 获取小话题
+// 存储dom数组
+const myRef = ref([]);
+// 存储所有ref
+const setSmallRef = el => {
+  myRef.value.push(el);
+};
+nextTick(() => {
+  console.dir(myRef.value);
+});
+
+// 文件存储
+const formData = new FormData();
+
+// 当前话题
+
+// 当前话题索引
+let defaultIndex = 1; // 默认选中"选项一"
+
+// 小标签项,动态添加
+const littleTag = ref([]);
+
+// 文件列表
+const fileList = ref([
+  // { url: "https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg" },
+  // Uploader 根据文件后缀来判断是否为图片文件
+  // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
+  // { url: "https://cloud-image", isImage: true }
+]);
+
+// 获取话题项
+// const actionss = littleTag({
+//   title: data.tag
+// });
+// console.log(actionss, 1313123);
+
+// 话题项
+const actions = [
+  {
+    name: "文体活动",
+    children: [
+      { text: "杭州", id: 0 },
+      { text: "温州", id: 1 },
+      { text: "宁波", id: 2 }
+    ]
+  },
+  {
+    name: "选项二",
+    children: [
+      { text: "南京", id: 0 },
+      { text: "无锡", id: 1 },
+      { text: "徐州", id: 2 }
+    ]
+  },
+  {
+    name: "选项三",
+    children: [
+      { text: "南京", id: 0 },
+      { text: "无锡", id: 1 },
+      { text: "徐州", id: 2 }
+    ]
+  }
+];
+
+// 添加小标签列表
+// 节流函数
+function throttle(func, delay) {
+  let lastCall = 0;
+  return function (...args) {
+    const now = new Date().getTime();
+    if (now - lastCall >= delay) {
+      lastCall = now;
+      return func.apply(this, args);
+    }
+  };
+}
+
+// 当前选项
+//  500 毫秒的节流延迟时间。这意味着在 500 毫秒内,toggleGridItemActive 函数只会被执行一次。
+const toggleGridItemActive = throttle(function (item, id) {
+  console.log(item.text, id);
+  // 获取所有
+  // 检查当前项是否存在littleTag.value数组中
+  const isItemInList = littleTag.value.some(tag => tag.id === item.id);
+  // 获取当前盒子
+  const targetRef = myRef.value[id].$el;
+
+  // 改变当前选中状态
+  targetRef.classList.toggle("active");
+
+  //存在就去掉
+  if (isItemInList) {
+    // tag 是原数组的每一项，过滤出不等于 itme.text的项
+    littleTag.value = littleTag.value.filter(tag => tag.id !== item.id);
+  } else {
+    // 不存在就添加
+    littleTag.value.unshift(item);
+  }
+}, 300);
+
+// 关闭小标签
+const close = (item, id) => {
+  console.log(item);
+  // 将当前项删除
+  littleTag.value = littleTag.value.filter(tag => tag.id !== id);
+  const targetRef = myRef.value[id].$el;
+  targetRef.classList.toggle("active");
+};
+
+// 限制上传图片大小
+const onOversize = file => {
+  console.log(file);
+  showToast("文件大小不能超过 500kb");
+};
+
+// 上传文件
+const handleSubmit = async () => {
+  console.log(fileList.value, "12312321");
+  fileList.value.forEach((file, index) => {
+    console.log(file);
+    formData.append(`files${index}`, file.file);
+  });
+};
+
+// 文章校验
+const formRef = ref();
+
+// 校验函数返回 true 表示校验通过，false 表示不通过
+//  Form 组件提供的一个方法,不需要自己实现。
+const validator = val => {
+  // console.log(val);
+  if (val.trim() === "") {
+    return "内容不能为空";
+  }
+  if (data.article_topic === "选择话题") {
+    return "必须选择标签类型";
+  }
+  if (data.article_tags.length === 0) {
+    console.log(data.article_tags.length);
+    return "必须选择热点标签";
+  }
+};
+
+// 校验规则
+const rules = [
+  { validator, message: "内容不能为空" }
+  // { articleContent: [{ required: true, message: "内容不能为空" }] }
+];
+
+// 文章失去焦点的动作
+const handleBlur = () => {
+  // this.shouldValidate = false;
+};
+
+// 选择文章类别
+const onSelect = item => {
+  // 默认情况下点击选项时不会自动收起
+  // 可以通过 close-on-click-action 属性开启自动收起
+  let selectedIndex = actions.findIndex(action => action.name === item.name);
+  defaultIndex = selectedIndex;
+  data.article_topic = actions[defaultIndex].name;
+  littleTag.value = [];
+  data.article_content = "";
+  myRef.value.forEach(ref => {
+    ref.$el.classList.remove("active");
+  });
+};
+
+// 选择话题小标签
+const showLittleTag = () => {
+  small_show.value = true;
+};
+// 点击发布文章
+const onSubmit = async () => {
+  try {
+    // 表单校验
+    await formRef.value.validate();
+    console.log(fileList.value);
+    // 文件上传
+    handleSubmit();
+    showConfirmDialog({
+      title: "发布文章",
+      message:
+        "如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。"
+    })
+      .then(() => {
+        // on confirm
+        console.log(data);
+        // if (true) {
+        //   showSuccessToast("发布成功");
+        //   setTimeout(() => {
+        //     router.push("./demo");
+        //   }, 1500); // 2秒后跳转
+        // }
+      })
+      .catch(() => {
+        // on cancel
+      });
+  } catch (error) {
+    console.log("validate failed", error);
+  }
+};
+
+// 发送的数据包
+const data = reactive({
+  userid: userId,
+  article_content: "",
+  word_count: 1112,
+  article_topic: actions[defaultIndex].name,
+  article_tags: littleTag.value || [],
+  file: formData
+});
+</script>
+
+<template>
+  <!-- 提交弹框 -->
+  <van-dialog v-model:show="submit_show" show-cancel-button />
+
+  <!-- 头部导航 -->
+  <van-nav-bar
+    title="发布"
+    left-arrow
+    right-text="发布"
+    @click-right="onSubmit"
+    @click-left="router.back()"
+  />
+
+  <!-- 选择小标签弹框 -->
+  <van-dialog v-model:show="small_show" :title="data.article_topic">
+    <!-- 小标签弹框内部 -->
+    <van-search v-model="value" placeholder="请输入搜索关键词" />
+    <van-grid :gutter="10">
+      <van-grid-item
+        v-for="item in actions[defaultIndex].children"
+        :key="item.id"
+        :ref="setSmallRef"
+        icon="photo-o"
+        clickable
+        @click="toggleGridItemActive(item, item.id)"
+      >
+        <template #default>
+          {{ item.text }}
+        </template>
+      </van-grid-item>
+    </van-grid>
+  </van-dialog>
+
+  <van-form ref="formRef">
+    <van-row>
+      <van-col span="8">
+        <van-cell
+          is-link
+          :title="data.article_topic"
+          class="title"
+          @click="choose_show = true"
+        />
+        <van-action-sheet
+          v-model:show="choose_show"
+          :actions="actions"
+          close-on-click-action
+          :default-index="defaultIndex"
+          @select="onSelect"
+        />
+      </van-col>
+    </van-row>
+    <van-field
+      v-model="data.article_content"
+      placeholder="开始你的精彩书写"
+      label-align="top"
+      maxlength="300"
+      show-word-limit
+      autocomplete="off"
+      name="articleContent"
+      :rules="rules"
+      :autosize="{ minHeight: 100, maxHeight: 260 }"
+      type="textarea"
+      validate-trigger="onSubmit"
+    >
+      <!-- <template v-slot:label>
+        <div class="label-content">内容</div>
+      </template> -->
+    </van-field>
+    <van-uploader
+      ref="mediaUploader"
+      v-model="fileList"
+      multiple
+      class="uploader-container"
+      accept="image/*,video/*"
+      @oversize="onOversize"
+    />
+    <!-- <van-cell title="图片/视频" icon="location-o" class="select" /> -->
+
+    <van-cell class="select">
+      <template #title>
+        <!-- 在这里添加多个标题元素 -->
+        <van-tag
+          v-for="item in littleTag"
+          :key="item.id"
+          type="primary"
+          closeable
+          size="medium"
+          @close="close(item, item.id)"
+        >
+          <i-icon icon="mdi:tag-outline" />{{ item.text }}
+        </van-tag>
+      </template>
+    </van-cell>
+    <van-cell>
+      <template #title>
+        <van-button
+          color="linear-gradient(to right, #ff6034, #ee0a24)"
+          size="small"
+          @click="showLittleTag"
+        >
+          #添加热点标签
+        </van-button>
+      </template>
+    </van-cell>
+  </van-form>
+</template>
+
+<style scoped>
+.title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: black;
+}
+.active {
+  --van-grid-item-content-background: #f2f2f2;
+}
+/* .acitve >>> .van-grid-item__content {
+  background: #000;
+} */
+
+.select {
+  width: 100%;
+  color: #79b0ee;
+}
+.van-tag {
+  margin-right: 3px;
+}
+</style>

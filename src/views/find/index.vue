@@ -77,6 +77,7 @@ const btnDeal = (state) => {
 
 </template>
 
+
 <style lang="less" scoped>
 .van-cell {
   padding: 15px 15px;
