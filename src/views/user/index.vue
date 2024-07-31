@@ -1,4 +1,12 @@
-<script setup></script>
+<script setup>
+// 导入 Vue Router 的 useRouter 函数
+import { useRouter } from "vue-router";
+import { ref } from "vue";
+
+// 创建 Vue Router 的实例,用于进行页面导航
+const router = useRouter();
+// const res = await getUserInfo({ userId });
+</script>
 
 <template>
   <div class="my-w">
@@ -25,14 +33,23 @@
     </div>
     <!-- 我的内容 -->
     <div class="my-content">
-      <van-cell title="我发布的内容" is-link @click="router.push('./')" />
-      <van-cell title="我的收藏" is-link />
-      <van-cell title="个人介绍" is-link />
-      <van-cell title="意见反馈" is-link />
-      <van-cell title="设置" is-link />
+      <van-cell
+        title="我发布的内容"
+        is-link
+        @click="router.push('./myPublish')"
+      />
+      <van-cell title="我的收藏" is-link @click="router.push('./myCollect')" />
+      <van-cell
+        title="个人介绍"
+        is-link
+        @click="router.push('./selfIntroduce')"
+      />
+      <van-cell title="意见反馈" is-link @click="router.push('./feedBack')" />
+      <van-cell title="设置" is-link @click="router.push('./sets')" />
     </div>
   </div>
 </template>
+
 <style scoped>
 .my-w {
   overflow: hidden;

@@ -15,8 +15,10 @@ const configDefault = {
     "Content-Type": ContentTypeEnum.FORM_URLENCODED
   },
   timeout: 0,
-  baseURL: import.meta.env.VITE_BASE_API,
-  data: {}
+  baseURL:
+    "http://127.0.0.1:4523/m1/4869431-0-default" ||
+    import.meta.env.VITE_BASE_API
+  // data: {}
 };
 
 class Http {
@@ -49,18 +51,18 @@ class Http {
       (response: AxiosResponse) => {
         NProgress.done();
         // 与后端协定的返回字段
-        const { code, result } = response.data;
-        // const { message } = response.data;
+        const { code, data } = response.data;
+        const { msg } = response.data;
         // 判断请求是否成功
         const isSuccess =
-          result &&
+          data &&
           Reflect.has(response.data, "code") &&
           code === ResultEnum.SUCCESS;
         if (isSuccess) {
-          return result;
+          return data;
         } else {
           // 处理请求错误
-          // showFailToast(message);
+          showFailToast(msg);
           return Promise.reject(response.data);
         }
       },

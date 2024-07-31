@@ -1,7 +1,35 @@
 <script setup>
 import { showImagePreview } from "vant";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+
+// 导入自定义的 useCounterStoreHook 函数,该函数返回 Pinia 中的 useCounterStore 实例
+import { useCounterStoreHook } from "@/store/modules/useConter";
+
+// 导入 Pinia 中的 storeToRefs 函数,用于从 Pinia store 中解构出响应式的 ref 对象
+import { storeToRefs } from "pinia";
+
+// 导入自定义的 getUserInfo 函数,用于获取用户信息
+import { getUserInfo } from "@/api/user";
+
+// 调用 useCounterStoreHook 函数,获取 Pinia 中的 useCounterStore 实例
+const userStore = useCounterStoreHook();
+
+// 获取响应式属性:
+// 使用 storeToRefs 函数,从 userStore 中解构出 userId 属性,并将其设为响应式的 ref 对象
+// const { userId } = storeToRefs(userStore);
+
+// 获取普通属性:
+const userId = userStore.userId;
+
+const data = ref({});
+// 发送请求
+const getUser = async () => {
+  const userInfo = await getUserInfo(userId);
+  data.value = userInfo;
+  console.log(data.value, 3333);
+};
+// 调用加载
+getUser();
 
 const show = ref(false);
 const handleImagePreview = src => {
@@ -11,22 +39,10 @@ const handleImagePreview = src => {
     closeable: true
   });
 };
-const router = useRouter();
-
-const data = {
-  userImg: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
-  userName: "李小龙",
-  userMotto: "崇德尚能,知行合一",
-  fans: 0,
-  myConcern: 0,
-  thumbsUp: 0,
-  Integral: 0,
-  level: 0
-};
 </script>
 
 <template>
-  <van-image-preview v-model:show="show" :images="images">
+  <van-image-preview v-model:show="show">
     <!-- <template v-slot:index>第{{ index + 1 }}页</template> -->
   </van-image-preview>
   <div class="my-self">
@@ -42,7 +58,7 @@ const data = {
       <!-- 昵称 -->
       <div class="my-name">
         {{ data.userName }}
-        <span>LV.{{ data.level }}</span>
+        <!-- <span>LV.{{ data.level }}</span> -->
       </div>
     </div>
     <!-- 头部总组件 -->
@@ -59,12 +75,11 @@ const data = {
         <div>粉丝：{{ data.fans }}</div>
         <div>关注：{{ data.myConcern }}</div>
         <div>获赞：{{ data.thumbsUp }}</div>
-        <div>积分：{{ data.Integral }}</div>
       </div>
       <!-- 其他人 -->
       <div class="other">
-        <slot name="class" />
-        <slot name="office" />
+        <slot name="class" :text="data.class" />
+        <slot name="office" :text="data.office" />
       </div>
     </div>
   </div>
