@@ -12,8 +12,14 @@ type ListResult = {
 //     method: "get",
 //     params
 //   });
-// }
-
+// }  
+export function getArticlesService(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/article",
+    method: "post",
+    data
+  });
+}
 export function getCommentsService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/articles/getcomments",

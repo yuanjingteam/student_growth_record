@@ -1,17 +1,22 @@
 <script setup lang="ts" name="Demo">
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import { ref } from 'vue';
 import { showToast } from 'vant';
 import CellCard from '@/components/CellCard/index.vue'
+import { getArticlesService } from '@/api/article'
+// const data = { article_id: '1' }
+// const res = await getArticlesService(data)
+// console.log(res);
+
 
 const topicList = ref([
   {
     title: '全部',
-    name: 'a'
+    name: '全部'
   },
   {
     title: '学习',
-    name: 'b'
+    name: '学习成绩'
   },
   {
     title: '奖项',
@@ -22,7 +27,7 @@ const topicList = ref([
     name: 'd'
   },
   {
-    title: '公益',
+    title: '文体',
     name: 'e'
   },
 

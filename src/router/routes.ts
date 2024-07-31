@@ -53,6 +53,22 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "登录"
     }
+  },
+  {
+    path: "/class",
+    name: "Class",
+    component: () => import("@/views/class/index.vue"),
+    meta: {
+      title: "班级分类"
+    }
+  },
+  {
+    path: "/topics",
+    name: "Topics",
+    component: () => import("@/views/topics/index.vue"),
+    meta: {
+      title: "话题分类"
+    }
   }
 ];
 
