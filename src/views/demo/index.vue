@@ -107,50 +107,43 @@ const onRefresh = () => {
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
+</template>
 
+<style scoped>
+.topShow {
+  padding: 15px 15px 0 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  <template>
-    <p>我的大学生活121</p>
-    <p>与你相遇的第{{}}天</p>
-    <i-icon icon="icon-park:read-book" />
-    首页demo
-  </template>
+}
 
-  <style scoped>
-    .topShow {
-      padding: 15px 15px 0 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+.title {
+  font-size: 18px;
+  font-weight: bold;
+}
 
-    }
-
-    .title {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    span {
-      display: flex;
-    }
+span {
+  display: flex;
+}
 
 
 
-    .van-search {
-      padding: 0px;
-      border-radius: 200px;
-      margin: 10px 20px;
-    }
+.van-search {
+  padding: 0px;
+  border-radius: 200px;
+  margin: 10px 20px;
+}
 
-    /* 样式穿透,强制找到子组件 */
+/* 样式穿透,强制找到子组件 */
 
-    .van-search>>>.van-search__content {
-      background-color: #fff !important;
-      background: #fff;
-    }
+.van-search>>>.van-search__content {
+  background-color: #fff !important;
+  background: #fff;
+}
 
-    .van-search>>>.van-search__action {
-      padding: 0px;
-      display: flex;
-    }
-  </style>
+.van-search>>>.van-search__action {
+  padding: 0px;
+  display: flex;
+}
+</style>
