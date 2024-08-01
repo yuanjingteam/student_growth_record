@@ -23,10 +23,10 @@ const getAll = (message) => {
 //跳转进帖子详情页或者班级详情页
 const gotoDetail = (need, id) => {
   console.log(need, id);
-  if (need == 1) {
-    router.push('/postDetail')
+  if (need == false) {
+    router.push(`/topicDetail/${id}`)
   } else {
-    router.push('/classDetail')
+    router.push(`/ classDetail / ${id}`)
   }
 }
 </script>

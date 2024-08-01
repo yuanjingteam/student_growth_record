@@ -7,7 +7,7 @@ const props = defineProps({
   base: Object,
   data: Object
 });
-console.log(props.data);
+// console.log(props.data);
 const router = useRouter();
 </script>
 <template>
@@ -35,9 +35,11 @@ const router = useRouter();
   color: black;
   width: 240px;
 }
+
 .right-content .van-badge {
   margin: 10px 18px 0px 0px;
 }
+
 .van-image {
   margin-right: 13px;
 }

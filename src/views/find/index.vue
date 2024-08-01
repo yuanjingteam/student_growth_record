@@ -55,49 +55,60 @@ const btnDeal = (state) => {
 </script>
 
 <template>
+  <div class="find-box">
+    <van-cell-group inset>
+      <van-cell>
+        <template #title>
+          <h1>今日热帖</h1>
+          <ul>
+            <li v-for="item in hotPost"><i-icon :icon="`hugeicons:medal-${item.id}-place`"></i-icon>
+              <p>{{ item.content }}</p>
+            </li>
+          </ul>
+        </template>
+      </van-cell>
+      <van-button v-if="btnState" icon="arrow-up" block @click="btnDeal(btnState)">收起</van-button>
+      <van-button v-else icon="arrow-down" block @click="btnDeal(btnState)">展开</van-button>
 
-  <van-cell-group inset>
-    <van-cell>
-      <template #title>
-        <h1>今日热帖</h1>
-        <ul>
-          <li v-for="item in hotPost"><i-icon :icon="`hugeicons:medal-${item.id}-place`"></i-icon>
-            <p>{{ item.content }}</p>
-          </li>
-        </ul>
-      </template>
-    </van-cell>
-    <van-button v-if="btnState" icon="arrow-up" block @click="btnDeal(btnState)">收起</van-button>
-    <van-button v-else icon="arrow-down" block @click="btnDeal(btnState)">展开</van-button>
+    </van-cell-group>
 
-  </van-cell-group>
+    <category-card :message="topicData.message" :list="topicData.topicList"></category-card>
+    <category-card :message="classData.message" :list="classData.classList"></category-card>
 
-  <category-card :message="topicData.message" :list="topicData.topicList"></category-card>
-  <category-card :message="classData.message" :list="classData.classList"></category-card>
+  </div>
 
 </template>
 
 
 <style lang="less" scoped>
-.van-cell {
-  padding: 15px 15px;
+.find-box {
+  overflow: hidden;
 
-  h1 {
-    font-size: 20px;
-    font-weight: 600;
-  }
+  .van-cell-group {
+    margin-top: 10px;
 
-  ul {
-    margin-top: 15px;
-  }
+    .van-cell {
+      padding: 15px 15px;
+      margin-top: 10px;
 
-  ul>li {
-    display: flex;
-    margin-bottom: 10px;
-  }
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+      }
 
-  .i-icon {
-    font-size: 25px;
+      ul {
+        margin-top: 15px;
+      }
+
+      ul>li {
+        display: flex;
+        margin-bottom: 10px;
+      }
+
+      .i-icon {
+        font-size: 25px;
+      }
+    }
   }
 }
 </style>

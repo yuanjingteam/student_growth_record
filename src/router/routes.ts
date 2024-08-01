@@ -123,7 +123,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "Class",
     component: () => import("@/views/class/index.vue"),
     meta: {
-      title: "班级分类"
+      title: "全部班级分类"
     }
   },
   {
@@ -131,7 +131,31 @@ const routes: Array<RouteRecordRaw> = [
     name: "Topics",
     component: () => import("@/views/topics/index.vue"),
     meta: {
-      title: "话题分类"
+      title: "全部话题分类"
+    }
+  },
+  {
+    path: "/topicDetail/:id",
+    name: "TopicDetail",
+    component: () => import("@/views/topicDetail/index.vue"),
+    meta: {
+      title: "话题专题"
+    }
+  },
+  {
+    path: "/postDetail/:id",
+    name: "PostDetail",
+    component: () => import("@/views/postDetail/index.vue"),
+    meta: {
+      title: "帖子详情"
+    }
+  },
+  {
+    path: "/classDetail/:id",
+    name: "ClassDetail",
+    component: () => import("@/views/classDetail/index.vue"),
+    meta: {
+      title: "班级专题"
     }
   }
 ];

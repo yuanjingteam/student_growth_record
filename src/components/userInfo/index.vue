@@ -26,7 +26,7 @@ const data = ref({});
 const getUser = async () => {
   const userInfo = await getUserInfo(userId);
   data.value = userInfo;
-  console.log(data.value, 3333);
+  // console.log(data.value, 3333);
 };
 // 调用加载
 getUser();
@@ -35,7 +35,7 @@ const show = ref(false);
 const handleImagePreview = src => {
   showImagePreview({
     images: [src],
-    onClose() {},
+    onClose() { },
     closeable: true
   });
 };
@@ -48,13 +48,7 @@ const handleImagePreview = src => {
   <div class="my-self">
     <div class="my-outside">
       <!-- 头像 -->
-      <van-image
-        round
-        width="4rem"
-        height="4rem"
-        :src="data.userImg"
-        @click="handleImagePreview(data.userImg)"
-      />
+      <van-image round width="4rem" height="4rem" :src="data.userImg" @click="handleImagePreview(data.userImg)" />
       <!-- 昵称 -->
       <div class="my-name">
         {{ data.userName }}
@@ -90,9 +84,11 @@ const handleImagePreview = src => {
   position: relative;
   margin-top: 23.3333vmin;
 }
+
 .van-image {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
 }
+
 .user-header {
   position: relative;
   margin-top: 20px;
@@ -101,6 +97,7 @@ const handleImagePreview = src => {
   border-radius: 7px;
   overflow: hidden;
 }
+
 .my-outside {
   position: absolute;
   display: flex;
@@ -108,12 +105,14 @@ const handleImagePreview = src => {
   left: 31px;
   z-index: 2;
 }
+
 .my-outside .my-name {
   margin-top: 1.6667vmin;
   margin-left: 12px;
   font-size: 15px;
   font-weight: 700;
 }
+
 .my-inside {
   position: absolute;
   top: -4.4vmin;
@@ -123,6 +122,7 @@ const handleImagePreview = src => {
   border-radius: 9.3333vmin;
   background-color: #e5edff;
 }
+
 .change-info {
   position: absolute;
   top: 4px;
@@ -130,6 +130,7 @@ const handleImagePreview = src => {
   color: #4580ff;
   font-weight: 700;
 }
+
 .user-info {
   display: flex;
   justify-content: space-between;
