@@ -1,8 +1,8 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { showConfirmDialog, showSuccessToast, Search, showToast } from "vant";
-import { reactive, ref, nextTick } from "vue";
-
+import { reactive, ref, nextTick,computed } from "vue";
+import {newArticlePublish} from "@/api/user"
 import { useCounterStoreHook } from "@/store/modules/useConter";
 const userStore = useCounterStoreHook();
 // 获取用户id
@@ -50,13 +50,10 @@ const fileList = ref([
   // { url: "https://cloud-image", isImage: true }
 ]);
 
-// 获取话题项
-// const actionss = littleTag({
-//   title: data.tag
-// });
-// console.log(actionss, 1313123);
+const content = ref('')
+const contentLength = computed(() => content.value.length)
 
-// 话题项
+// 渲染话题/tag
 const actions = [
   {
     name: "文体活动",
@@ -84,6 +81,25 @@ const actions = [
   }
 ];
 
+// 选择文章类别
+const onSelect = item => {
+  // 默认情况下点击选项时不会自动收起
+  // 可以通过 close-on-click-action 属性开启自动收起
+  let selectedIndex = actions.findIndex(action => action.name === item.name);
+  defaultIndex = selectedIndex;
+  data.article_topic = actions[defaultIndex].name;
+  littleTag.value = [];
+  data.article_content = "";
+  myRef.value.forEach(ref => {
+    ref.$el.classList.remove("active");
+  });
+};
+
+// 选择话题小标签
+const showLittleTag = () => {
+  small_show.value = true;
+};
+
 // 添加小标签列表
 // 节流函数
 function throttle(func, delay) {
@@ -97,10 +113,10 @@ function throttle(func, delay) {
   };
 }
 
-// 当前选项
+// 添加/删除tag
 //  500 毫秒的节流延迟时间。这意味着在 500 毫秒内,toggleGridItemActive 函数只会被执行一次。
 const toggleGridItemActive = throttle(function (item, id) {
-  console.log(item.text, id);
+  // console.log(item.text, id);
   // 获取所有
   // 检查当前项是否存在littleTag.value数组中
   const isItemInList = littleTag.value.some(tag => tag.id === item.id);
@@ -120,7 +136,7 @@ const toggleGridItemActive = throttle(function (item, id) {
   }
 }, 300);
 
-// 关闭小标签
+// 关闭tag小标签
 const close = (item, id) => {
   console.log(item);
   // 将当前项删除
@@ -129,13 +145,13 @@ const close = (item, id) => {
   targetRef.classList.toggle("active");
 };
 
-// 限制上传图片大小
+// 限制文件上传图片大小
 const onOversize = file => {
   console.log(file);
   showToast("文件大小不能超过 500kb");
 };
 
-// 上传文件
+// 存储图片/视频
 const handleSubmit = async () => {
   console.log(fileList.value, "12312321");
   fileList.value.forEach((file, index) => {
@@ -169,29 +185,6 @@ const rules = [
   // { articleContent: [{ required: true, message: "内容不能为空" }] }
 ];
 
-// 文章失去焦点的动作
-const handleBlur = () => {
-  // this.shouldValidate = false;
-};
-
-// 选择文章类别
-const onSelect = item => {
-  // 默认情况下点击选项时不会自动收起
-  // 可以通过 close-on-click-action 属性开启自动收起
-  let selectedIndex = actions.findIndex(action => action.name === item.name);
-  defaultIndex = selectedIndex;
-  data.article_topic = actions[defaultIndex].name;
-  littleTag.value = [];
-  data.article_content = "";
-  myRef.value.forEach(ref => {
-    ref.$el.classList.remove("active");
-  });
-};
-
-// 选择话题小标签
-const showLittleTag = () => {
-  small_show.value = true;
-};
 // 点击发布文章
 const onSubmit = async () => {
   try {
@@ -205,15 +198,9 @@ const onSubmit = async () => {
       message:
         "如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。"
     })
-      .then(() => {
-        // on confirm
-        console.log(data);
-        // if (true) {
-        //   showSuccessToast("发布成功");
-        //   setTimeout(() => {
-        //     router.push("./demo");
-        //   }, 1500); // 2秒后跳转
-        // }
+      .then(async () => {
+        // 调用发布文章
+          isPublished()
       })
       .catch(() => {
         // on cancel
@@ -223,11 +210,25 @@ const onSubmit = async () => {
   }
 };
 
+// 发布文章
+const isPublished = async ()=>{
+    // 校验完毕后,发送请求,根据状态码判断是否发布成功
+  const {code,data} = await newArticlePublish(data)
+  if (code == 200) {
+    // showSuccessToast("发布成功");
+          console.log('Article published successfully!')
+    setTimeout(() => {
+      router.push("./demo");
+    }, 1500); // 2秒后跳转
+  } else if(code == 400) {
+      // showSuccessToast("重复文章类型发布,请明天再来吧~");
+  }
+}
 // 发送的数据包
 const data = reactive({
-  userid: userId,
-  article_content: "",
-  word_count: 1112,
+  userId: userId,
+  article_content: content,
+  word_count: contentLength,
   article_topic: actions[defaultIndex].name,
   article_tags: littleTag.value || [],
   file: formData
@@ -286,7 +287,7 @@ const data = reactive({
       </van-col>
     </van-row>
     <van-field
-      v-model="data.article_content"
+      v-model="content"
       placeholder="开始你的精彩书写"
       label-align="top"
       maxlength="300"

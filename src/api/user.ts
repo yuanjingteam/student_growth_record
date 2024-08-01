@@ -39,3 +39,12 @@ export function getAllNotification(userid?: number): Promise<object> {
     params: { userid }
   });
 }
+
+export function newArticlePublish(formData?: FormData): Promise<object> {
+  return http.request({
+    url: "/article/publish",
+    method: "post",
+    data: formData
+  });
+}
+
