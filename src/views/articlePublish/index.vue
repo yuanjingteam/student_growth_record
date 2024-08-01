@@ -53,9 +53,10 @@ const fileList = ref([
 const content = ref('')
 const contentLength = computed(() => content.value.length)
 
+
 // 渲染话题/tag
 const actions = [
-  {
+    {
     name: "文体活动",
     children: [
       { text: "杭州", id: 0 },
@@ -63,7 +64,7 @@ const actions = [
       { text: "宁波", id: 2 }
     ]
   },
-  {
+  options2={
     name: "选项二",
     children: [
       { text: "南京", id: 0 },
@@ -80,7 +81,9 @@ const actions = [
     ]
   }
 ];
-
+// 将 JavaScript 对象转换成 JSON 格式
+const json = JSON.stringify(actions);
+console.log(json);
 // 选择文章类别
 const onSelect = item => {
   // 默认情况下点击选项时不会自动收起
