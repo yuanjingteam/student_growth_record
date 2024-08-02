@@ -4,18 +4,20 @@ import Axios, {
   type AxiosResponse,
   type AxiosRequestConfig
 } from "axios";
-import { ContentTypeEnum, ResultEnum } from "@/enums/requestEnum";
+import { ResultEnum } from "@/enums/requestEnum";
 import NProgress from "../progress";
 import { showFailToast } from "vant";
 import "vant/es/toast/style";
-
+// ContentTypeEnum
 // 默认 axios 实例请求配置
+//  || ContentTypeEnum.FORM_URLENCODED
 const configDefault = {
   headers: {
-    "Content-Type": ContentTypeEnum.FORM_URLENCODED
+    "Content-Type": "application/json"
   },
   timeout: 0,
   baseURL:
+    "http://192.168.21.11:8881" ||
     "http://127.0.0.1:4523/m1/4869431-0-default" ||
     import.meta.env.VITE_BASE_API
   // data: {}
@@ -59,7 +61,7 @@ class Http {
           Reflect.has(response.data, "code") &&
           code === ResultEnum.SUCCESS;
         if (isSuccess) {
-          return data;
+          return response.data;
         } else {
           // 处理请求错误
           showFailToast(msg);

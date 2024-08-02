@@ -40,6 +40,7 @@ export function getAllNotification(userid?: number): Promise<object> {
   });
 }
 
+// 文章发布
 export function newArticlePublish(formData?: FormData): Promise<object> {
   return http.request({
     url: "/article/publish",
@@ -48,3 +49,41 @@ export function newArticlePublish(formData?: FormData): Promise<object> {
   });
 }
 
+// 获取文章话题
+export function getArticleTags(data?: Object): Promise<object> {
+  return http.request({
+    url: "/article/publish/get_tags",
+    method: "post",
+    data
+  });
+}
+
+// 获取文章小标签
+export function getLittleTags(data?: Object): Promise<object> {
+  data = JSON.stringify(data);
+  return http.request({
+    url: "/article/publish/get_tags",
+    method: "post",
+    data
+  });
+}
+
+// 获取用户自述
+export function getSelfCotnent(data?: Object): Promise<object> {
+  data = JSON.stringify(data);
+  return http.request({
+    url: "/user/getSelfCotnent",
+    method: "post",
+    data
+  });
+}
+
+// 修改用户自述
+export function changeSelfCotnent(data?: Object): Promise<object> {
+  data = JSON.stringify(data);
+  return http.request({
+    url: "/user/updateSelfContent",
+    method: "post",
+    data
+  });
+}

@@ -25,7 +25,7 @@ const data = ref({});
 // 发送请求
 const getUser = async () => {
   const userInfo = await getUserInfo(userId);
-  data.value = userInfo;
+  data.value = userInfo.data;
   console.log(data.value, 3333);
 };
 // 调用加载

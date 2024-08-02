@@ -53,7 +53,7 @@ const data = ref({
 
 const getMessage = async () => {
   const userMessage = await getAllNotification(userId);
-  data.value = userMessage;
+  data.value = userMessage.data;
   console.log(data.value, 2222);
 };
 // 调用加载
