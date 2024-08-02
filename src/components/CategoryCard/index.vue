@@ -29,6 +29,8 @@ const gotoDetail = (need, id) => {
     router.push(`/ classDetail / ${id}`)
   }
 }
+
+// console.log(list);
 </script>
 <template>
 
@@ -51,12 +53,13 @@ const gotoDetail = (need, id) => {
     </van-cell>
     <van-cell v-for="item in list">
       <template #title>
-        <div style="display: flex;" @click="gotoDetail(ifNeed, item.id)">
+        <div style="display: flex;" @click="gotoDetail(ifNeed, item.topic_id)">
           <i-icon icon="icon-park:message" style="font-size: 25px;"></i-icon>
           <div class="content">
-            <p class="topic-top">{{ item.topic }}</p>
+            <p class="topic-top">{{ item.topic_name }}</p>
             <p class="topic-content">
-              {{ message == '话题分类' ? item.content : '班长：' + item.content }}
+              {{ message == '话题分类' ? item.header_name || item.topic_content : '班长：' + item.header_name ||
+                item.topic_content }}
             </p>
           </div>
         </div>

@@ -64,7 +64,7 @@ export default defineConfig(({ mode }) => {
       proxy: {
 
         "/dev-api": {
-          target: "http://127.0.0.1:4523/m1/4869431-0-default",
+          target: "http://192.168.22.62:8881",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/dev-api/, '')
         }

@@ -13,9 +13,9 @@ type ListResult = {
 //     params
 //   });
 // }  
-export function getArticlesService(data?: Object): Promise<ListResult> {
+export function getArticlesService(data?: object): Promise<ListResult> {
   return http.request({
-    url: "/article",
+    url: "/article/content",
     method: "post",
     data
   });
@@ -24,6 +24,13 @@ export function getCommentsService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/articles/getcomments",
     method: "post",
+    data
+  });
+}
+export function getHotPostService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/hotpost/title",
+    method: "get",
     data
   });
 }
