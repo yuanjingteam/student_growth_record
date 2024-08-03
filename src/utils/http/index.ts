@@ -4,20 +4,21 @@ import Axios, {
   type AxiosResponse,
   type AxiosRequestConfig
 } from "axios";
-import { ResultEnum } from "@/enums/requestEnum";
+import { ContentTypeEnum, ResultEnum } from "@/enums/requestEnum";
 import NProgress from "../progress";
 import { showFailToast } from "vant";
 import "vant/es/toast/style";
 // ContentTypeEnum
 // 默认 axios 实例请求配置
 //  || ContentTypeEnum.FORM_URLENCODED
+// || "application/json"
 const configDefault = {
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": ContentTypeEnum.FORM_URLENCODED
   },
   timeout: 0,
   baseURL:
-    "http://192.168.21.11:8881" ||
+    "http://192.168.22.38:8881" ||
     "http://127.0.0.1:4523/m1/4869431-0-default" ||
     import.meta.env.VITE_BASE_API
   // data: {}

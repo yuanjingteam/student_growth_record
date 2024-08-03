@@ -22,15 +22,16 @@ const getSelf = async () => {
   content.value = data;
   console.log(content, 111222);
 };
+getSelf();
 
 // 提交修改后的自述
 const onSubmit = async () => {
   await formRef.value.validate();
-  const { code, msg } = await changeSelfCotnent({ content: content });
+  const { code, msg } = await changeSelfCotnent({ content: content.value });
   if (code == 200) {
-    console.log(msg);
+    console.log(msg, "Yes");
   } else {
-    console.log(msg);
+    console.log(msg, "No");
   }
 };
 </script>

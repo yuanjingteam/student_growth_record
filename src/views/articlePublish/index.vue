@@ -193,7 +193,7 @@ const validator = val => {
 };
 // 校验规则
 const rules = [
-  { validator, message: "内容不能为空" }
+  // { validator, message: "内容不能为空" }
   // { articleContent: [{ required: true, message: "内容不能为空" }] }
 ];
 
@@ -225,7 +225,7 @@ const onSubmit = async () => {
 // 发布文章请求
 const isPublished = async baseData => {
   // 校验完毕后,发送请求,根据状态码判断是否发布成功
-  const { code, data } = await newArticlePublish(baseData);
+  const { code, data } = await newArticlePublish({ baseData });
   console.log(data);
   if (code === "200") {
     // showSuccessToast("发布成功");

@@ -34,7 +34,7 @@ export function getUserInfo(userid?: number): Promise<object> {
 // 获取通知消息
 export function getAllNotification(userid?: number): Promise<object> {
   return http.request({
-    url: "/all/notification",
+    url: "/all/get_notification",
     method: "get",
     params: { userid }
   });
