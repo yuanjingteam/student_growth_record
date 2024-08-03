@@ -117,6 +117,31 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "他人信息"
     }
+  },
+  // 我说,这个是用户通知消息区
+  {
+    path: "/managerNotice",
+    name: "managerNotice",
+    component: () => import("@/views/inform/managerNotice/index.vue"),
+    meta: {
+      title: "管理员消息"
+    }
+  },
+  {
+    path: "/systemNotice",
+    name: "systemNotice",
+    component: () => import("@/views/inform/systemNotice/index.vue"),
+    meta: {
+      title: "系统消息"
+    }
+  },
+  {
+    path: "/userNotice",
+    name: "userNotice",
+    component: () => import("@/views/inform/userNotice/index.vue"),
+    meta: {
+      title: "互动消息"
+    }
   }
 ];
 

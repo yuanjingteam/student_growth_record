@@ -105,6 +105,11 @@ const handleImagePreview = src => {
   border-radius: 7px;
   overflow: hidden;
 }
+.my-motto {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .my-outside {
   position: absolute;
   display: flex;

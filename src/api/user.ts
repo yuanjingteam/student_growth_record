@@ -82,6 +82,16 @@ export function getSelfCotnent(data?: Object): Promise<object> {
 export function changeSelfCotnent(data?: Object): Promise<object> {
   data = JSON.stringify(data);
   return http.request({
+    url: "/student/updateSelfContent",
+    method: "post",
+    data
+  });
+}
+
+// 修改用户资料
+export function changeUserData(data?: Object): Promise<object> {
+  data = JSON.stringify(data);
+  return http.request({
     url: "/user/updateSelfContent",
     method: "post",
     data
