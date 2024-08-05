@@ -54,9 +54,11 @@ const onsubmit = async () => {
     <h1>大学生成长档案</h1>
     <van-form inset ref="formRef">
       <van-field v-model="userForm.uid" placeholder="请输入用户账号/学号" clearable name="uid" :rules="[
-        { required: true, message: '请输入用户账号/学号' }]" />
-      <van-field v-model="userForm.password" type="password" placeholder="请输入密码" clearable name="password" />
-      <van-field v-model="userForm.verify" placeholder="请输入验证码" clearable name="verify" />
+        { required: true, message: '请输入用户账号/学号' }, { message: '账号必须是1-11位的数字', pattern: /^\S{1,17}$/ }]" />
+      <van-field v-model="userForm.password" type="password" placeholder="请输入密码" clearable name="password" :rules="[
+        { required: true, message: '请输入密码' }, { message: '密码必须在17位以内', pattern: /^[0-9]{1,11}$/ }]" />
+      <van-field v-model="userForm.verify" placeholder="请输入验证码" clearable name="verify" :rules="[
+        { required: true, message: '请输入验证码' }]" />
 
     </van-form>
 

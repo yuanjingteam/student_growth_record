@@ -16,7 +16,7 @@ const configDefault = {
   },
   timeout: 0,
   baseURL:
-    "http://192.168.22.62:8881" ||
+    "http://127.0.0.1:4523/m1/4869431-0-default" || "http://192.168.22.62:8881" ||
     import.meta.env.VITE_BASE_API
   // data: {}
 };

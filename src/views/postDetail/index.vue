@@ -1,5 +1,32 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router';
+const route = useRoute()
+
+// const articleId = route.params.id
+// console.log(articleId);
+const articleData = ref({
+  article_collect_sum: 998,
+  article_comment_sum: 0,
+  article_content: {
+    article_image: "Navic",
+    article_text: "17KJyF0uOM",
+    article_video: "Secur",
+    article_id: 1,
+    article_like_sum: 685,
+    article_post_time: "6980天前",
+    topic_id: "If th",
+    user_class: "计科222",
+    user_image: "nUYfgNlhhp",
+    username: "韩韩韩"
+  }
+})
+onMounted(() => {
+  //发获取评论请求和帖子详情请求
+  //得到data后
+
+
+})
 
 </script>
 <template>
@@ -10,6 +37,7 @@ import { ref } from 'vue'
       </template>
     </van-nav-bar>
 
+    <post-more :data="articleData"></post-more>
 
     <van-cell>
       <!-- 使用 title 插槽来自定义标题 -->
@@ -22,6 +50,7 @@ import { ref } from 'vue'
       </template>
     </van-cell>
 
+    <comment-detail></comment-detail>
     <comment-detail></comment-detail>
   </div>
 
@@ -42,7 +71,7 @@ import { ref } from 'vue'
   }
 
   .van-cell {
-    margin-top: 20px;
+    margin-top: 15px;
   }
 
   .custom-title,
