@@ -8,8 +8,10 @@ import { ContentTypeEnum, ResultEnum } from "@/enums/requestEnum";
 import NProgress from "../progress";
 import { showFailToast } from "vant";
 import "vant/es/toast/style";
-
+// ContentTypeEnum
 // 默认 axios 实例请求配置
+//  || ContentTypeEnum.FORM_URLENCODED
+// || "application/json"
 const configDefault = {
   headers: {
     "Content-Type": ContentTypeEnum.FORM_URLENCODED

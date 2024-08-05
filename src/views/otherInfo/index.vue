@@ -17,11 +17,7 @@ const data = ref({});
 
 <template>
   <div class="main">
-    <van-nav-bar
-      left-text="返回"
-      left-arrow
-      @click-left="router.push('/user')"
-    />
+    <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
     <user-info>
       <template #class="classProps">
         <span class="other">{{ classProps.text }}</span>

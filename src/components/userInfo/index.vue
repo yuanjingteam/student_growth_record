@@ -10,6 +10,7 @@ import { storeToRefs } from "pinia";
 
 // 导入自定义的 getUserInfo 函数,用于获取用户信息
 import { getUserInfo } from "@/api/user";
+import { useRouter } from "vue-router";
 
 // 调用 useCounterStoreHook 函数,获取 Pinia 中的 useCounterStore 实例
 const userStore = useCounterStoreHook();
@@ -20,13 +21,13 @@ const userStore = useCounterStoreHook();
 
 // 获取普通属性:
 const userId = userStore.userId;
-
+const router = useRouter();
 const data = ref({});
 // 发送请求
 const getUser = async () => {
   const userInfo = await getUserInfo(userId);
   data.value = userInfo;
-  // console.log(data.value, 3333);
+  console.log(data.value, 3333);
 };
 // 调用加载
 getUser();
@@ -52,13 +53,16 @@ const handleImagePreview = src => {
       <!-- 昵称 -->
       <div class="my-name">
         {{ data.userName }}
+        <!-- 用户等级 -->
         <!-- <span>LV.{{ data.level }}</span> -->
       </div>
     </div>
     <!-- 头部总组件 -->
     <div class="user-header">
       <div class="my-inside" />
-      <div class="change-info"><button>编辑资料</button></div>
+      <div class="change-info" @click="router.push('./editData')">
+        <button>编辑资料</button>
+      </div>
       <!-- 我的座右铭 -->
       <div class="my-motto">
         <i-icon icon="uil:edit-alt" />
@@ -97,7 +101,6 @@ const handleImagePreview = src => {
   border-radius: 7px;
   overflow: hidden;
 }
-
 .my-outside {
   position: absolute;
   display: flex;

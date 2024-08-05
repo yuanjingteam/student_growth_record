@@ -53,7 +53,7 @@ const data = ref({
 
 const getMessage = async () => {
   const userMessage = await getAllNotification(userId);
-  data.value = userMessage;
+  data.value = userMessage.data;
   console.log(data.value, 2222);
 };
 // 调用加载
@@ -71,19 +71,19 @@ getMessage();
   <inform
     :base="base[0]"
     :data="data.systemNotice"
-    @click="router.push('/home')"
+    @click="router.push('/systemNotice')"
   />
   <!-- 管理员通知 -->
   <inform
     :base="base[1]"
     :data="data.adminNotice"
-    @click="router.push('./home')"
+    @click="router.push('./managerNotice')"
   />
   <!-- 用户通知 -->
   <inform
     :base="base[2]"
     :data="data.userNotice"
-    @click="router.push('./home')"
+    @click="router.push('./userNotice')"
   />
 
   <!-- 发布文章按钮 -->

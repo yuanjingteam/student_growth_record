@@ -47,6 +47,14 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
+    path: "/editData",
+    name: "editData",
+    component: () => import("@/views/user/editData/index.vue"),
+    meta: {
+      title: "编辑资料"
+    }
+  },
+  {
     path: "/articleWait",
     name: "articleWait",
     component: () => import("@/views/articleWait/index.vue"),
@@ -65,7 +73,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/myPublish",
     name: "myPublish",
-    component: () => import("@/views/myPublish/index.vue"),
+    component: () => import("@/views/user/myPublish/index.vue"),
     meta: {
       title: "我发布的内容"
     }
@@ -73,7 +81,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/myCollect",
     name: "myCollect",
-    component: () => import("@/views/myCollect/index.vue"),
+    component: () => import("@/views/user/myCollect/index.vue"),
     meta: {
       title: "我的收藏"
     }
@@ -81,7 +89,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/selfIntroduce",
     name: "selfIntroduce",
-    component: () => import("@/views/selfIntroduce/index.vue"),
+    component: () => import("@/views/user/selfIntroduce/index.vue"),
     meta: {
       title: "个人介绍"
     }
@@ -89,7 +97,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/feedBack",
     name: "feedBack",
-    component: () => import("@/views/feedBack/index.vue"),
+    component: () => import("@/views/user/feedBack/index.vue"),
     meta: {
       title: "意见反馈"
     }
@@ -97,7 +105,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/sets",
     name: "sets",
-    component: () => import("@/views/sets/index.vue"),
+    component: () => import("@/views/user/sets/index.vue"),
     meta: {
       title: "设置"
     }
@@ -156,6 +164,31 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/classDetail/index.vue"),
     meta: {
       title: "班级专题"
+    }
+  },
+  // 我说,这个是用户通知消息区
+  {
+    path: "/managerNotice",
+    name: "managerNotice",
+    component: () => import("@/views/inform/managerNotice/index.vue"),
+    meta: {
+      title: "管理员消息"
+    }
+  },
+  {
+    path: "/systemNotice",
+    name: "systemNotice",
+    component: () => import("@/views/inform/systemNotice/index.vue"),
+    meta: {
+      title: "系统消息"
+    }
+  },
+  {
+    path: "/userNotice",
+    name: "userNotice",
+    component: () => import("@/views/inform/userNotice/index.vue"),
+    meta: {
+      title: "互动消息"
     }
   }
 ];
