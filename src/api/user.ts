@@ -52,7 +52,7 @@ export function newArticlePublish(formData?: FormData): Promise<object> {
 // 获取文章话题
 export function getArticleTags(data?: Object): Promise<object> {
   return http.request({
-    url: "/article/publish/get_tags",
+    url: "/article/littletag",
     method: "post",
     data
   });
@@ -98,42 +98,6 @@ export function changeUserData(data?: Object): Promise<object> {
   });
 }
 
-// 获取用户互动消息
-export function getUserNotification(data?: Object): Promise<object> {
-  data = JSON.stringify(data);
-  return http.request({
-    url: "/user/get_notification",
-    method: "get",
-    data
-  });
-}
-
-// 获取评论
-export function getUserComments(data?: Object): Promise<object> {
-  data = JSON.stringify({
-    ...data,
-    limit: 10 // 限制为最近 10 条
-  });
-  return http.request({
-    url: "/user/get_Comments",
-    method: "post",
-    data
-  });
-}
-
-// 获取点赞
-export function getUserLikes(data?: Object): Promise<object> {
-  data = JSON.stringify({
-    ...data,
-    limit: 10 // 限制为最近 10 条
-  });
-  return http.request({
-    url: "/user/get_likes",
-    method: "post",
-    data
-  });
-}
-
 // 获取收藏
 export function getUserFavorites(data?: Object): Promise<object> {
   data = JSON.stringify({
@@ -143,6 +107,42 @@ export function getUserFavorites(data?: Object): Promise<object> {
   return http.request({
     url: "/user/get_favorites",
     method: "post",
+    data
+  });
+}
+
+// 获取互动消息点赞列表
+export function getUserThumNotification(data?: Object): Promise<object> {
+  data = JSON.stringify(data);
+  return http.request({
+    url: "/user/get_thumbList",
+    method: "get",
+    data
+  });
+}
+
+// 获取互动消息评论列表
+export function getUserComNotification(data?: Object): Promise<object> {
+  data = JSON.stringify({
+    ...data,
+    limit: 10 // 限制为最近 10 条
+  });
+  return http.request({
+    url: "/user/get_comList",
+    method: "get",
+    data
+  });
+}
+
+// 获取互动消息收藏列表
+export function getUserStarNotification(data?: Object): Promise<object> {
+  data = JSON.stringify({
+    ...data,
+    limit: 10 // 限制为最近 10 条
+  });
+  return http.request({
+    url: "/user/get_starList",
+    method: "get",
     data
   });
 }

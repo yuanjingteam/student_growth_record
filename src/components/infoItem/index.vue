@@ -25,3 +25,10 @@ const props = defineProps({
     </template>
   </van-cell>
 </template>
+
+<style scoped>
+.van-text-ellipsis {
+  color: black;
+  width: 240px;
+}
+</style>

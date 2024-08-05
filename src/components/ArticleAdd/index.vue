@@ -7,9 +7,6 @@ const props = defineProps({
   offset: Object
 });
 console.log(props.offset);
-const handleClick = () => {
-  router.push("/demo");
-};
 </script>
 <template>
   <van-floating-bubble

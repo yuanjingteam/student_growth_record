@@ -56,7 +56,7 @@ const contentLength = computed(() => content.value.length);
 // 文章校验
 const formRef = ref();
 
-const actions = [{ name: "文体活动" }, { name: "选项二" }];
+let actions = [{ name: "文体活动" }, { name: "选项二" }];
 
 // 渲染话题/tag
 const childs = ref([
@@ -77,7 +77,9 @@ const data = reactive({
 
 // 获取话题
 const getArticleTag = async () => {
-  const serve = await getArticleTags();
+  const serve = await getArticleTags({ userId: userId });
+  console.log(serve.data);
+  actions = serve.data;
 };
 
 // 获取小标签
@@ -87,7 +89,7 @@ const getLittleTag = async () => {
 };
 
 // 获取话题
-// getArticleTag();
+getArticleTag();
 // 获取小标签
 getLittleTag();
 
@@ -96,6 +98,7 @@ const onSelect = item => {
   // 默认情况下点击选项时不会自动收起
   // 可以通过 close-on-click-action 属性开启自动收起
   let selectedIndex = actions.findIndex(action => action.name === item.name);
+
   defaultIndex = selectedIndex;
   data.article_topic = actions[defaultIndex].name;
   littleTag.value = [];
