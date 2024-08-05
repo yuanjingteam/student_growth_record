@@ -98,19 +98,6 @@ export function changeUserData(data?: Object): Promise<object> {
   });
 }
 
-// 获取收藏
-export function getUserFavorites(data?: Object): Promise<object> {
-  data = JSON.stringify({
-    ...data,
-    limit: 10 // 限制为最近 10 条
-  });
-  return http.request({
-    url: "/user/get_favorites",
-    method: "post",
-    data
-  });
-}
-
 // 获取互动消息点赞列表
 export function getUserThumNotification(data?: Object): Promise<object> {
   data = JSON.stringify(data);
