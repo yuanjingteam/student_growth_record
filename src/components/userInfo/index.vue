@@ -22,12 +22,12 @@ const userStore = useCounterStoreHook();
 // 获取普通属性:
 const userId = userStore.userId;
 const router = useRouter();
-const data = ref({});
+const userInfo = ref({});
 // 发送请求
 const getUser = async () => {
-  const userInfo = await getUserInfo(userId);
-  data.value = userInfo;
-  console.log(data.value, 3333);
+  const { data } = await getUserInfo(userId);
+  userInfo.value = data;
+  console.log(userInfo.value, 3333);
 };
 // 调用加载
 getUser();
@@ -49,12 +49,13 @@ const handleImagePreview = src => {
   <div class="my-self">
     <div class="my-outside">
       <!-- 头像 -->
-      <van-image round width="4rem" height="4rem" :src="data.userImg" @click="handleImagePreview(data.userImg)" />
+      <van-image round width="4rem" height="4rem" :src="userInfo.userImg"
+        @click="handleImagePreview(userInfo.userImg)" />
       <!-- 昵称 -->
       <div class="my-name">
-        {{ data.userName }}
+        {{ userInfo.userName }}
         <!-- 用户等级 -->
-        <!-- <span>LV.{{ data.level }}</span> -->
+        <!-- <span>LV.{{ userInfo.level }}</span> -->
       </div>
     </div>
     <!-- 头部总组件 -->
@@ -66,18 +67,18 @@ const handleImagePreview = src => {
       <!-- 我的座右铭 -->
       <div class="my-motto">
         <i-icon icon="uil:edit-alt" />
-        {{ data.userMotto }}
+        {{ userInfo.userMotto }}
       </div>
       <!-- 我的个人信息 -->
       <div class="user-info">
-        <div>粉丝：{{ data.fans }}</div>
-        <div>关注：{{ data.myConcern }}</div>
-        <div>获赞：{{ data.thumbsUp }}</div>
+        <div>粉丝：{{ userInfo.fans }}</div>
+        <div>关注：{{ userInfo.myConcern }}</div>
+        <div>获赞：{{ userInfo.thumbsUp }}</div>
       </div>
       <!-- 其他人 -->
       <div class="other">
-        <slot name="class" :text="data.class" />
-        <slot name="office" :text="data.office" />
+        <slot name="class" :text="userInfo.class" />
+        <slot name="office" :text="userInfo.office" />
       </div>
     </div>
   </div>
@@ -101,6 +102,7 @@ const handleImagePreview = src => {
   border-radius: 7px;
   overflow: hidden;
 }
+
 .my-outside {
   position: absolute;
   display: flex;
