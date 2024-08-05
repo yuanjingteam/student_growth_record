@@ -34,17 +34,17 @@ const base = reactive([
 
 // 从后端获取的数据,给一个默认值
 const data = ref({
-  systemNotice: {
+  admin_info: {
     count: 0,
     message: "1",
     time: "0"
   },
-  adminNotice: {
+  manager_info: {
     count: 0,
     message: "2",
     time: "0"
   },
-  userNotice: {
+  inter_info: {
     count: 0,
     message: "3",
     time: "0"
@@ -70,19 +70,19 @@ getMessage();
   <!-- 系统通知 -->
   <inform
     :base="base[0]"
-    :data="data.systemNotice"
+    :data="data.admin_info"
     @click="router.push('/systemNotice')"
   />
   <!-- 管理员通知 -->
   <inform
     :base="base[1]"
-    :data="data.adminNotice"
+    :data="data.manager_info"
     @click="router.push('./managerNotice')"
   />
   <!-- 用户通知 -->
   <inform
     :base="base[2]"
-    :data="data.userNotice"
+    :data="data.inter_info"
     @click="router.push('./userNotice')"
   />
 

@@ -7,7 +7,7 @@ const props = defineProps({
   base: Object,
   data: Object
 });
-console.log(props.data);
+// console.log(props.data);
 const router = useRouter();
 </script>
 <template>

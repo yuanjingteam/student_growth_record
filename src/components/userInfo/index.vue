@@ -27,7 +27,6 @@ const data = ref({});
 const getUser = async () => {
   const userInfo = await getUserInfo(userId);
   data.value = userInfo.data;
-  console.log(data.value, 3333);
 };
 // 调用加载
 getUser();
@@ -53,12 +52,12 @@ const handleImagePreview = src => {
         round
         width="4rem"
         height="4rem"
-        :src="data.userImg"
-        @click="handleImagePreview(data.userImg)"
+        :src="data.user_headshot"
+        @click="handleImagePreview(data.user_headshot)"
       />
       <!-- 昵称 -->
       <div class="my-name">
-        {{ data.userName }}
+        {{ data.username }}
         <!-- 用户等级 -->
         <!-- <span>LV.{{ data.level }}</span> -->
       </div>
@@ -72,18 +71,18 @@ const handleImagePreview = src => {
       <!-- 我的座右铭 -->
       <div class="my-motto">
         <i-icon icon="uil:edit-alt" />
-        {{ data.userMotto }}
+        {{ data.user_motto }}
       </div>
       <!-- 我的个人信息 -->
       <div class="user-info">
-        <div>粉丝：{{ data.fans }}</div>
-        <div>关注：{{ data.myConcern }}</div>
-        <div>获赞：{{ data.thumbsUp }}</div>
+        <div>粉丝：{{ data.userfans }}</div>
+        <div>关注：{{ data.user_concern }}</div>
+        <div>获赞：{{ data.user_like }}</div>
       </div>
       <!-- 其他人 -->
       <div class="other">
-        <slot name="class" :text="data.class" />
-        <slot name="office" :text="data.office" />
+        <slot name="class" :text="data.user_class" />
+        <slot name="office" :text="data.user_Identity" />
       </div>
     </div>
   </div>
