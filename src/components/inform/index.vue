@@ -19,7 +19,10 @@ const router = useRouter();
       <van-text-ellipsis :content="data.message" />
     </template>
     <template #value>
-      <div class="right-content">
+      <div v-if="props.base == null">
+        <i-icon />
+      </div>
+      <div v-else class="right-content">
         <div class="va-time">{{ data.time }}</div>
         <van-badge :content="data.count" max="99" />
       </div>

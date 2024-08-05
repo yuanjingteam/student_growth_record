@@ -97,3 +97,52 @@ export function changeUserData(data?: Object): Promise<object> {
     data
   });
 }
+
+// 获取用户互动消息
+export function getUserNotification(data?: Object): Promise<object> {
+  data = JSON.stringify(data);
+  return http.request({
+    url: "/user/get_notification",
+    method: "get",
+    data
+  });
+}
+
+// 获取评论
+export function getUserComments(data?: Object): Promise<object> {
+  data = JSON.stringify({
+    ...data,
+    limit: 10 // 限制为最近 10 条
+  });
+  return http.request({
+    url: "/user/get_Comments",
+    method: "post",
+    data
+  });
+}
+
+// 获取点赞
+export function getUserLikes(data?: Object): Promise<object> {
+  data = JSON.stringify({
+    ...data,
+    limit: 10 // 限制为最近 10 条
+  });
+  return http.request({
+    url: "/user/get_likes",
+    method: "post",
+    data
+  });
+}
+
+// 获取收藏
+export function getUserFavorites(data?: Object): Promise<object> {
+  data = JSON.stringify({
+    ...data,
+    limit: 10 // 限制为最近 10 条
+  });
+  return http.request({
+    url: "/user/get_favorites",
+    method: "post",
+    data
+  });
+}

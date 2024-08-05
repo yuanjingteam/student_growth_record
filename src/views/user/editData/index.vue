@@ -30,18 +30,6 @@ const columnsType = ["year", "month", "day"];
 const minDate = new Date(2000, 0, 1);
 const maxDate = new Date(2023, 5, 1);
 
-// // 用户姓名
-// const username = ref();
-
-// // 用户性别
-// const userGender = ref();
-
-// // 用户个签
-// const userMotto = ref();
-
-// 格式化后的当前日期
-// let birthday =
-
 const data = reactive({
   name: "小明",
   class: "教育222",
@@ -93,7 +81,7 @@ const updateCurrentDate = async value => {
 };
 </script>
 <template>
-  <van-nav-bar left-text="返回" left-arrow @click-left="router.push('/user')" />
+  <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
 
   <!-- 生日弹出层 -->
   <van-popup
@@ -230,5 +218,12 @@ const updateCurrentDate = async value => {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.van-nav-bar {
+  position: absolute;
+  width: 100%;
+  --van-nav-bar-background: rgba(255, 255, 255, 0);
+  --van-nav-bar-icon-color: black;
+  --van-nav-bar-text-color: black;
 }
 </style>
