@@ -25,9 +25,8 @@ const router = useRouter();
 const userInfo = ref({});
 // 发送请求
 const getUser = async () => {
-  const { data } = await getUserInfo(userId);
-  userInfo.value = data;
-  console.log(userInfo.value, 3333);
+  const userInfo = await getUserInfo(userId);
+  data.value = userInfo.data;
 };
 // 调用加载
 getUser();
@@ -49,11 +48,16 @@ const handleImagePreview = src => {
   <div class="my-self">
     <div class="my-outside">
       <!-- 头像 -->
-      <van-image round width="4rem" height="4rem" :src="userInfo.userImg"
-        @click="handleImagePreview(userInfo.userImg)" />
+      <van-image
+        round
+        width="4rem"
+        height="4rem"
+        :src="data.userImg"
+        @click="handleImagePreview(data.userImg)"
+      />
       <!-- 昵称 -->
       <div class="my-name">
-        {{ userInfo.userName }}
+        {{ data.userName }}
         <!-- 用户等级 -->
         <!-- <span>LV.{{ userInfo.level }}</span> -->
       </div>
@@ -67,18 +71,18 @@ const handleImagePreview = src => {
       <!-- 我的座右铭 -->
       <div class="my-motto">
         <i-icon icon="uil:edit-alt" />
-        {{ userInfo.userMotto }}
+        {{ data.userMotto }}
       </div>
       <!-- 我的个人信息 -->
       <div class="user-info">
-        <div>粉丝：{{ userInfo.fans }}</div>
-        <div>关注：{{ userInfo.myConcern }}</div>
-        <div>获赞：{{ userInfo.thumbsUp }}</div>
+        <div>粉丝：{{ data.fans }}</div>
+        <div>关注：{{ data.myConcern }}</div>
+        <div>获赞：{{ data.thumbsUp }}</div>
       </div>
       <!-- 其他人 -->
       <div class="other">
-        <slot name="class" :text="userInfo.class" />
-        <slot name="office" :text="userInfo.office" />
+        <slot name="class" :text="data.class" />
+        <slot name="office" :text="data.office" />
       </div>
     </div>
   </div>

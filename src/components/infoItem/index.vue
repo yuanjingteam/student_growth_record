@@ -9,11 +9,11 @@ const props = defineProps({
 <template>
   <van-cell center>
     <template #title>
-      {{ data.userName }}
+      {{ data.username }}
     </template>
     <template #label>
       <span>{{ state }}</span>
-      <van-text-ellipsis :content="data.message" />
+      <van-text-ellipsis :content="data.article_content" />
     </template>
     <template #value>
       <div>
@@ -21,7 +21,7 @@ const props = defineProps({
       </div>
     </template>
     <template #icon>
-      <van-image round width="3rem" height="3rem" :src="data.userAvatar" />
+      <van-image round width="3rem" height="3rem" :src="data.user_headshot" />
     </template>
   </van-cell>
 </template>
