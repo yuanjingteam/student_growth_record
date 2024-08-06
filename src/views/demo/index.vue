@@ -1,15 +1,26 @@
 <script setup lang="ts" name="Demo">
+<<<<<<< HEAD
 import { onMounted, reactive } from "vue";
 import { ref } from "vue";
 import { showToast } from "vant";
 import CellCard from "@/components/CellCard/index.vue";
 import { getArticlesService } from "@/api/article";
 import { getRegisterDay } from "@/api/topic";
+=======
+import { onMounted, reactive, ref } from "vue";
+import { showToast } from "vant";
+import { getArticlesService } from "@/api/article";
+import { getRegisterDay } from "@/api/topic";
+import { useTopicStore, useUserStore } from "@/store";
+>>>>>>> han
 // const data = { article_id: '1' }
 // const res = await getArticlesService(data)
 // console.log(res);
 
+const userStore = useUserStore();
+const topicStore = useTopicStore();
 //分类标签tabber栏
+<<<<<<< HEAD
 const topicList = ref([
   {
     id: "1",
@@ -50,12 +61,50 @@ const onClickButton = () => showToast(inputValue.value);
 
 const count = ref(0);
 const activeName = ref("a");
+=======
+const topicList = ref([]);
+//存储当前用户账号
+const username = ref("");
+//获取当前用户id
+username.value = userStore.username;
+//控制tab栏显示
+const activeName = ref("全部");
+//初始化记录注册天数
+const registerTime = ref("");
+
+//获取注册天数
+const registerDay = async () => {
+  const { data } = await getRegisterDay({ username: username });
+  registerTime.value = data.plus_time;
+};
+registerDay();
+
+//获取话题列表
+const getTopics = async () => {
+  //更新仓库数据
+  topicStore.getTopicList();
+  topicList.value = topicStore.topicList;
+};
+getTopics();
+//搜索框输入内容
+const inputValue = ref("");
+//搜索框事件
+const onClickButton = () => {
+  // console.log(activeName.value[0], 11);
+};
+
+const count = ref(0);
+>>>>>>> han
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
+<<<<<<< HEAD
 //注册天数
 const registerTime = ref("");
+=======
+
+>>>>>>> han
 const onLoad = () => {
   setTimeout(() => {
     if (refreshing.value) {
@@ -82,11 +131,14 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
+<<<<<<< HEAD
 
 onMounted(async () => {
   const { data } = await getRegisterDay({ username: "1" });
   registerTime.value = data.plus_time;
 });
+=======
+>>>>>>> han
 </script>
 <template>
   <div class="topShow">
@@ -103,7 +155,10 @@ onMounted(async () => {
     placeholder="请输入搜索关键词"
     background="#fff"
     class="search"
+<<<<<<< HEAD
     @search="onSearch(1)"
+=======
+>>>>>>> han
   >
     <template #action>
       <van-button
@@ -118,7 +173,11 @@ onMounted(async () => {
   </van-search>
 
   <van-tabs
+<<<<<<< HEAD
     v-model:active="activeName"
+=======
+    :active="activeName"
+>>>>>>> han
     background="#f0f1f5"
     color="#041833"
     swipeable
@@ -126,9 +185,15 @@ onMounted(async () => {
   >
     <van-tab
       v-for="item in topicList"
+<<<<<<< HEAD
       :key="item.title"
       :title="item.title"
       :name="item.name"
+=======
+      :key="item.topic_id"
+      :title="item.topic_title"
+      :name="item.topic_name"
+>>>>>>> han
     >
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
         <van-list

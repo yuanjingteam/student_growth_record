@@ -1,26 +1,34 @@
 import { defineStore } from "pinia";
-import { store } from "@/store";
+import { ref } from "vue";
+// import { getTopicListService } from "@/api/topic";
 
-// 全局存储用户信息
-// 通过 defineStore 函数定义的对象就是一个全局的 Store 实例。
-// 这个 Store 实例可以在整个 Vue 应用中被访问和使用。
-export const useCounterStore = defineStore("counter", {
-  state: () => ({
-    userId: 123,
-    userInfo: null
-  }),
-  actions: {
-    login(userId, userInfo) {
-      this.userId = userId;
-      this.userInfo = userInfo;
-    },
-    // 登出时清空 userId 和 userInfo
-    logout() {
-      this.userId = null;
-      this.userInfo = null;
-    }
+//用户信息管理
+export const useUserStore = defineStore(
+  "user",
+  () => {
+    const username = ref("");
+    const token = ref("");
+    const role = ref(0);
+    const setUserInfo = obj => {
+      username.value = obj.username;
+      token.value = obj.token;
+      role.value = obj.role;
+    };
+    const removeUserInfo = () => {
+      username.value = "";
+      token.value = "";
+      role.value = "";
+    };
+
+    return {
+      username,
+      token,
+      role,
+      setUserInfo,
+      removeUserInfo
+    };
+  },
+  {
+    persist: true
   }
-});
-export function useCounterStoreHook() {
-  return useCounterStore(store);
-}
+);
