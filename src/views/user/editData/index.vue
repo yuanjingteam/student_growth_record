@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from "vue";
-// 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
-import { useUserStore } from "@/store";
+import { reactive, ref } from "vue";
+import { changeUserData, getUserData } from "@/api/user";
+// 导入自定义的 useCounterStoreHook 函数,该函数返回 Pinia 中的 useCounterStore 实例
+import { useCounterStoreHook } from "@/store/modules/useConter";
 import { useRouter } from "vue-router";
 
 // 路由
@@ -22,7 +23,7 @@ const userId = userStore.username;
 const files = ref([{ url: userStore.userData.user_headshot }]);
 
 // 生日弹出框
-// const birthday_out = ref(false);
+const birthday_out = ref(false);
 
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
@@ -33,18 +34,23 @@ const columnsType = ["year", "month", "day"];
 const minDate = new Date(2000, 0, 1);
 const maxDate = new Date(2023, 5, 1);
 
-// 初始化数据
 const data = ref({
-  name: "",
-  user_headshot: userStore.userData.user_headshot,
-  user_class: "",
-  user_gender: "",
-  user_Identity: "",
-  user_motto: "",
-  phone_number: "",
-  user_email: "",
+  name: "小明",
+  user_class: "教育222",
+  user_gender: "男",
+  user_motto: "都完全签订日期当前地区",
+  phone_number: 18893462838,
+  user_email: "3240288774@qq.com",
+  user_birthday: currentDate.value.join("-"),
   user_year: currentDate.value.join("-")
 });
+// 初始化页面
+const baseUserData = async () => {
+  const res = await getUserData();
+  data.value = res.data;
+};
+// 调用
+baseUserData();
 
 // 初始化页面
 data.value = userStore.userData;
@@ -63,32 +69,37 @@ const formatter = (type, option) => {
   return option;
 };
 
+// 定义一个中间变量存储改变之前的值，防止用户不更改
+let mid = "";
+
 // 生日弹层
-// const showBirthday = () => {
-//   // 定义一个中间值
-//   birthday_out.value = true;
-// };
+const showBirthday = () => {
+  mid = data.value.user_birthday;
+  birthday_out.value = true;
+};
 
-// 更新生日
-// const updateCurrentDate = async value => {
-//   // 当前值修改为被选的值
-//   currentDate.value = value.selectedValues;
-//   // 弹窗隐藏
-//   birthday_out.value = false;
-//   // 将修改后的数据传到后端
-//   userStore.submitHeadshot(currentDate.value);
-//   window.location.reload();
-// };
+// 更新当前日期
+const updateCurrentDate = async value => {
+  // 记录修改之前的值
+  mid = value.selectedValues;
 
-// 更新头像
-const updataUserHeadshot = () => {
-  const formData = new FormData();
-  // 将当前最新的数据提交到后端
-  formData.append("file", files.value[0].file);
-  userStore.submitHeadshot({ username: userId, user_headshot: formData });
+  currentDate.value = value.selectedValues;
+  birthday_out.value = false;
+  // 将修改后的数据传到后端
+  submitChange();
+};
+
+// 提交修改后的数据
+const submitChange = async () => {
+  const { code } = await changeUserData({ username: userId });
+  if (code == 200) {
+    // 刷新页面数据为最新
+    refreshPage();
+  }
 };
 </script>
 <template>
+  <!-- <router-view /> -->
   <!-- <router-view /> -->
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
 
@@ -109,7 +120,7 @@ const updataUserHeadshot = () => {
       :columns-type="columnsType"
       @confirm="updateCurrentDate"
     />
-  </van-popup> -->
+  </van-popup>
 
   <div class="main">
     <div class="bg">
@@ -126,6 +137,8 @@ const updataUserHeadshot = () => {
         />
       </div>
       <div>
+        <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
+        <van-form>
         <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
         <van-form>
           <van-cell-group inset>
@@ -151,6 +164,7 @@ const updataUserHeadshot = () => {
               </template>
               <template #value>
                 <div class="both">{{ data.user_gender }}</div>
+                <div class="both">{{ data.user_gender }}</div>
               </template>
             </van-cell>
             <van-cell>
@@ -161,14 +175,7 @@ const updataUserHeadshot = () => {
                 <div class="both">{{ data.user_class }}</div>
               </template>
             </van-cell>
-            <van-cell>
-              <template #title>
-                <span class="custom-title">职务</span>
-              </template>
-              <template #value>
-                <div class="both">{{ data.user_Identity }}</div>
-              </template>
-            </van-cell>
+            <van-cell is-link @click="router.push('/editData/motto')">
             <van-cell is-link @click="router.push('/editData/motto')">
               <template #title>
                 <span class="custom-title">个性签名</span>
@@ -190,7 +197,16 @@ const updataUserHeadshot = () => {
                 <span class="custom-title">电子邮箱</span>
               </template>
               <template #value>
-                <div class="both over">{{ data.user_email }}</div>
+                <div class="both">{{ data.user_email }}</div>
+              </template>
+            </van-cell>
+
+            <van-cell is-link @click="showBirthday">
+              <template #title>
+                <span class="custom-title">电子邮箱</span>
+              </template>
+              <template #value>
+                <div class="both">{{ data.user_birthday }}</div>
               </template>
             </van-cell>
             <van-cell>
@@ -198,6 +214,7 @@ const updataUserHeadshot = () => {
                 <span class="custom-title">入学年份</span>
               </template>
               <template #value>
+                <div class="both">{{ data.user_year }}</div>
                 <div class="both">{{ data.user_year }}</div>
               </template>
             </van-cell>
@@ -215,12 +232,9 @@ const updataUserHeadshot = () => {
 } */
 .userImg {
   position: absolute;
-  top: -45px;
-  left: 146px;
+  top: -60px;
+  left: 130px;
   z-index: 10;
-}
-.van-uploader >>> .van-uploader__preview-image {
-  border-radius: 50px;
 }
 .custom-title {
   width: 10px;
