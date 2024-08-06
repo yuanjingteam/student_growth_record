@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "root",
     component: Layout,
-    redirect: { name: "Demo" },
+    redirect: { name: "Login" },
     children: [
       {
         path: "demo",
@@ -116,6 +116,54 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/otherInfo/index.vue"),
     meta: {
       title: "他人信息"
+    }
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("@/views/login/index.vue"),
+    meta: {
+      title: "登录"
+    }
+  },
+  {
+    path: "/class",
+    name: "Class",
+    component: () => import("@/views/class/index.vue"),
+    meta: {
+      title: "全部班级分类"
+    }
+  },
+  {
+    path: "/topics",
+    name: "Topics",
+    component: () => import("@/views/topics/index.vue"),
+    meta: {
+      title: "全部话题分类"
+    }
+  },
+  {
+    path: "/topicDetail/:id",
+    name: "TopicDetail",
+    component: () => import("@/views/topicDetail/index.vue"),
+    meta: {
+      title: "话题专题"
+    }
+  },
+  {
+    path: "/postDetail/:id",
+    name: "PostDetail",
+    component: () => import("@/views/postDetail/index.vue"),
+    meta: {
+      title: "帖子详情"
+    }
+  },
+  {
+    path: "/classDetail/:id",
+    name: "ClassDetail",
+    component: () => import("@/views/classDetail/index.vue"),
+    meta: {
+      title: "班级专题"
     }
   },
   // 我说,这个是用户通知消息区

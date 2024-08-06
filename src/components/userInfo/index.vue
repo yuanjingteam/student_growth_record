@@ -22,7 +22,7 @@ const userStore = useCounterStoreHook();
 // 获取普通属性:
 const userId = userStore.userId;
 const router = useRouter();
-const data = ref({});
+const userInfo = ref({});
 // 发送请求
 const getUser = async () => {
   const userInfo = await getUserInfo(userId);
@@ -35,7 +35,7 @@ const show = ref(false);
 const handleImagePreview = src => {
   showImagePreview({
     images: [src],
-    onClose() {},
+    onClose() { },
     closeable: true
   });
 };
@@ -59,7 +59,7 @@ const handleImagePreview = src => {
       <div class="my-name">
         {{ data.username }}
         <!-- 用户等级 -->
-        <!-- <span>LV.{{ data.level }}</span> -->
+        <!-- <span>LV.{{ userInfo.level }}</span> -->
       </div>
     </div>
     <!-- 头部总组件 -->
@@ -93,9 +93,11 @@ const handleImagePreview = src => {
   position: relative;
   margin-top: 23.3333vmin;
 }
+
 .van-image {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
 }
+
 .user-header {
   position: relative;
   margin-top: 20px;
@@ -104,11 +106,7 @@ const handleImagePreview = src => {
   border-radius: 7px;
   overflow: hidden;
 }
-.my-motto {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+
 .my-outside {
   position: absolute;
   display: flex;
@@ -116,12 +114,14 @@ const handleImagePreview = src => {
   left: 31px;
   z-index: 2;
 }
+
 .my-outside .my-name {
   margin-top: 1.6667vmin;
   margin-left: 12px;
   font-size: 15px;
   font-weight: 700;
 }
+
 .my-inside {
   position: absolute;
   top: -4.4vmin;
@@ -131,6 +131,7 @@ const handleImagePreview = src => {
   border-radius: 9.3333vmin;
   background-color: #e5edff;
 }
+
 .change-info {
   position: absolute;
   top: 4px;
@@ -138,6 +139,7 @@ const handleImagePreview = src => {
   color: #4580ff;
   font-weight: 700;
 }
+
 .user-info {
   display: flex;
   justify-content: space-between;

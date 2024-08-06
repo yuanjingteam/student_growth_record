@@ -2,7 +2,7 @@
   "editor.formatOnSave": true,
   "eslint.format.enable": true,
   "[vue]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "Vue.volar"
   },
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

@@ -18,8 +18,7 @@ const configDefault = {
   },
   timeout: 0,
   baseURL:
-    "http://127.0.0.1:4523/m1/4869431-0-default" ||
-    "http://192.168.22.38:8881" ||
+    "http://127.0.0.1:4523/m1/4869431-0-default" || "http://192.168.22.62:8881" ||
     import.meta.env.VITE_BASE_API
   // data: {}
 };
@@ -56,6 +55,8 @@ class Http {
         // 与后端协定的返回字段
         const { code, data } = response.data;
         const { msg } = response.data;
+
+        // const { message } = response.data;
         // 判断请求是否成功
         const isSuccess =
           data &&
