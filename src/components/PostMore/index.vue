@@ -1,22 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 const props = defineProps({
   data: Object
-})
-
-
+});
 
 const showPopover = ref(false);
-const actions = [
-  { text: '举报' },
-  { text: '选项二' },
-];
+const actions = [{ text: "举报" }, { text: "选项二" }];
 const select = (action, index) => {
   console.log(action, index);
-}
-
+};
 </script>
-
 
 <template>
   <div class="cell">
@@ -25,23 +18,21 @@ const select = (action, index) => {
         <div class="info-box">
           <van-image round :src="data.article_content.user_image" />
           <div class="info">
-            <div style="display: flex; justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between">
               <p class="name">{{ data.article_content.username }}</p>
-              <van-popover v-model:show="showPopover" theme="dark" :actions="actions" @select="select" placement="left">
+              <van-popover v-model:show="showPopover" theme="dark" :actions="actions" placement="left" @select="select">
                 <template #reference>
-                  <i-icon icon="ant-design:more-outlined"></i-icon>
+                  <i-icon icon="ant-design:more-outlined" />
                 </template>
               </van-popover>
             </div>
             <p class="grade">{{ data.article_content.user_class }}</p>
           </div>
-
-
         </div>
         <p class="post-content">{{ data.article_content.article_text }}</p>
         <div>
           <button class="btn">
-            <i-icon icon="icon-park:message"></i-icon>
+            <i-icon icon="icon-park:message" />
             <p class="btn-title">文体活动</p>
           </button>
         </div>
@@ -49,15 +40,19 @@ const select = (action, index) => {
       </template>
       <template #footer>
         <div class="btn-box">
-          <van-button size="mini" icon="star-o">{{ data.article_collect_sum }}</van-button>
-          <van-button size="mini" icon="comment-o">{{ data.article_comment_sum }}</van-button>
-          <van-button size="mini" icon="good-job-o">{{ data.article_content.article_like_sum }}</van-button>
+          <van-button size="mini" icon="star-o">{{
+            data.article_collect_sum
+          }}</van-button>
+          <van-button size="mini" icon="comment-o">{{
+            data.article_comment_sum
+          }}</van-button>
+          <van-button size="mini" icon="good-job-o">{{
+            data.article_content.article_like_sum
+          }}</van-button>
         </div>
       </template>
     </van-card>
   </div>
-
-
 </template>
 
 <style scoped lang="less">
@@ -81,7 +76,6 @@ const select = (action, index) => {
       .info {
         width: 100%;
 
-
         .name {
           font-size: 16px;
         }
@@ -96,7 +90,6 @@ const select = (action, index) => {
           color: rgba(166, 168, 173, 1);
         }
       }
-
     }
 
     .post-content {

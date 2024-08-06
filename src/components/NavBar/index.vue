@@ -19,13 +19,7 @@ defineProps({
 </script>
 
 <template>
-  <van-nav-bar
-    fixed
-    placeholder
-    :title="title"
-    :left-arrow="leftArrow"
-    @click-left="router.go(-1)"
-  >
+  <van-nav-bar fixed placeholder :title="title" :left-arrow="leftArrow" @click-left="router.go(-1)">
     <template #right>
       <!-- <svg-icon class="text-[18px]" name="more" /> -->
       <!-- <button class="btn">发布</button> -->
