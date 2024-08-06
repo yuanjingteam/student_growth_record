@@ -12,7 +12,7 @@ type ListResult = {
 //     method: "get",
 //     params
 //   });
-// }  
+// }
 export function getArticlesService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/content",

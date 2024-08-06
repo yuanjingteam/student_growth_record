@@ -1,62 +1,53 @@
 <script setup lang="ts" name="Demo">
-import { onMounted, reactive } from "vue";
-import { ref } from 'vue';
-import { showToast } from 'vant';
-import CellCard from '@/components/CellCard/index.vue'
-import { getArticlesService } from '@/api/article'
-import { getRegisterDay } from '@/api/topic'
+import { onMounted, reactive, ref } from "vue";
+import { showToast } from "vant";
+import { getArticlesService } from "@/api/article";
+import { getRegisterDay } from "@/api/topic";
+import { useTopicStore, useUserStore } from "@/store";
 // const data = { article_id: '1' }
 // const res = await getArticlesService(data)
 // console.log(res);
 
+const userStore = useUserStore();
+const topicStore = useTopicStore();
 //分类标签tabber栏
-const topicList = ref([
-  {
-    id: '1',
-    title: '全部',
-    name: '全部'
-  },
-  {
-    id: '2',
-    title: '学习',
-    name: '学习成绩'
-  },
-  {
-    id: '3',
-    title: '奖项',
-    name: 'c'
-  },
-  {
-    id: '4',
-    title: '志愿',
-    name: 'd'
-  },
-  {
-    id: '5',
-    title: '文体',
-    name: 'e'
-  },
+const topicList = ref([]);
+//存储当前用户账号
+const username = ref("");
+//获取当前用户id
+username.value = userStore.username;
+//控制tab栏显示
+const activeName = ref("全部");
+//初始化记录注册天数
+const registerTime = ref("");
 
-  {
-    id: '6',
-    title: '日常',
-    name: 'f'
-  },
+//获取注册天数
+const registerDay = async () => {
+  const { data } = await getRegisterDay({ username: username });
+  registerTime.value = data.plus_time;
+};
+registerDay();
 
-])
-const inputValue = ref('');
+//获取话题列表
+const getTopics = async () => {
+  //更新仓库数据
+  topicStore.getTopicList();
+  topicList.value = topicStore.topicList;
+};
+getTopics();
+//搜索框输入内容
+const inputValue = ref("");
 //搜索框事件
-const onSearch = (val) => showToast(val);
-const onClickButton = () => showToast(inputValue.value);
+const onClickButton = () => {
+  // console.log(activeName.value[0], 11);
+};
 
 const count = ref(0);
-const activeName = ref('a');
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-//注册天数
-const registerTime = ref('')
+
 const onLoad = () => {
   setTimeout(() => {
     if (refreshing.value) {
@@ -83,38 +74,58 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
-
-onMounted(async () => {
-  const { data } = await getRegisterDay({ username: '1' })
-  registerTime.value = data.plus_time
-
-})
 </script>
 <template>
-
   <div class="topShow">
     <p class="title">我的大学生活</p>
     <span>
       <p>与你相遇の第{{ registerTime }}天</p>
-      <i-icon icon="icon-park:read-book" class="text-xl"></i-icon>
+      <i-icon icon="icon-park:read-book" class="text-xl" />
     </span>
-
   </div>
-  <van-search v-model="inputValue" show-action shape="round" placeholder="请输入搜索关键词" @search="onSearch(1)"
-    background="#fff" class="search">
+  <van-search
+    v-model="inputValue"
+    show-action
+    shape="round"
+    placeholder="请输入搜索关键词"
+    background="#fff"
+    class="search"
+  >
     <template #action>
-      <van-button @click="onClickButton" type="primary" size="small" color="#004ff7" round>搜索</van-button>
+      <van-button
+        type="primary"
+        size="small"
+        color="#004ff7"
+        round
+        @click="onClickButton"
+        >搜索</van-button
+      >
     </template>
   </van-search>
 
-  <van-tabs v-model:active="activeName" background="#f0f1f5" color="#041833" swipeable sticky>
-    <van-tab v-for="item in topicList" :key="item.title" :title="item.title" :name="item.name">
+  <van-tabs
+    :active="activeName"
+    background="#f0f1f5"
+    color="#041833"
+    swipeable
+    sticky
+  >
+    <van-tab
+      v-for="item in topicList"
+      :key="item.topic_id"
+      :title="item.topic_title"
+      :name="item.topic_name"
+    >
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-          <cell-card v-for="item in list" :key="item" @click='console.log(1)'></cell-card>
+        <van-list
+          v-model:loading="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <cell-card v-for="item in list" :key="item" @click="console.log(1)" />
         </van-list>
       </van-pull-refresh>
-
     </van-tab>
   </van-tabs>
 </template>
@@ -125,7 +136,6 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
 }
 
 .title {
@@ -137,8 +147,6 @@ span {
   display: flex;
 }
 
-
-
 .van-search {
   padding: 0px;
   border-radius: 200px;
@@ -147,12 +155,12 @@ span {
 
 /* 样式穿透,强制找到子组件 */
 
-.van-search>>>.van-search__content {
+.van-search >>> .van-search__content {
   background-color: #fff !important;
   background: #fff;
 }
 
-.van-search>>>.van-search__action {
+.van-search >>> .van-search__action {
   padding: 0px;
   display: flex;
 }
