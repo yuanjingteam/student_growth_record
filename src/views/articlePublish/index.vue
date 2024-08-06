@@ -67,7 +67,7 @@ const childs = ref([
 
 // 发送的数据包
 const data = reactive({
-  userId: userId,
+  username: userId,
   article_content: content,
   word_count: contentLength,
   article_topic: actions[defaultIndex].name,
@@ -77,14 +77,14 @@ const data = reactive({
 
 // 获取话题
 const getArticleTag = async () => {
-  const serve = await getArticleTags({ userId: userId });
+  const serve = await getArticleTags({ username: userId });
   console.log(serve.data);
   actions = serve.data;
 };
 
 // 获取小标签
 const getLittleTag = async () => {
-  const serve = await getLittleTags({ topic: data.article_topic });
+  const serve = await getLittleTags({ topic_id: data.article_topic });
   childs.value = serve.data;
 };
 

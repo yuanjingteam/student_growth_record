@@ -23,20 +23,36 @@ export function getListApiError(data?: object): Promise<ListResult> {
 }
 
 // 获取用户信息
-export function getUserInfo(userid?: number): Promise<object> {
+export function getUserInfo(username?: number): Promise<object> {
   return http.request({
     url: "/user/profiles",
     method: "get",
-    params: { userid }
+    params: { username }
   });
 }
 
 // 获取通知消息
-export function getAllNotification(userid?: number): Promise<object> {
+export function getAllNotification(username?: number): Promise<object> {
   return http.request({
     url: "/all/get_notification",
     method: "get",
-    params: { userid }
+    params: { username }
+  });
+}
+
+// 获取系统消息
+export function getSystemNotification() {
+  return http.request({
+    url: "/system/get_notification",
+    method: "get"
+  });
+}
+
+// 获取管理员消息
+export function getManagerNotification() {
+  return http.request({
+    url: "/manager/get_notification",
+    method: "get"
   });
 }
 
@@ -51,6 +67,7 @@ export function newArticlePublish(formData?: FormData): Promise<object> {
 
 // 获取文章话题
 export function getArticleTags(data?: Object): Promise<object> {
+  data = JSON.stringify(data);
   return http.request({
     url: "/article/littletag",
     method: "post",
@@ -72,7 +89,7 @@ export function getLittleTags(data?: Object): Promise<object> {
 export function getSelfCotnent(data?: Object): Promise<object> {
   data = JSON.stringify(data);
   return http.request({
-    url: "/user/getSelfCotnent",
+    url: "/student/getSelfCotnent",
     method: "post",
     data
   });
@@ -92,7 +109,7 @@ export function changeSelfCotnent(data?: Object): Promise<object> {
 export function changeUserData(data?: Object): Promise<object> {
   data = JSON.stringify(data);
   return http.request({
-    url: "/user/updateSelfContent",
+    url: "/user/updateUserData",
     method: "post",
     data
   });
@@ -111,8 +128,7 @@ export function getUserThumNotification(data?: Object): Promise<object> {
 // 获取互动消息评论列表
 export function getUserComNotification(data?: Object): Promise<object> {
   data = JSON.stringify({
-    ...data,
-    limit: 10 // 限制为最近 10 条
+    ...data
   });
   return http.request({
     url: "/user/get_comList",
@@ -124,8 +140,7 @@ export function getUserComNotification(data?: Object): Promise<object> {
 // 获取互动消息收藏列表
 export function getUserStarNotification(data?: Object): Promise<object> {
   data = JSON.stringify({
-    ...data,
-    limit: 10 // 限制为最近 10 条
+    ...data
   });
   return http.request({
     url: "/user/get_starList",

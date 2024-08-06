@@ -73,11 +73,11 @@ const updateCurrentDate = async value => {
   currentDate.value = value.selectedValues;
   birthday_out.value = false;
   // 将修改后的数据传到后端
-  // const { data } = await changeUserData();
-  // if (code == 200) {
-  //   // 更新页面数据为最新
-  //   refreshPage();
-  // }
+  const { data } = await changeUserData({ username: userId });
+  if (code == 200) {
+    // 更新页面数据为最新
+    refreshPage();
+  }
 };
 </script>
 <template>
@@ -121,7 +121,9 @@ const updateCurrentDate = async value => {
   </van-dialog>
 
   <div class="main">
-    <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+    <div class="bg">
+      <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+    </div>
     <van-floating-panel v-model:height="height" :anchors="anchors">
       <div class="userImg">
         <van-uploader>
@@ -202,6 +204,9 @@ const updateCurrentDate = async value => {
 </template>
 
 <style scoped>
+/* .van-floating-panel {
+  position: relative;
+} */
 .userImg {
   position: absolute;
   top: -60px;

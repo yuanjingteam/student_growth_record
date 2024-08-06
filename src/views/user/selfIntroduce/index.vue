@@ -57,11 +57,12 @@ const returnBack = () => {
   isNav.value = true;
   // 失去焦点
   fieldText.value.blur();
+  getSelf();
 };
 
 // 获取自述
 const getSelf = async () => {
-  const { data } = await getSelfCotnent({ id: userId });
+  const { data } = await getSelfCotnent({ username: userId });
   content.value = data.selfContent;
   console.log(content, 111222);
 };
@@ -72,8 +73,8 @@ getSelf();
 // 发送修改文章请求
 const changeContent = async () => {
   const { code, msg, data } = await changeSelfCotnent({
-    userId: userId,
-    content: content.value
+    username: userId,
+    self_content: content.value
   });
   if (code == 200) {
     // 修改成功弹窗

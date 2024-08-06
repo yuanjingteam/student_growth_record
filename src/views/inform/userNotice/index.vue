@@ -82,7 +82,7 @@ const onLoad = async () => {
         return;
       }
       const data1 = await getUserThumNotification({
-        userId: userId
+        username: userId
       });
 
       thumbList.value = [...thumbList.value, ...data1.data.thumbsUp];
@@ -101,7 +101,7 @@ const onLoad = async () => {
         return;
       }
       const data2 = await getUserComNotification({
-        userId: userId
+        username: userId
       });
       comList.value = [...comList.value, ...data2.data.comments];
 
@@ -119,7 +119,7 @@ const onLoad = async () => {
         return;
       }
       const data3 = await getUserStarNotification({
-        userId: userId
+        username: userId
       });
       starList.value = [...starList.value, ...data3.data.star];
 
