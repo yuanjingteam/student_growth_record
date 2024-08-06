@@ -20,7 +20,13 @@ const select = (action, index) => {
           <div class="info">
             <div style="display: flex; justify-content: space-between">
               <p class="name">{{ data.article_content.username }}</p>
-              <van-popover v-model:show="showPopover" theme="dark" :actions="actions" placement="left" @select="select">
+              <van-popover
+                v-model:show="showPopover"
+                theme="dark"
+                :actions="actions"
+                placement="left"
+                @select="select"
+              >
                 <template #reference>
                   <i-icon icon="ant-design:more-outlined" />
                 </template>

@@ -36,7 +36,7 @@ const show = ref(false);
 const handleImagePreview = src => {
   showImagePreview({
     images: [src],
-// onClose() { },
+    // onClose() { },
     closeable: true
   });
 };
@@ -49,8 +49,13 @@ const handleImagePreview = src => {
   <div class="my-self">
     <div class="my-outside">
       <!-- 头像 -->
-      <van-image round width="4rem" height="4rem" :src="data.user_headshot"
-        @click="handleImagePreview(data.user_headshot)" />
+      <van-image
+        round
+        width="4rem"
+        height="4rem"
+        :src="data.user_headshot"
+        @click="handleImagePreview(data.user_headshot)"
+      />
       <!-- 昵称 -->
       <div class="my-name">
         {{ data.username }}
