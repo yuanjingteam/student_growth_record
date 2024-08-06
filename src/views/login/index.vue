@@ -56,16 +56,16 @@ const onsubmit = async () => {
 const imageUrl = ref("");
 //登录页标题
 const loginTitle = ref("");
-onMounted(async () => {
+const login = async () => {
   const {
     data: { title }
   } = await getLoginTitle();
   loginTitle.value = title;
-  console.log(title);
   const { data } = await getVerifyImg();
   console.log(data);
   userForm.verify_id = data.id;
-});
+};
+login();
 //提示框点击确认触发事件
 const confirmTip = () => {
   console.log("确认");
@@ -82,7 +82,7 @@ const cancelTip = () => {
 <template>
   <div class="login-box">
     <h2>数学科学学院</h2>
-    <h1>{{ title }}</h1>
+    <h1>{{ loginTitle }}</h1>
     <van-form ref="formRef" inset>
       <van-field
         v-model="userForm.username"
