@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref } from "vue";
-import { changeUserData } from "@/api/user";
+import { changeUserData, getUserData } from "@/api/user";
 // 导入自定义的 useCounterStoreHook 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useCounterStoreHook } from "@/store/modules/useConter";
 import { useRouter } from "vue-router";
@@ -18,9 +18,6 @@ const height = ref(anchors[0]);
 // 生日弹出框
 const birthday_out = ref(false);
 
-//个签弹出框
-const motto_out = ref(false);
-
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
 
@@ -30,14 +27,23 @@ const columnsType = ["year", "month", "day"];
 const minDate = new Date(2000, 0, 1);
 const maxDate = new Date(2023, 5, 1);
 
-const data = reactive({
+const data = ref({
   name: "小明",
-  class: "教育222",
-  phone: 18893462838,
-  motto: "都完全签订日期当前地区",
-  gender: "男",
-  birthday: currentDate.value.join("-")
+  user_class: "教育222",
+  user_gender: "男",
+  user_motto: "都完全签订日期当前地区",
+  phone_number: 18893462838,
+  user_email: "3240288774@qq.com",
+  user_birthday: currentDate.value.join("-"),
+  user_year: currentDate.value.join("-")
 });
+// 初始化页面
+const baseUserData = async () => {
+  const res = await getUserData();
+  data.value = res.data;
+};
+// 调用
+baseUserData();
 
 // 刷新当前页面
 const refreshPage = () => {
@@ -58,29 +64,37 @@ const formatter = (type, option) => {
   return option;
 };
 
-// 生日弹层响应
+// 定义一个中间变量存储改变之前的值，防止用户不更改
+let mid = "";
+
+// 生日弹层
 const showBirthday = () => {
+  mid = data.value.user_birthday;
   birthday_out.value = true;
 };
 
-// 个性签名弹出层
-const showMotto = () => {
-  motto_out.value = true;
-};
-
+// 更新当前日期
 const updateCurrentDate = async value => {
-  console.log(value.selectedValues);
+  // 记录修改之前的值
+  mid = value.selectedValues;
+
   currentDate.value = value.selectedValues;
   birthday_out.value = false;
   // 将修改后的数据传到后端
-  const { data } = await changeUserData({ username: userId });
+  submitChange();
+};
+
+// 提交修改后的数据
+const submitChange = async () => {
+  const { code } = await changeUserData({ username: userId });
   if (code == 200) {
-    // 更新页面数据为最新
+    // 刷新页面数据为最新
     refreshPage();
   }
 };
 </script>
 <template>
+  <!-- <router-view /> -->
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
 
   <!-- 生日弹出层 -->
@@ -103,23 +117,6 @@ const updateCurrentDate = async value => {
     />
   </van-popup>
 
-  <!-- 个签弹出层 -->
-  <van-dialog v-model:show="motto_out" title="编辑个签" show-cancel-button>
-    <van-field
-      v-model="data.motto"
-      placeholder="发表你的个性签名吧"
-      maxlength="20"
-      :autosize="{ minHeight: 30, maxHeight: 50 }"
-      show-word-limit
-      autocomplete="off"
-      type="textarea"
-    >
-      <template #label>
-        <i-icon icon="twemoji:sun" />
-      </template>
-    </van-field>
-  </van-dialog>
-
   <div class="main">
     <div class="bg">
       <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
@@ -136,8 +133,8 @@ const updateCurrentDate = async value => {
         </van-uploader>
       </div>
       <div>
-        <p>面板显示高度 {{ height.toFixed(0) }} px</p>
-        <van-form @submit="onSubmit">
+        <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
+        <van-form>
           <van-cell-group inset>
             <van-cell>
               <template #title>
@@ -160,7 +157,7 @@ const updateCurrentDate = async value => {
                 <span class="custom-title">性别</span>
               </template>
               <template #value>
-                <div class="both">{{ data.gender }}</div>
+                <div class="both">{{ data.user_gender }}</div>
               </template>
             </van-cell>
             <van-cell>
@@ -168,23 +165,40 @@ const updateCurrentDate = async value => {
                 <span class="custom-title">班级</span>
               </template>
               <template #value>
-                <div class="both">{{ data.class }}</div>
+                <div class="both">{{ data.user_class }}</div>
               </template>
             </van-cell>
-            <van-cell is-link @click="showMotto">
+            <van-cell is-link @click="router.push('/editData/motto')">
               <template #title>
                 <span class="custom-title">个性签名</span>
               </template>
               <template #value>
-                <div class="both over">{{ data.motto }}</div>
+                <div class="both over">{{ data.user_motto }}</div>
               </template>
             </van-cell>
+            <van-cell is-link @click="router.push('/editData/phone')">
+              <template #title>
+                <span class="custom-title">电话</span>
+              </template>
+              <template #value>
+                <div class="both">{{ data.phone_number }}</div>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="router.push('/editData/email')">
+              <template #title>
+                <span class="custom-title">电子邮箱</span>
+              </template>
+              <template #value>
+                <div class="both">{{ data.user_email }}</div>
+              </template>
+            </van-cell>
+
             <van-cell is-link @click="showBirthday">
               <template #title>
                 <span class="custom-title">生日</span>
               </template>
               <template #value>
-                <div class="both">{{ data.birthday }}</div>
+                <div class="both">{{ data.user_birthday }}</div>
               </template>
             </van-cell>
             <van-cell>
@@ -192,7 +206,7 @@ const updateCurrentDate = async value => {
                 <span class="custom-title">入学年份</span>
               </template>
               <template #value>
-                <div class="both">{{ data.birthday }}</div>
+                <div class="both">{{ data.user_year }}</div>
               </template>
             </van-cell>
           </van-cell-group>
@@ -211,6 +225,7 @@ const updateCurrentDate = async value => {
   position: absolute;
   top: -60px;
   left: 130px;
+  z-index: 10;
 }
 .custom-title {
   width: 10px;

@@ -105,6 +105,16 @@ export function changeSelfCotnent(data?: Object): Promise<object> {
   });
 }
 
+// 获取用户资料
+export function getUserData(data?: Object): Promise<object> {
+  data = JSON.stringify(data);
+  return http.request({
+    url: "/user/getUserData",
+    method: "get",
+    data
+  });
+}
+
 // 修改用户资料
 export function changeUserData(data?: Object): Promise<object> {
   data = JSON.stringify(data);
