@@ -22,6 +22,7 @@ const userStore = useCounterStoreHook();
 // 获取普通属性:
 const userId = userStore.userId;
 const router = useRouter();
+const data = ref({});
 const userInfo = ref({});
 // 发送请求
 const getUser = async () => {
@@ -35,7 +36,7 @@ const show = ref(false);
 const handleImagePreview = src => {
   showImagePreview({
     images: [src],
-    onClose() { },
+    // onClose() { },
     closeable: true
   });
 };
