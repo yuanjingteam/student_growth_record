@@ -1,6 +1,7 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
+import { getVerifyImg, getLoginTitle, userLogin } from '@/api/user'
 const router = useRouter()
 //复选框是否勾选
 const checked = ref(false)
@@ -10,55 +11,78 @@ const showDialog = ref(false)
 const showUser = ref(false)
 //是否显示隐私协议弹窗
 const showPrivaty = ref(false)
+//是否显示协议提示框
+const showTip = ref(false)
 //用户的登录信息
 const userForm = reactive({
-  uid: '',
+  username: '',
   password: '',
-  verify: ''
+  verify: '',
+  verify_id: ''
 })
 //绑定表单
 const formRef = ref()
 
-//用户登录校验信息
-const rules = {
-  uid: [
-    { required: true, message: '账号必须是1-11位的数字', pattern: /^[0-9]{1,11}$/, trigger: 'blur' },
-    {
-      pattern: /^[0-9]{1,11}$/,
-      message: '',
-      trigger: 'blur'
-    }
-  ],
-  password: [
-    { required: true, message: '请输入密码' },
-    {
-      pattern: /^\S{1,17}$/,
-      message: '密码分类名必须在17位以内',
-      trigger: 'blur'
-    }
-  ],
-  verify: [
-    { required: true, message: '请输入验证码', trigger: 'blur' }
-  ]
+//验证码换一换
+const changeVerify = async () => {
+  const { data } = await getVerifyImg()
+  console.log(data);
 }
-
+//提交时的表单校验
 const onsubmit = async () => {
   await formRef.value.validate()
+  if (checked.value) {
+    await userLogin(userForm)
+    userForm.username = ''
+    userForm.password = ''
+    userForm.verify = ''
+    checked.value = false
+    router.push('/demo')
+  } else {
+    showTip.value = true
+  }
 }
-
+//图片地址
+const imageUrl = ref('')
+//登录页标题
+const loginTitle = ref('')
+onMounted(async () => {
+  const { data: { title } } = await getLoginTitle()
+  loginTitle.value = title
+  console.log(title);
+  const { data } = await getVerifyImg()
+  console.log(data);
+  userForm.verify_id = data.id
+})
+//提示框点击确认触发事件
+const confirmTip = () => {
+  console.log('确认');
+  showTip.value = false
+  checked.value = true
+}
+//提示框点击取消触发事件
+const cancelTip = () => {
+  console.log('取消');
+  showTip.value = false
+}
 </script>
 
 <template>
   <div class="login-box">
     <h2>数学科学学院</h2>
-    <h1>大学生成长档案</h1>
+    <h1>{{ title }}</h1>
     <van-form inset ref="formRef">
-      <van-field v-model="userForm.uid" placeholder="请输入用户账号/学号" clearable name="uid" :rules="[
+      <van-field v-model="userForm.username" placeholder="请输入用户账号/学号" clearable name="username" :rules="[
         { required: true, message: '请输入用户账号/学号' }, { message: '账号必须是1-11位的数字', pattern: /^\S{1,17}$/ }]" />
       <van-field v-model="userForm.password" type="password" placeholder="请输入密码" clearable name="password" :rules="[
-        { required: true, message: '请输入密码' }, { message: '密码必须在17位以内', pattern: /^[0-9]{1,11}$/ }]" />
+        { required: true, message: '请输入密码' }, { message: '密码必须在17位以内', pattern: /^.{1,17}$/ }]" />
       <van-field v-model="userForm.verify" placeholder="请输入验证码" clearable name="verify" :rules="[
-        { required: true, message: '请输入验证码' }]" />
+        { required: true, message: '请输入验证码' }]">
+        <template #button>
+          <van-button size="small" type="primary" @click="changeVerify"
+            :style="{ backgroundImage: 'url(' + imageUrl + ')' }"></van-button>
+        </template>
+      </van-field>
 
     </van-form>
 
@@ -81,11 +105,13 @@ const onsubmit = async () => {
   <!-- 隐私协议弹出框组件 -->
   <van-dialog v-model:show="showPrivaty" title="隐私协议" message="隐私协议">
   </van-dialog>
-
+  <van-dialog v-model:show="showTip" title="提示" message="请您阅读并同意相关协议" show-cancel-button showConfirmButton
+    @confirm="confirmTip" @cancel="cancelTip">
+  </van-dialog>
 
 </template>
 
-<style lang="less" scoped>
+<style scoped>
 .login-box {
   background-color: #fff;
   height: 100%;
@@ -135,6 +161,16 @@ const onsubmit = async () => {
     span {
       color: #549ae9;
     }
+  }
+
+  .van-field {
+    .van-button {
+      width: 80px;
+      height: 40px;
+      background-size: cover;
+      background-image: url('../../assets/image/img.jpg');
+    }
+
   }
 }
 </style>

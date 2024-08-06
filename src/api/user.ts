@@ -6,21 +6,15 @@ type ListResult = {
   data: Object;
 };
 
-export function getListApi(params?: object): Promise<ListResult> {
+// 获取登录页标题
+export function getLoginTitle(data?: Object): Promise<object> {
   return http.request({
-    url: "/list/get",
+    url: "/title",
     method: "get",
-    params
-  });
-}
-
-export function getListApiError(data?: object): Promise<ListResult> {
-  return http.request({
-    url: "/list/error",
-    method: "post",
     data
   });
 }
+
 
 // 获取用户信息
 export function getUserInfo(userid?: number): Promise<object> {
@@ -28,6 +22,23 @@ export function getUserInfo(userid?: number): Promise<object> {
     url: "/user/profiles",
     method: "get",
     params: { userid }
+  });
+}
+
+//获取图形验证码
+export function getVerifyImg(data?: Object): Promise<object> {
+  return http.request({
+    url: "/user/code",
+    method: "post",
+    data
+  });
+}
+//登录
+export function userLogin(data?: Object): Promise<object> {
+  return http.request({
+    url: "/user/login",
+    method: "post",
+    data
   });
 }
 
