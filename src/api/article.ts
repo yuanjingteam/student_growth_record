@@ -34,3 +34,10 @@ export function getHotPostService(data?: object): Promise<ListResult> {
     data
   });
 }
+export function searchArticleService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/search/article",
+    method: "post",
+    data
+  });
+}

@@ -1,7 +1,7 @@
 <script setup lang="ts" name="Demo">
 import { onMounted, reactive, ref } from "vue";
 import { showToast } from "vant";
-import { getArticlesService } from "@/api/article";
+import { getArticlesService, searchArticleService } from "@/api/article";
 import { getRegisterDay } from "@/api/topic";
 import { useTopicStore, useUserStore } from "@/store";
 // const data = { article_id: '1' }
@@ -12,6 +12,11 @@ const userStore = useUserStore();
 const topicStore = useTopicStore();
 //分类标签tabber栏
 const topicList = ref([]);
+//更新仓库数据
+topicStore.getTopicList();
+topicList.value = topicStore.topicList;
+//搜索框输入内容
+const inputValue = ref("");
 //存储当前用户账号
 const username = ref("");
 //获取当前用户id
@@ -20,6 +25,13 @@ username.value = userStore.username;
 const activeName = ref("全部");
 //初始化记录注册天数
 const registerTime = ref("");
+//搜索框数据
+const searchData = reactive({
+  key_word: "",
+  topic_id: "",
+  article_sort: "new",
+  article_count: "5"
+});
 
 //获取注册天数
 const registerDay = async () => {
@@ -28,18 +40,15 @@ const registerDay = async () => {
 };
 registerDay();
 
-//获取话题列表
-const getTopics = async () => {
-  //更新仓库数据
-  topicStore.getTopicList();
-  topicList.value = topicStore.topicList;
-};
-getTopics();
-//搜索框输入内容
-const inputValue = ref("");
 //搜索框事件
-const onClickButton = () => {
-  // console.log(activeName.value[0], 11);
+const onClickButton = async () => {
+  const topicId = topicStore.findTopicId(activeName.value);
+  searchData.key_word = inputValue.value;
+  searchData.topic_id = topicId;
+  const {
+    data: { content }
+  } = await searchArticleService(searchData);
+  list.value = content;
 };
 
 const count = ref(0);
@@ -74,6 +83,11 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
+
+function findTopicId(topicName) {
+  const topic = topicList.value.find(topic => topic.topic_name === topicName);
+  return topic ? topic.topic_id : null;
+}
 </script>
 <template>
   <div class="topShow">
@@ -104,7 +118,7 @@ const onRefresh = () => {
   </van-search>
 
   <van-tabs
-    :active="activeName"
+    v-model:active="activeName"
     background="#f0f1f5"
     color="#041833"
     swipeable
@@ -123,7 +137,12 @@ const onRefresh = () => {
           finished-text="没有更多了"
           @load="onLoad"
         >
-          <cell-card v-for="item in list" :key="item" @click="console.log(1)" />
+          <cell-card
+            v-for="item in list"
+            :key="item.article_id"
+            :articleList="list"
+            @click="console.log(1)"
+          />
         </van-list>
       </van-pull-refresh>
     </van-tab>

@@ -8,7 +8,7 @@ export const useUserStore = defineStore(
   () => {
     const username = ref("");
     const token = ref("");
-    const role = ref(0);
+    const role = ref("");
     const setUserInfo = obj => {
       username.value = obj.username;
       token.value = obj.token;
