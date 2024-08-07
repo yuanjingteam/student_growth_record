@@ -20,23 +20,23 @@ export const useTopicStore = defineStore(
       {
         topic_id: "3",
         topic_title: "奖项",
-        topic_name: "c"
+        topic_name: " 获奖荣誉"
       },
       {
         topic_id: "4",
         topic_title: "志愿",
-        topic_name: "d"
+        topic_name: "志愿公益"
       },
       {
         topic_id: "5",
         topic_title: "文体",
-        topic_name: "e"
+        topic_name: "文体活动"
       },
 
       {
         topic_id: "6",
         topic_title: "日常",
-        topic_name: "f"
+        topic_name: "生活日常"
       }
     ]);
 
@@ -47,9 +47,22 @@ export const useTopicStore = defineStore(
       // topicList.value = topic_list;
       console.log("话题已更新");
     };
+
+    const findTopicId = topicName => {
+      const topic = topicList.value.find(
+        topic => topic.topic_name === topicName
+      );
+      return topic ? topic.topic_id : null;
+    };
+    const findTopicName = topicId => {
+      const topic = topicList.value.find(topic => topic.topic_id === topicId);
+      return topic ? topic.topic_name : null;
+    };
     return {
       topicList,
-      getTopicList
+      getTopicList,
+      findTopicId,
+      findTopicName
     };
   },
   {
