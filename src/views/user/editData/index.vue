@@ -1,8 +1,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { changeUserData, getUserData } from "@/api/user";
-// 导入自定义的 useCounterStoreHook 函数,该函数返回 Pinia 中的 useCounterStore 实例
-import { useCounterStoreHook } from "@/store/modules/useConter";
+
 import { useRouter } from "vue-router";
 
 // 路由

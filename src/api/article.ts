@@ -1,7 +1,7 @@
 import { http } from "@/utils/http";
 
 type ListResult = {
-  code: Number;
+  code: number;
   data: Object;
   msg: string;
 };
@@ -34,7 +34,7 @@ export function getCommentsService(data?: object): Promise<ListResult> {
     data
   });
 }
-export function searchArticleService(data?: object): Promise<Search> {
+export function searchArticleService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/search/article",
     method: "post",
@@ -119,3 +119,4 @@ export function getLittleTags(data?: Object): Promise<ListResult> {
     data: JSON.stringify(data)
   });
 }
+

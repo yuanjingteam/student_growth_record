@@ -261,10 +261,6 @@ export function readManagerNotice(data?: Object): Promise<managerList> {
   });
 }
 
-
-
-
-
 // 已读互动消息
 export function readUserNotice(data?: Object): Promise<managerList> {
   return http.request({
