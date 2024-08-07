@@ -1,7 +1,7 @@
 import { http } from "@/utils/http";
 
 type ListResult = {
-  code: number;
+  code: Number;
   data: Object;
   msg: string;
 };
@@ -23,6 +23,13 @@ export function getArticlesService(data?: object): Promise<ListResult> {
 export function getCommentsService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/articles/getcomments",
+    method: "post",
+    data
+  });
+}
+export function searchArticleService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/search/article",
     method: "post",
     data
   });

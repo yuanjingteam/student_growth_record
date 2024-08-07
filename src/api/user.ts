@@ -1,13 +1,13 @@
 import { http } from "@/utils/http";
 
 type ListResult = {
-  code: String;
+  code: Number;
   message: string;
   data: Object;
 };
 
 // 获取登录页标题
-export function getLoginTitle(data?: ListResult): Promise<ListResult> {
+export function getLoginTitle(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/title",
     method: "get",
@@ -25,7 +25,7 @@ export function getUserInfo(username?: number): Promise<ListResult> {
 }
 
 //获取图形验证码
-export function getVerifyImg(data?: ListResult): Promise<ListResult> {
+export function getVerifyImg(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/code",
     method: "post",
@@ -33,7 +33,7 @@ export function getVerifyImg(data?: ListResult): Promise<ListResult> {
   });
 }
 //登录
-export function userLogin(data?: ListResult): Promise<ListResult> {
+export function userLogin(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/login",
     method: "post",

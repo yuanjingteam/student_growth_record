@@ -3,13 +3,9 @@ import { onMounted, reactive } from "vue";
 import { ref } from "vue";
 import { showToast } from "vant";
 import CellCard from "@/components/CellCard/index.vue";
-import { getArticlesService } from "@/api/article";
 import { getRegisterDay } from "@/api/topic";
 
-import { onMounted, reactive, ref } from "vue";
-import { showToast } from "vant";
 import { getArticlesService, searchArticleService } from "@/api/article";
-import { getRegisterDay } from "@/api/topic";
 import { useTopicStore, useUserStore } from "@/store";
 // const data = { article_id: '1' }
 // const res = await getArticlesService(data)
@@ -67,9 +63,6 @@ const loading = ref(false);
 const finished = ref(false);
 //控制刷新状态的显示和隐藏
 const refreshing = ref(false);
-
-//注册天数
-const registerTime = ref("");
 
 //当用户滚动到底部时会触发加载更多数据的事件
 const onLoad = () => {

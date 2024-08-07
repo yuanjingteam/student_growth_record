@@ -3,7 +3,7 @@ import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getVerifyImg, getLoginTitle, userLogin } from "@/api/user";
 import { useUserStore } from "@/store";
-import { showToast } from "vant";
+// import { showToast } from "vant";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -39,10 +39,10 @@ const onsubmit = async () => {
     const res = await userLogin(userForm);
     if (res.code == 200) {
       userStore.setUserInfo(res.data);
-      showSuccessToast("登录成功");
+      // showSuccessToast("登录成功");
       router.push("/demo");
     } else {
-      showFailToast("登录失败");
+      // showFailToast("登录失败");
       userForm.username = "";
       userForm.password = "";
       userForm.verify = "";

@@ -1,7 +1,7 @@
 import { http } from "@/utils/http";
 
 type ListResult = {
-  code: String;
+  code: Number;
   msg: string;
   data: Object;
 };
