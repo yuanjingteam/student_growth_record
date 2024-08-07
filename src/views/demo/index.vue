@@ -51,12 +51,15 @@ const onClickButton = async () => {
   list.value = content;
 };
 
-const count = ref(0);
 const list = ref([]);
+//控制列表加载状态的显示和隐藏
 const loading = ref(false);
+//绑定了 finished 变量，用于标记是否加载完成
 const finished = ref(false);
+//控制刷新状态的显示和隐藏
 const refreshing = ref(false);
 
+//当用户滚动到底部时会触发加载更多数据的事件
 const onLoad = () => {
   setTimeout(() => {
     if (refreshing.value) {
@@ -75,6 +78,7 @@ const onLoad = () => {
   }, 1000);
 };
 
+//监听了刷新事件
 const onRefresh = () => {
   // 清空列表数据
   finished.value = false;
@@ -83,11 +87,6 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
-
-function findTopicId(topicName) {
-  const topic = topicList.value.find(topic => topic.topic_name === topicName);
-  return topic ? topic.topic_id : null;
-}
 </script>
 <template>
   <div class="topShow">
