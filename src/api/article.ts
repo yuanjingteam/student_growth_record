@@ -34,7 +34,7 @@ export function getCommentsService(data?: object): Promise<ListResult> {
     data
   });
 }
-export function searchArticleService(data?: object): Promise<ListResult> {
+export function searchArticleService(data?: object): Promise<Search> {
   return http.request({
     url: "/search/article",
     method: "post",
@@ -119,4 +119,3 @@ export function getLittleTags(data?: Object): Promise<ListResult> {
     data: JSON.stringify(data)
   });
 }
-
