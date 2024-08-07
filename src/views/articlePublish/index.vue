@@ -2,11 +2,15 @@
 import { useRouter } from "vue-router";
 import { showConfirmDialog, showSuccessToast, Search, showToast } from "vant";
 import { reactive, ref, nextTick, computed } from "vue";
-import { newArticlePublish, getArticleTags, getLittleTags } from "@/api/user";
-import { useCounterStoreHook } from "@/store/modules/useConter";
-const userStore = useCounterStoreHook();
+import {
+  newArticlePublish,
+  getArticleTags,
+  getLittleTags
+} from "@/api/article";
+import { useUserStore } from "@/store";
+const userStore = useUserStore();
 // 获取用户id
-const userId = userStore.userId;
+const username = userStore.username;
 
 // 路由跳转
 const router = useRouter();
@@ -25,7 +29,9 @@ const small_show = ref(false);
 const myRef = ref([]);
 // 存储所有ref
 const setSmallRef = el => {
-  myRef.value.push(el);
+  if (el) {
+    myRef.value.push(el);
+  }
 };
 nextTick(() => {
   console.dir(myRef.value);
@@ -56,7 +62,7 @@ const contentLength = computed(() => content.value.length);
 // 文章校验
 const formRef = ref();
 
-let actions = [{ name: "文体活动" }, { name: "选项二" }];
+let actions = [{ name: "文体活动", aa: 112 }, { name: "选项二" }];
 
 // 渲染话题/tag
 const childs = ref([
@@ -67,7 +73,7 @@ const childs = ref([
 
 // 发送的数据包
 const data = reactive({
-  username: userId,
+  username: username,
   article_content: content,
   word_count: contentLength,
   article_topic: actions[defaultIndex].name,
@@ -77,7 +83,7 @@ const data = reactive({
 
 // 获取话题
 const getArticleTag = async () => {
-  const serve = await getArticleTags({ username: userId });
+  const serve = await getArticleTags();
   console.log(serve.data);
   actions = serve.data;
 };
@@ -103,11 +109,20 @@ const onSelect = item => {
   data.article_topic = actions[defaultIndex].name;
   littleTag.value = [];
   data.article_content = "";
+
+  // 移除所有带有 "active" 类的元素
   myRef.value.forEach(ref => {
     ref.$el.classList.remove("active");
   });
-  // 获取新的小标签;
+  // 获取新的小标签
   getLittleTag(data.article_topic);
+
+  // 设置小标签元素的 ref(定义了一个方法,重新收集这些元素的引用(ref))
+  const setSmallRef = el => {
+    if (el) {
+      myRef.value.push(el);
+    }
+  };
 };
 
 // 小标签弹窗
@@ -257,7 +272,7 @@ const isPublished = async baseData => {
   <!-- 选择小标签弹框 -->
   <van-dialog v-model:show="small_show" :title="data.article_topic">
     <!-- 小标签弹框内部 -->
-    <van-search v-model="value" placeholder="请输入搜索关键词" />
+    <!-- <van-search v-model="value" placeholder="请输入搜索关键词" /> -->
     <van-grid :gutter="10">
       <van-grid-item
         v-for="item in childs"
@@ -268,7 +283,7 @@ const isPublished = async baseData => {
         @click="toggleGridItemActive(item, item.id)"
       >
         <template #default>
-          {{ item.name }}
+          {{ item.tag_name }}
         </template>
       </van-grid-item>
     </van-grid>
@@ -331,7 +346,7 @@ const isPublished = async baseData => {
           size="medium"
           @close="close(item, item.id)"
         >
-          <i-icon icon="mdi:tag-outline" />{{ item.name }}
+          <i-icon icon="mdi:tag-outline" />{{ item.tag_name }}
         </van-tag>
       </template>
     </van-cell>

@@ -2,35 +2,28 @@
 import { showImagePreview } from "vant";
 import { ref } from "vue";
 
-// 导入自定义的 useCounterStoreHook 函数,该函数返回 Pinia 中的 useCounterStore 实例
-import { useCounterStoreHook } from "@/store/modules/useConter";
+// 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
+import { useUserStore } from "@/store";
 
 // 导入 Pinia 中的 storeToRefs 函数,用于从 Pinia store 中解构出响应式的 ref 对象
 import { storeToRefs } from "pinia";
 
-// 导入自定义的 getUserInfo 函数,用于获取用户信息
-import { getUserInfo } from "@/api/user";
 import { useRouter } from "vue-router";
 
-// 调用 useCounterStoreHook 函数,获取 Pinia 中的 useCounterStore 实例
-const userStore = useCounterStoreHook();
+// 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
+const userStore = useUserStore();
 
 // 获取响应式属性:
-// 使用 storeToRefs 函数,从 userStore 中解构出 userId 属性,并将其设为响应式的 ref 对象
-// const { userId } = storeToRefs(userStore);
+// 使用 storeToRefs 函数,从 userStore 中解构出 username 属性,并将其设为响应式的 ref 对象
+// const {  } = storeToRefs(userStore);
 
 // 获取普通属性:
-const userId = userStore.userId;
+const username = userStore.username;
 const router = useRouter();
 const data = ref({});
-const userInfo = ref({});
-// 发送请求
-const getUser = async () => {
-  const userInfo = await getUserInfo(userId);
-  data.value = userInfo.data;
-};
-// 调用加载
-getUser();
+
+const res = userStore.userInfo;
+data.value = res;
 
 const show = ref(false);
 const handleImagePreview = src => {

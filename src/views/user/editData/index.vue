@@ -1,15 +1,15 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { changeUserData, getUserData } from "@/api/user";
-// 导入自定义的 useCounterStoreHook 函数,该函数返回 Pinia 中的 useCounterStore 实例
-import { useCounterStoreHook } from "@/store/modules/useConter";
+// 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
+import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 
 // 路由
 const router = useRouter();
 
-// 调用 useCounterStoreHook 函数,获取 Pinia 中的 useCounterStore 实例
-const userStore = useCounterStoreHook();
+// 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
+const userStore = useUserStore();
 const userId = userStore.userId;
 
 const anchors = [Math.round(0.8 * window.innerHeight)];

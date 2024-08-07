@@ -2,16 +2,16 @@
 import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { useCounterStoreHook } from "@/store/modules/useConter";
+import { useUserStore } from "@/store";
 
 import { getAllNotification } from "@/api/user";
 
-const userStore = useCounterStoreHook();
+const userStore = useUserStore();
 
 const router = useRouter();
 
 // 用户id
-const userId = userStore.userId;
+const username = userStore.username;
 
 // 设置当前页面子组件发布文章按钮的位置
 const offset = ref({ x: 355, y: 700 });
@@ -52,7 +52,7 @@ const data = ref({
 });
 
 const getMessage = async () => {
-  const userMessage = await getAllNotification(userId);
+  const userMessage = await getAllNotification(username);
   data.value = userMessage.data;
   console.log(data.value, 2222);
 };

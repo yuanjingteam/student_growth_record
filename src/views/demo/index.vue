@@ -1,18 +1,9 @@
 <script setup lang="ts" name="Demo">
-<<<<<<< HEAD
-import { onMounted, reactive } from "vue";
-import { ref } from "vue";
-import { showToast } from "vant";
-import CellCard from "@/components/CellCard/index.vue";
-import { getArticlesService } from "@/api/article";
-import { getRegisterDay } from "@/api/topic";
-=======
 import { onMounted, reactive, ref } from "vue";
 import { showToast } from "vant";
 import { getArticlesService } from "@/api/article";
 import { getRegisterDay } from "@/api/topic";
 import { useTopicStore, useUserStore } from "@/store";
->>>>>>> han
 // const data = { article_id: '1' }
 // const res = await getArticlesService(data)
 // console.log(res);
@@ -20,53 +11,11 @@ import { useTopicStore, useUserStore } from "@/store";
 const userStore = useUserStore();
 const topicStore = useTopicStore();
 //分类标签tabber栏
-<<<<<<< HEAD
-const topicList = ref([
-  {
-    id: "1",
-    title: "全部",
-    name: "全部"
-  },
-  {
-    id: "2",
-    title: "学习",
-    name: "学习成绩"
-  },
-  {
-    id: "3",
-    title: "奖项",
-    name: "c"
-  },
-  {
-    id: "4",
-    title: "志愿",
-    name: "d"
-  },
-  {
-    id: "5",
-    title: "文体",
-    name: "e"
-  },
-
-  {
-    id: "6",
-    title: "日常",
-    name: "f"
-  }
-]);
-const inputValue = ref("");
-//搜索框事件
-const onSearch = val => showToast(val);
-const onClickButton = () => showToast(inputValue.value);
-
-const count = ref(0);
-const activeName = ref("a");
-=======
 const topicList = ref([]);
 //存储当前用户账号
 const username = ref("");
 //获取当前用户id
-username.value = userStore.username;
+// username.value = userStore.username;
 //控制tab栏显示
 const activeName = ref("全部");
 //初始化记录注册天数
@@ -75,7 +24,7 @@ const registerTime = ref("");
 //获取注册天数
 const registerDay = async () => {
   const { data } = await getRegisterDay({ username: username });
-  registerTime.value = data.plus_time;
+  // registerTime.value = data.plus_time;
 };
 registerDay();
 
@@ -94,17 +43,10 @@ const onClickButton = () => {
 };
 
 const count = ref(0);
->>>>>>> han
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-<<<<<<< HEAD
-//注册天数
-const registerTime = ref("");
-=======
-
->>>>>>> han
 const onLoad = () => {
   setTimeout(() => {
     if (refreshing.value) {
@@ -131,14 +73,6 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
-<<<<<<< HEAD
-
-onMounted(async () => {
-  const { data } = await getRegisterDay({ username: "1" });
-  registerTime.value = data.plus_time;
-});
-=======
->>>>>>> han
 </script>
 <template>
   <div class="topShow">
@@ -155,10 +89,6 @@ onMounted(async () => {
     placeholder="请输入搜索关键词"
     background="#fff"
     class="search"
-<<<<<<< HEAD
-    @search="onSearch(1)"
-=======
->>>>>>> han
   >
     <template #action>
       <van-button
@@ -173,11 +103,7 @@ onMounted(async () => {
   </van-search>
 
   <van-tabs
-<<<<<<< HEAD
-    v-model:active="activeName"
-=======
     :active="activeName"
->>>>>>> han
     background="#f0f1f5"
     color="#041833"
     swipeable
@@ -185,15 +111,9 @@ onMounted(async () => {
   >
     <van-tab
       v-for="item in topicList"
-<<<<<<< HEAD
-      :key="item.title"
-      :title="item.title"
-      :name="item.name"
-=======
       :key="item.topic_id"
       :title="item.topic_title"
       :name="item.topic_name"
->>>>>>> han
     >
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
         <van-list
