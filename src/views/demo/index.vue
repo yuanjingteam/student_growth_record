@@ -83,6 +83,8 @@ const searchData = reactive({
   article_count: "5"
 });
 
+console.log("aaaa");
+
 //获取注册天数
 const registerDay = async () => {
   const { data } = await getRegisterDay({ username: username });
