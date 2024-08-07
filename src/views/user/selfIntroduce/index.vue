@@ -1,14 +1,14 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useCounterStoreHook } from "@/store/modules/useConter";
+import { useUserStore } from "@/store";
 import { getSelfCotnent, changeSelfCotnent } from "@/api/user";
 import { showConfirmDialog, showToast } from "vant";
-const userStore = useCounterStoreHook();
+const userStore = useUserStore();
 const router = new useRouter();
 
 // 获取用户id
-const userId = userStore.userId;
+const username = userStore.username;
 const formRef = ref();
 
 // 分享面板
@@ -62,7 +62,7 @@ const returnBack = () => {
 
 // 获取自述
 const getSelf = async () => {
-  const { data } = await getSelfCotnent({ username: userId });
+  const { data } = await getSelfCotnent({ username: username });
   content.value = data.selfContent;
   console.log(content, 111222);
 };
@@ -73,7 +73,7 @@ getSelf();
 // 发送修改文章请求
 const changeContent = async () => {
   const { code, msg, data } = await changeSelfCotnent({
-    username: userId,
+    username: username,
     self_content: content.value
   });
   if (code == 200) {

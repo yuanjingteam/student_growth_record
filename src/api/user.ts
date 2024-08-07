@@ -16,7 +16,7 @@ export function getLoginTitle(data?: ListResult): Promise<ListResult> {
 }
 
 // 获取用户信息
-export function getUserInfo(username?: number): Promise<object> {
+export function getUserInfo(username?: number): Promise<ListResult> {
   return http.request({
     url: "/user/profiles",
     method: "get",
@@ -42,7 +42,7 @@ export function userLogin(data?: ListResult): Promise<ListResult> {
 }
 
 // 获取通知消息
-export function getAllNotification(username?: number): Promise<object> {
+export function getAllNotification(username?: number): Promise<ListResult> {
   return http.request({
     url: "/all/get_notification",
     method: "get",
@@ -66,37 +66,8 @@ export function getManagerNotification() {
   });
 }
 
-// 文章发布
-export function newArticlePublish(formData?: FormData): Promise<ListResult> {
-  return http.request({
-    url: "/article/publish",
-    method: "post",
-    data: formData
-  });
-}
-
-// 获取文章话题
-export function getArticleTags(data?: Object): Promise<object> {
-  data = JSON.stringify(data);
-  return http.request({
-    url: "/article/littletag",
-    method: "post",
-    data
-  });
-}
-
-// 获取文章小标签
-export function getLittleTags(data?: ListResult): Promise<ListResult> {
-  data = JSON.stringify(data);
-  return http.request({
-    url: "/article/publish/get_tags",
-    method: "post",
-    data
-  });
-}
-
 // 获取用户自述
-export function getSelfCotnent(data?: ListResult): Promise<ListResult> {
+export function getSelfCotnent(data?: Object): Promise<ListResult> {
   data = JSON.stringify(data);
   return http.request({
     url: "/student/getSelfCotnent",
@@ -106,7 +77,7 @@ export function getSelfCotnent(data?: ListResult): Promise<ListResult> {
 }
 
 // 修改用户自述
-export function changeSelfCotnent(data?: ListResult): Promise<ListResult> {
+export function changeSelfCotnent(data?: Object): Promise<ListResult> {
   data = JSON.stringify(data);
   return http.request({
     url: "/student/updateSelfContent",
@@ -116,7 +87,7 @@ export function changeSelfCotnent(data?: ListResult): Promise<ListResult> {
 }
 
 // 获取用户资料
-export function getUserData(data?: Object): Promise<object> {
+export function getUserData(data?: Object): Promise<ListResult> {
   data = JSON.stringify(data);
   return http.request({
     url: "/user/getUserData",
@@ -126,7 +97,7 @@ export function getUserData(data?: Object): Promise<object> {
 }
 
 // 修改用户资料
-export function changeUserData(data?: ListResult): Promise<ListResult> {
+export function changeUserData(data?: Object): Promise<ListResult> {
   data = JSON.stringify(data);
   return http.request({
     url: "/user/updateUserData",
@@ -136,9 +107,7 @@ export function changeUserData(data?: ListResult): Promise<ListResult> {
 }
 
 // 获取互动消息点赞列表
-export function getUserThumNotification(
-  data?: ListResult
-): Promise<ListResult> {
+export function getUserThumNotification(data?: Object): Promise<ListResult> {
   data = JSON.stringify(data);
   return http.request({
     url: "/user/get_thumbList",
@@ -148,7 +117,7 @@ export function getUserThumNotification(
 }
 
 // 获取互动消息评论列表
-export function getUserComNotification(data?: ListResult): Promise<ListResult> {
+export function getUserComNotification(data?: Object): Promise<ListResult> {
   data = JSON.stringify({
     ...data
   });
@@ -160,9 +129,7 @@ export function getUserComNotification(data?: ListResult): Promise<ListResult> {
 }
 
 // 获取互动消息收藏列表
-export function getUserStarNotification(
-  data?: ListResult
-): Promise<ListResult> {
+export function getUserStarNotification(data?: Object): Promise<ListResult> {
   data = JSON.stringify({
     ...data
   });

@@ -5,7 +5,7 @@ import { ref } from "vue";
 
 // 创建 Vue Router 的实例,用于进行页面导航
 const router = useRouter();
-// const res = await getUserInfo({ userId });
+// const res = await getUserInfo({ username });
 </script>
 
 <template>

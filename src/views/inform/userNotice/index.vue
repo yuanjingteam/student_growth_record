@@ -6,15 +6,15 @@ import {
   getUserStarNotification
 } from "@/api/user";
 
-import { useCounterStoreHook } from "@/store/modules/useConter";
+import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 
 // 路由
 const router = useRouter();
 
-// 调用 useCounterStoreHook 函数,获取 Pinia 中的 useCounterStore 实例
-const userStore = useCounterStoreHook();
-const userId = userStore.userId;
+// 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
+const userStore = useUserStore();
+const username = userStore.username;
 
 // 获取到的列表
 // 点赞
@@ -82,7 +82,7 @@ const onLoad = async () => {
         return;
       }
       const data1 = await getUserThumNotification({
-        username: userId
+        username: username
       });
 
       thumbList.value = [...thumbList.value, ...data1.data.thumbsUp];
@@ -101,7 +101,7 @@ const onLoad = async () => {
         return;
       }
       const data2 = await getUserComNotification({
-        username: userId
+        username: username
       });
       comList.value = [...comList.value, ...data2.data.comments];
 
@@ -119,7 +119,7 @@ const onLoad = async () => {
         return;
       }
       const data3 = await getUserStarNotification({
-        username: userId
+        username: username
       });
       starList.value = [...starList.value, ...data3.data.star];
 
