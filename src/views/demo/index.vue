@@ -1,5 +1,4 @@
 <script setup lang="ts" name="Demo">
-
 import { onMounted, reactive } from "vue";
 import { ref } from "vue";
 import { showToast } from "vant";
@@ -61,7 +60,7 @@ const onClickButton = () => showToast(inputValue.value);
 
 const count = ref(0);
 const activeName = ref("a");
-=======
+
 const topicList = ref([]);
 //更新仓库数据
 topicStore.getTopicList();
@@ -109,10 +108,9 @@ const loading = ref(false);
 const finished = ref(false);
 //控制刷新状态的显示和隐藏
 const refreshing = ref(false);
-<<<<<<< HEAD
+
 //注册天数
 const registerTime = ref("");
-=======
 
 //当用户滚动到底部时会触发加载更多数据的事件
 const onLoad = () => {
@@ -142,14 +140,11 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
-<<<<<<< HEAD
 
 onMounted(async () => {
   const { data } = await getRegisterDay({ username: "1" });
   registerTime.value = data.plus_time;
 });
-=======
->>>>>>> han
 </script>
 <template>
   <div class="topShow">
@@ -166,10 +161,7 @@ onMounted(async () => {
     placeholder="请输入搜索关键词"
     background="#fff"
     class="search"
-<<<<<<< HEAD
     @search="onSearch(1)"
-=======
->>>>>>> han
   >
     <template #action>
       <van-button
@@ -192,15 +184,9 @@ onMounted(async () => {
   >
     <van-tab
       v-for="item in topicList"
-<<<<<<< HEAD
-      :key="item.title"
-      :title="item.title"
-      :name="item.name"
-=======
       :key="item.topic_id"
       :title="item.topic_title"
       :name="item.topic_name"
->>>>>>> han
     >
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
         <van-list
