@@ -5,7 +5,13 @@ type ListResult = {
   data: Object;
   msg: string;
 };
-
+type Search = {
+  code: Number;
+  data: {
+    content: Array<Object>;
+  };
+  msg: string;
+};
 // export function getListApi(params?: object): Promise<ListResult> {
 //   return http.request({
 //     url: "/list/get",
@@ -27,7 +33,7 @@ export function getCommentsService(data?: object): Promise<ListResult> {
     data
   });
 }
-export function searchArticleService(data?: object): Promise<ListResult> {
+export function searchArticleService(data?: object): Promise<Search> {
   return http.request({
     url: "/search/article",
     method: "post",
@@ -38,7 +44,7 @@ export function getHotPostService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/hotpost/title",
     method: "get",
-    data
+    params: data
   });
 }
 
@@ -61,10 +67,10 @@ export function getArticleTags(): Promise<ListResult> {
 
 // 获取文章小标签
 export function getLittleTags(data?: Object): Promise<ListResult> {
-  data = JSON.stringify(data);
+  // data = JSON.stringify(data);
   return http.request({
     url: "/article/publish/get_tags",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }

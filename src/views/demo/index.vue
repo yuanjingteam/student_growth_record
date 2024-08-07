@@ -92,7 +92,9 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
-
+const onSearch = id => {
+  console.log(id);
+};
 onMounted(async () => {
   const { data } = await getRegisterDay({ username: "1" });
   registerTime.value = data.plus_time;

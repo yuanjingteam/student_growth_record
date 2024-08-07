@@ -5,6 +5,13 @@ type ListResult = {
   msg: string;
   data: Object;
 };
+type Register = {
+  data: {
+    plus_time: string;
+  };
+  code: Number;
+  msg: string;
+};
 
 //获取分类详情列表
 export function getTopicListService(data?: object): Promise<ListResult> {
@@ -16,7 +23,7 @@ export function getTopicListService(data?: object): Promise<ListResult> {
 }
 
 //获取当前用户的注册天数
-export function getRegisterDay(data?: object): Promise<ListResult> {
+export function getRegisterDay(data?: Object): Promise<Register> {
   return http.request({
     url: "/register/day",
     method: "post",
