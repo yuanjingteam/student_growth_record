@@ -22,9 +22,10 @@ const articleData = ref({
     username: "韩韩韩"
   }
 });
+
 onMounted(() => {
   //发获取评论请求和帖子详情请求
-  //得到data后
+  //得到data后渲染
 });
 </script>
 <template>
