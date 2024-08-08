@@ -15,6 +15,7 @@ type userList = {
     userfans: number;
     user_concern: number;
     user_like: number;
+    score: 0;
     user_class: string;
     user_Identity: string;
   };
@@ -33,7 +34,6 @@ type UserData = {
     user_Identity: string;
     phone_number: number;
     user_email: string;
-    user_birthday: string;
     user_year: string;
   };
 };

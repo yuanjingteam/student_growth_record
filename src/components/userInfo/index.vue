@@ -18,6 +18,7 @@ const data = ref({
   user_headshot: "",
   user_motto: "",
   userfans: 0,
+  score: 0,
   user_concern: 0,
   user_like: 0,
   user_class: "",
@@ -26,7 +27,7 @@ const data = ref({
 
 // 获取用户基本信息
 const UerInfo = async () => {
-  const res = await getUserInfo({ username: username.value });
+  const res = await getUserInfo({ username: username });
   data.value = res.data;
 };
 UerInfo();
@@ -77,6 +78,7 @@ const handleImagePreview = src => {
         <div>粉丝：{{ data.userfans }}</div>
         <div>关注：{{ data.user_concern }}</div>
         <div>获赞：{{ data.user_like }}</div>
+        <div>积分：{{ data.score }}</div>
       </div>
       <!-- 其他人 -->
       <div class="other">
@@ -91,8 +93,6 @@ const handleImagePreview = src => {
 .my-self {
   position: relative;
   margin-top: 55px;
-}
-.my-motto {
 }
 
 .van-image {

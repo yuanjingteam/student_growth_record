@@ -1,6 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { getUserData } from "@/api/user";
+import { ref } from "vue";
 // 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
@@ -22,10 +21,8 @@ const userId = userStore.username;
 
 const files = ref([{ url: userStore.userData.user_headshot }]);
 
-// files.value[0] = userStore.userData.user_headshot;
-
 // 生日弹出框
-const birthday_out = ref(false);
+// const birthday_out = ref(false);
 
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
@@ -46,7 +43,6 @@ const data = ref({
   user_motto: "",
   phone_number: "",
   user_email: "",
-  user_birthday: currentDate.value.join("-"),
   user_year: currentDate.value.join("-")
 });
 
@@ -68,21 +64,21 @@ const formatter = (type, option) => {
 };
 
 // 生日弹层
-const showBirthday = () => {
-  // 定义一个中间值
-  birthday_out.value = true;
-};
+// const showBirthday = () => {
+//   // 定义一个中间值
+//   birthday_out.value = true;
+// };
 
 // 更新生日
-const updateCurrentDate = async value => {
-  // 当前值修改为被选的值
-  currentDate.value = value.selectedValues;
-  // 弹窗隐藏
-  birthday_out.value = false;
-  // 将修改后的数据传到后端
-  userStore.submitHeadshot(currentDate.value);
-  window.location.reload();
-};
+// const updateCurrentDate = async value => {
+//   // 当前值修改为被选的值
+//   currentDate.value = value.selectedValues;
+//   // 弹窗隐藏
+//   birthday_out.value = false;
+//   // 将修改后的数据传到后端
+//   userStore.submitHeadshot(currentDate.value);
+//   window.location.reload();
+// };
 
 // 更新头像
 const updataUserHeadshot = () => {
@@ -97,14 +93,13 @@ const updataUserHeadshot = () => {
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
 
   <!-- 生日弹出层 -->
-  <van-popup
+  <!-- <van-popup
     v-model:show="birthday_out"
     closeable
     close-icon-position="top-left"
     position="bottom"
     :style="{ height: '30%' }"
   >
-    <!-- 生日弹层内容 -->
     <van-date-picker
       v-model="currentDate"
       title="选择年月日"
@@ -114,7 +109,7 @@ const updataUserHeadshot = () => {
       :columns-type="columnsType"
       @confirm="updateCurrentDate"
     />
-  </van-popup>
+  </van-popup> -->
 
   <div class="main">
     <div class="bg">
@@ -196,15 +191,6 @@ const updataUserHeadshot = () => {
               </template>
               <template #value>
                 <div class="both over">{{ data.user_email }}</div>
-              </template>
-            </van-cell>
-
-            <van-cell is-link @click="showBirthday">
-              <template #title>
-                <span class="custom-title">生日</span>
-              </template>
-              <template #value>
-                <div class="both">{{ data.user_birthday }}</div>
               </template>
             </van-cell>
             <van-cell>
