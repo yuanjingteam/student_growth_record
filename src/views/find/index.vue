@@ -1,40 +1,52 @@
 <script setup>
-import { getHotPostService } from '@/api/article';
-import { getTopicListService } from '@/api/topic'
-import { getClassListService } from '@/api/class'
-import { onMounted, reactive, ref } from 'vue';
-//监听按钮状态
-const btnState = ref(false)
-//热帖数据
-const hotPost = reactive([])
+import { getHotPostService } from "@/api/article";
+import { useClassStore, useTopicStore } from "@/store";
+import { onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const useClass = useClassStore();
+const useTopic = useTopicStore();
+
 //话题数据
 const topicData = reactive({
-  message: '话题分类',
+  message: "话题分类",
   topicList: []
-})
+});
 //班级数据
 const classData = reactive({
-  message: '班级分类',
+  message: "班级分类",
   classList: []
-})
+});
 
+topicData.topicList = useTopic.topicList;
+classData.classList = useClass.classList;
+
+//监听按钮状态  false意为展开  true意为收起
+const btnState = ref(false);
+//热帖数据
+const hotPost = reactive([]);
+const getHotPost = async articleCount => {
+  const {
+    data: { article_list }
+  } = await getHotPostService({ article_count: `${articleCount}` });
+  hotPost.value = article_list;
+};
+getHotPost("3");
 //处理按钮点击事件
-const btnDeal = async (state) => {
-  btnState.value = !state
-  const { data } = await getHotPostService({ article_count: '10' })
-  hotPost.value = data.article_list
-}
+const btnDeal = async state => {
+  console.log(state);
 
-onMounted(async () => {
-  const { data: { article_list } } = await getHotPostService({ article_count: '3' })
-  hotPost.value = article_list
-  const { data: { topic_list } } = await getTopicListService({ topic_count: '2' })
-  topicData.topicList = topic_list
-  const { data: { class_list } } = await getClassListService({ class_count: '2' })
-  classData.classList = class_list
-  console.log(classData.classList);
-
-})
+  if (state == true) {
+    //此时写着是收起
+    btnState.value = false;
+    getHotPost("3");
+  } else {
+    //此时写的是展开
+    btnState.value = true;
+    getHotPost("10");
+  }
+};
 
 function numberToEnglish(number) {
   switch (number) {
@@ -62,7 +74,6 @@ function numberToEnglish(number) {
       return "Number out of range";
   }
 }
-
 </script>
 
 <template>
@@ -72,27 +83,49 @@ function numberToEnglish(number) {
         <template #title>
           <h1>今日热帖</h1>
           <ul>
-            <li v-for="(item, index) in hotPost.value" :key="index"><i-icon
-                :icon="`icon-park:${numberToEnglish(index + 1)}-key`"></i-icon>
-              <p>{{ item.article_title }}</p>
+            <li v-for="(item, index) in hotPost.value" :key="index">
+              <i-icon :icon="`icon-park:${numberToEnglish(index + 1)}-key`" />
+              <p @click="router.push(`/postDetail/${item.article_id}`)">
+                {{ item.article_title }}
+              </p>
             </li>
           </ul>
         </template>
       </van-cell>
-      <van-button v-if="btnState" icon="arrow-up" block @click="btnDeal(btnState)">收起</van-button>
-      <van-button v-else icon="arrow-down" block @click="btnDeal(btnState)">展开</van-button>
-
+      <van-button
+        v-if="btnState"
+        icon="arrow-up"
+        block
+        @click="btnDeal(btnState)"
+        >收起</van-button
+      >
+      <van-button v-else icon="arrow-down" block @click="btnDeal(btnState)"
+        >展开</van-button
+      >
     </van-cell-group>
 
-    <category-card :message="topicData.message" :list="topicData.topicList"></category-card>
-    <category-card :message="classData.message" :list="classData.classList"></category-card>
-
+    <topic-card
+      :message="topicData.message"
+      :list="topicData.topicList.slice(1, 3)"
+    />
+    <class-card
+      :message="classData.message"
+      :list="classData.classList.slice(0, 2)"
+    />
+    <div class="star">
+      <van-cell-group inset>
+        <van-cell
+          title="成长之星"
+          is-link
+          value="全部"
+          @click="router.push('/star')"
+        />
+      </van-cell-group>
+    </div>
   </div>
-
 </template>
 
-
-<style lang="less" scoped>
+<style scoped>
 .find-box {
   overflow: hidden;
 
@@ -112,7 +145,7 @@ function numberToEnglish(number) {
         margin-top: 15px;
       }
 
-      ul>li {
+      ul > li {
         display: flex;
         margin-bottom: 10px;
       }
@@ -122,6 +155,12 @@ function numberToEnglish(number) {
         margin-right: 5px;
       }
     }
+  }
+}
+.star {
+  .van-cell >>> .van-cell__title {
+    font-size: 20px;
+    font-weight: 600;
   }
 }
 </style>

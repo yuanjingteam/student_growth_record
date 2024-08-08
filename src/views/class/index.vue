@@ -1,31 +1,18 @@
 <script setup>
+import { useClassStore } from "@/store";
 import { reactive, ref } from "vue";
 
+const useClass = useClassStore();
 const classData = reactive({
   message: "班级分类",
-  classList: [
-    {
-      id: 1,
-      topic: "计科222",
-      content: "超级大美女韩硕博"
-    },
-    {
-      id: 2,
-      topic: "计科223",
-      content: "王2晗"
-    },
-    {
-      id: 3,
-      topic: "教育222",
-      content: "方土匪"
-    }
-  ]
+  classList: []
 });
+classData.classList = useClass.classList;
 </script>
 
 <template>
   <div class="topics">
-    <category-card
+    <class-card
       :message="classData.message"
       :list="classData.classList"
       :ifNeed="true"

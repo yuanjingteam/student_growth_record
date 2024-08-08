@@ -135,7 +135,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/otherInfo",
+    path: "/otherInfo:id",
     name: "otherInfo",
     component: () => import("@/views/otherInfo/index.vue"),
     meta: {
@@ -188,6 +188,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/classDetail/index.vue"),
     meta: {
       title: "班级专题"
+    }
+  },
+  {
+    path: "/star",
+    name: "StarDetail",
+    component: () => import("@/views/starDetail/index.vue"),
+    meta: {
+      title: "成长之星专题"
     }
   },
   // 我说,这个是用户通知消息区

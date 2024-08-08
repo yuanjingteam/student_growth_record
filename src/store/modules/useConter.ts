@@ -10,7 +10,7 @@ export const useUserStore = defineStore(
     const username = ref(0);
     const token = ref("");
     const role = ref("");
-    const userInfo = ref();
+    const userInfo = ref({});
     const setUserInfo = obj => {
       username.value = obj.username;
       token.value = obj.token;

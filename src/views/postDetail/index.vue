@@ -1,7 +1,8 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router';
-const route = useRoute()
+import { onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+const route = useRoute();
+const router = useRouter();
 
 // const articleId = route.params.id
 // console.log(articleId);
@@ -20,24 +21,21 @@ const articleData = ref({
     user_image: "nUYfgNlhhp",
     username: "韩韩韩"
   }
-})
+});
 onMounted(() => {
   //发获取评论请求和帖子详情请求
   //得到data后
-
-
-})
-
+});
 </script>
 <template>
   <div class="detail">
-    <van-nav-bar title="详情" left-arrow>
+    <van-nav-bar title="详情" left-arrow @click-left="router.go(-1)">
       <template #right>
         <van-icon name="ellipsis" />
       </template>
     </van-nav-bar>
 
-    <post-more :data="articleData"></post-more>
+    <post-more :data="articleData" />
 
     <van-cell>
       <!-- 使用 title 插槽来自定义标题 -->
@@ -46,15 +44,13 @@ onMounted(() => {
         <span class="comment_count">12</span>
       </template>
       <template #value>
-        <change-btn :article_id="1" style="float: right"></change-btn>
+        <change-btn :article_id="1" style="float: right" />
       </template>
     </van-cell>
 
-    <comment-detail></comment-detail>
-    <comment-detail></comment-detail>
+    <comment-detail />
+    <comment-detail />
   </div>
-
-
 </template>
 
 <style scoped>

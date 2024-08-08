@@ -12,59 +12,59 @@ const select = (action, index) => {
 </script>
 
 <template>
-  <div class="cell">
-    <van-card>
-      <template #tags>
-        <div class="info-box">
-          <van-image round :src="data.article_content.user_image" />
-          <div class="info">
-            <div style="display: flex; justify-content: space-between">
-              <p class="name">{{ data.article_content.username }}</p>
-              <van-popover
-                v-model:show="showPopover"
-                theme="dark"
-                :actions="actions"
-                placement="left"
-                @select="select"
-              >
-                <template #reference>
-                  <i-icon icon="ant-design:more-outlined" />
-                </template>
-              </van-popover>
+  <van-cell-group inset>
+    <div class="cell">
+      <van-card>
+        <template #tags>
+          <div class="info-box">
+            <van-image round :src="data.article_content.user_image" />
+            <div class="info">
+              <div style="display: flex; justify-content: space-between">
+                <p class="name">{{ data.article_content.username }}</p>
+                <van-popover
+                  v-model:show="showPopover"
+                  theme="dark"
+                  :actions="actions"
+                  placement="left"
+                  @select="select"
+                >
+                  <template #reference>
+                    <i-icon icon="ant-design:more-outlined" />
+                  </template>
+                </van-popover>
+              </div>
+              <p class="grade">{{ data.article_content.user_class }}</p>
             </div>
-            <p class="grade">{{ data.article_content.user_class }}</p>
           </div>
-        </div>
-        <p class="post-content">{{ data.article_content.article_text }}</p>
-        <div>
-          <button class="btn">
-            <i-icon icon="icon-park:message" />
-            <p class="btn-title">文体活动</p>
-          </button>
-        </div>
-        <p class="time">{{ data.article_content.article_post_time }}</p>
-      </template>
-      <template #footer>
-        <div class="btn-box">
-          <van-button size="mini" icon="star-o">{{
-            data.article_collect_sum
-          }}</van-button>
-          <van-button size="mini" icon="comment-o">{{
-            data.article_comment_sum
-          }}</van-button>
-          <van-button size="mini" icon="good-job-o">{{
-            data.article_content.article_like_sum
-          }}</van-button>
-        </div>
-      </template>
-    </van-card>
-  </div>
+          <p class="post-content">{{ data.article_content.article_text }}</p>
+          <div>
+            <button class="btn">
+              <i-icon icon="icon-park:message" />
+              <p class="btn-title">文体活动</p>
+            </button>
+          </div>
+          <p class="time">{{ data.article_content.article_post_time }}</p>
+        </template>
+        <template #footer>
+          <div class="btn-box">
+            <van-button size="mini" icon="star-o">{{
+              data.article_collect_sum
+            }}</van-button>
+            <van-button size="mini" icon="comment-o">{{
+              data.article_comment_sum
+            }}</van-button>
+            <van-button size="mini" icon="good-job-o">{{
+              data.article_content.article_like_sum
+            }}</van-button>
+          </div>
+        </template>
+      </van-card>
+    </div>
+  </van-cell-group>
 </template>
 
 <style scoped lang="less">
 .cell {
-  position: relative;
-
   .van-card {
     background-color: #fff;
     padding: 20px;
@@ -128,15 +128,19 @@ const select = (action, index) => {
 
     .btn-box {
       display: flex;
-      justify-content: space-evenly;
+      justify-content: space-between;
       margin-top: 10px;
     }
 
     .time {
-      margin-left: 280px;
+      margin-left: 250px;
       font-size: 12px;
       color: rgba(166, 168, 173, 1);
     }
   }
+}
+
+.van-cell-group {
+  margin-top: 10px;
 }
 </style>

@@ -9,11 +9,14 @@ import "./styles/tailwind.css";
 // svg icon
 import "virtual:svg-icons-register";
 
+import { Lazyload } from "vant";
+
 import App from "./App.vue";
 import router from "./router";
 
 const app = createApp(App);
 app.use(store);
 app.use(router);
+app.use(Lazyload);
 
 app.mount("#app");

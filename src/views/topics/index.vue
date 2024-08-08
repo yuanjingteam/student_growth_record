@@ -1,44 +1,23 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { useTopicStore } from "@/store";
+import { reactive, ref } from "vue";
 
+const useTopic = useTopicStore();
 const topicData = reactive({
-  message: '话题分类',
-  topicList: [
-    {
-      id: 1,
-      topic: '学习模块',
-      content: '考研不仅接送454564就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾'
-    },
-    {
-      id: 2,
-      topic: '文体活动',
-      content: '考研不仅接送大454尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾'
-    }, {
-      id: 3,
-      topic: '文体活动',
-      content: '考研不仅接送大454尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾'
-    }, {
-      id: 4,
-      topic: '文体活动',
-      content: '考研不仅接送大454尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾'
-    }, {
-      id: 5,
-      topic: '文体活动',
-      content: '考研不仅接送大454尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾'
-    }, {
-      id: 6,
-      topic: '文体活动',
-      content: '考研不仅接送大454尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾考研不仅接送i金佛寺就覅就覅文件结尾'
-    }
-  ]
-})
+  message: "话题分类",
+  topicList: []
+});
+topicData.topicList = useTopic.topicList.slice(1);
 </script>
 
 <template>
   <div class="topics">
-    <category-card :message="topicData.message" :list="topicData.topicList" :ifNeed="true"></category-card>
+    <topic-card
+      :message="topicData.message"
+      :list="topicData.topicList"
+      :ifNeed="true"
+    />
   </div>
-
 </template>
 
 <style scoped lang="less">

@@ -40,6 +40,14 @@ export function searchArticleService(data?: object): Promise<Search> {
     data
   });
 }
+//点赞文章
+export function articleUpvoteService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/article/upvote",
+    method: "post",
+    data
+  });
+}
 export function getHotPostService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/hotpost/title",
