@@ -7,3 +7,4 @@ export { store };
 
 export * from "./modules/topicList";
 export * from "./modules/useConter";
+export * from "./modules/notificationList";

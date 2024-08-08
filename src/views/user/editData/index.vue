@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref } from "vue";
-import { changeUserData, getUserData } from "@/api/user";
+import { getUserData } from "@/api/user";
 // 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
@@ -10,10 +10,19 @@ const router = useRouter();
 
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
 const userStore = useUserStore();
-const userId = userStore.userId;
 
+// 内容弹层高度
 const anchors = [Math.round(0.8 * window.innerHeight)];
 const height = ref(anchors[0]);
+
+// 初始化学号
+const userId = userStore.username;
+
+// const initialImage = ;
+
+const files = ref([{ url: userStore.userData.user_headshot }]);
+
+// files.value[0] = userStore.userData.user_headshot;
 
 // 生日弹出框
 const birthday_out = ref(false);
@@ -27,28 +36,22 @@ const columnsType = ["year", "month", "day"];
 const minDate = new Date(2000, 0, 1);
 const maxDate = new Date(2023, 5, 1);
 
+// 初始化数据
 const data = ref({
-  name: "小明",
-  user_class: "教育222",
-  user_gender: "男",
-  user_motto: "都完全签订日期当前地区",
-  phone_number: 18893462838,
-  user_email: "3240288774@qq.com",
+  name: "",
+  user_headshot: userStore.userData.user_headshot,
+  user_class: "",
+  user_gender: "",
+  user_Identity: "",
+  user_motto: "",
+  phone_number: "",
+  user_email: "",
   user_birthday: currentDate.value.join("-"),
   user_year: currentDate.value.join("-")
 });
-// 初始化页面
-const baseUserData = async () => {
-  const res = await getUserData();
-  data.value = res.data;
-};
-// 调用
-baseUserData();
 
-// 刷新当前页面
-const refreshPage = () => {
-  window.location.reload();
-};
+// 初始化页面
+data.value = userStore.userData;
 
 // 年月日格式化代码
 const formatter = (type, option) => {
@@ -64,33 +67,29 @@ const formatter = (type, option) => {
   return option;
 };
 
-// 定义一个中间变量存储改变之前的值，防止用户不更改
-let mid = "";
-
 // 生日弹层
 const showBirthday = () => {
-  mid = data.value.user_birthday;
+  // 定义一个中间值
   birthday_out.value = true;
 };
 
-// 更新当前日期
+// 更新生日
 const updateCurrentDate = async value => {
-  // 记录修改之前的值
-  mid = value.selectedValues;
-
+  // 当前值修改为被选的值
   currentDate.value = value.selectedValues;
+  // 弹窗隐藏
   birthday_out.value = false;
   // 将修改后的数据传到后端
-  submitChange();
+  userStore.submitHeadshot(currentDate.value);
+  window.location.reload();
 };
 
-// 提交修改后的数据
-const submitChange = async () => {
-  const { code } = await changeUserData({ username: userId });
-  if (code == 200) {
-    // 刷新页面数据为最新
-    refreshPage();
-  }
+// 更新头像
+const updataUserHeadshot = () => {
+  const formData = new FormData();
+  // 将当前最新的数据提交到后端
+  formData.append("file", files.value[0].file);
+  userStore.submitHeadshot({ username: userId, user_headshot: formData });
 };
 </script>
 <template>
@@ -123,14 +122,13 @@ const submitChange = async () => {
     </div>
     <van-floating-panel v-model:height="height" :anchors="anchors">
       <div class="userImg">
-        <van-uploader>
-          <van-image
-            round
-            width="7em"
-            height="7rem"
-            src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
-          />
-        </van-uploader>
+        <van-uploader
+          v-model="files"
+          reupload
+          max-count="1"
+          :deletable="false"
+          @click-reupload="updataUserHeadshot"
+        />
       </div>
       <div>
         <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
@@ -168,6 +166,14 @@ const submitChange = async () => {
                 <div class="both">{{ data.user_class }}</div>
               </template>
             </van-cell>
+            <van-cell>
+              <template #title>
+                <span class="custom-title">职务</span>
+              </template>
+              <template #value>
+                <div class="both">{{ data.user_Identity }}</div>
+              </template>
+            </van-cell>
             <van-cell is-link @click="router.push('/editData/motto')">
               <template #title>
                 <span class="custom-title">个性签名</span>
@@ -189,7 +195,7 @@ const submitChange = async () => {
                 <span class="custom-title">电子邮箱</span>
               </template>
               <template #value>
-                <div class="both">{{ data.user_email }}</div>
+                <div class="both over">{{ data.user_email }}</div>
               </template>
             </van-cell>
 
@@ -223,9 +229,12 @@ const submitChange = async () => {
 } */
 .userImg {
   position: absolute;
-  top: -60px;
-  left: 130px;
+  top: -45px;
+  left: 146px;
   z-index: 10;
+}
+.van-uploader >>> .van-uploader__preview-image {
+  border-radius: 50px;
 }
 .custom-title {
   width: 10px;
@@ -234,7 +243,7 @@ const submitChange = async () => {
   float: left;
 }
 .over {
-  width: 150px;
+  width: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -245,5 +254,8 @@ const submitChange = async () => {
   --van-nav-bar-background: rgba(255, 255, 255, 0);
   --van-nav-bar-icon-color: black;
   --van-nav-bar-text-color: black;
+}
+.van-cell {
+  padding: 15px 25px;
 }
 </style>

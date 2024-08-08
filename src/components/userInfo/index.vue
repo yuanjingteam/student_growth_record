@@ -1,35 +1,40 @@
 <script setup>
 import { showImagePreview } from "vant";
 import { ref } from "vue";
-
+import { getUserInfo } from "@/api/user";
 // 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useUserStore } from "@/store";
-
-// 导入 Pinia 中的 storeToRefs 函数,用于从 Pinia store 中解构出响应式的 ref 对象
-import { storeToRefs } from "pinia";
 
 import { useRouter } from "vue-router";
 
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
 const userStore = useUserStore();
 
-// 获取响应式属性:
-// 使用 storeToRefs 函数,从 userStore 中解构出 username 属性,并将其设为响应式的 ref 对象
-// const {  } = storeToRefs(userStore);
-
 // 获取普通属性:
 const username = userStore.username;
 const router = useRouter();
-const data = ref({});
+const data = ref({
+  username: "",
+  user_headshot: "",
+  user_motto: "",
+  userfans: 0,
+  user_concern: 0,
+  user_like: 0,
+  user_class: "",
+  user_Identity: ""
+});
 
-const res = userStore.userInfo;
-data.value = res;
+// 获取用户基本信息
+const UerInfo = async () => {
+  const res = await getUserInfo({ username: username.value });
+  data.value = res.data;
+};
+UerInfo();
 
 const show = ref(false);
 const handleImagePreview = src => {
   showImagePreview({
     images: [src],
-    // onClose() { },
     closeable: true
   });
 };
@@ -85,7 +90,9 @@ const handleImagePreview = src => {
 <style scoped>
 .my-self {
   position: relative;
-  margin-top: 23.3333vmin;
+  margin-top: 55px;
+}
+.my-motto {
 }
 
 .van-image {

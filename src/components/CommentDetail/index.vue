@@ -1,31 +1,36 @@
 <script setup>
-import {ref} from 'vue'
+import { ref } from "vue";
 const text =
-  '那一天我二十一岁，在我一生的黄金时代。我有好多奢望。我想爱，想吃，还想在一瞬间变成天上半明半暗的云。后来我才知道，生活就是个缓慢受锤的过程，人一天天老下去，奢望也一天天消失，最后变得像挨了锤的牛一样。可是我过二十一岁生日时没有预见到这一点。我觉得自己会永远生猛下去，什么也锤不了我。';
+  "那一天我二十一岁，在我一生的黄金时代。我有好多奢望。我想爱，想吃，还想在一瞬间变成天上半明半暗的云。后来我才知道，生活就是个缓慢受锤的过程，人一天天老下去，奢望也一天天消失，最后变得像挨了锤的牛一样。可是我过二十一岁生日时没有预见到这一点。我觉得自己会永远生猛下去，什么也锤不了我。";
 
 const showPopover = ref(false);
-const actions = [
-  { text: '举报' },
-  { text: '选项二' },
-];
+const actions = [{ text: "举报" }, { text: "选项二" }];
 const select = (action, index) => {
   console.log(action, index);
-}
+};
 </script>
-
 
 <template>
   <div class="cell">
     <van-card>
       <template #tags>
         <div class="info-box">
-          <van-image round src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+          <van-image
+            round
+            src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+          />
           <div class="info">
             <div class="info-row">
               <p class="name">赵一鸣</p>
-              <van-popover v-model:show="showPopover" theme="dark" :actions="actions" @select="select" placement="left">
+              <van-popover
+                v-model:show="showPopover"
+                theme="dark"
+                :actions="actions"
+                placement="left"
+                @select="select"
+              >
                 <template #reference>
-                  <i-icon icon="ant-design:more-outlined"></i-icon>
+                  <i-icon icon="ant-design:more-outlined" />
                 </template>
               </van-popover>
             </div>
@@ -42,14 +47,10 @@ const select = (action, index) => {
       </template>
     </van-card>
   </div>
-
-
 </template>
 
 <style scoped lang="less">
 .cell {
-
-
   .van-card {
     background-color: #fff;
     margin-top: 1px;
@@ -85,7 +86,6 @@ const select = (action, index) => {
           }
         }
 
-
         .comment-comtent {
           margin-top: 10px;
           margin-bottom: 20px;
@@ -99,7 +99,6 @@ const select = (action, index) => {
           justify-content: space-between;
 
           .btn-title {
-
             font-size: 12px;
             color: rgba(166, 168, 173, 1);
           }
@@ -111,7 +110,6 @@ const select = (action, index) => {
           }
         }
       }
-
     }
   }
 }

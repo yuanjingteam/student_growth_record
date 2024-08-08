@@ -20,6 +20,7 @@ export function getArticlesService(data?: object): Promise<ListResult> {
     data
   });
 }
+
 export function getCommentsService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/articles/getcomments",
@@ -27,6 +28,7 @@ export function getCommentsService(data?: object): Promise<ListResult> {
     data
   });
 }
+
 export function getHotPostService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/hotpost/title",
@@ -54,10 +56,9 @@ export function getArticleTags(): Promise<ListResult> {
 
 // 获取文章小标签
 export function getLittleTags(data?: Object): Promise<ListResult> {
-  data = JSON.stringify(data);
   return http.request({
     url: "/article/publish/get_tags",
-    method: "post",
-    data
+    method: "get",
+    data: JSON.stringify(data)
   });
 }

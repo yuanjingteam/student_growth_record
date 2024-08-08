@@ -2,23 +2,24 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { getSystemNotification } from "@/api/user";
+
 const router = useRouter();
 
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
+const result = ref([]);
 
 const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];
     refreshing.value = false;
   }
+  const { data } = await getSystemNotification();
+  result.value = data.admin_info;
 
-  const result = await getSystemNotification();
-  console.log(result.data);
-
-  list.value = [...list.value, ...result.data.admin_info];
+  list.value = [...list.value, ...result.value];
 
   loading.value = false;
 

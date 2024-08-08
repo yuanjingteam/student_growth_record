@@ -260,15 +260,6 @@ const isPublished = async baseData => {
   <!-- 提交弹框 -->
   <van-dialog v-model:show="submit_show" show-cancel-button />
 
-  <!-- 头部导航 -->
-  <van-nav-bar
-    title="发布"
-    left-arrow
-    right-text="发布"
-    @click-right="onSubmit"
-    @click-left="router.back()"
-  />
-
   <!-- 选择小标签弹框 -->
   <van-dialog v-model:show="small_show" :title="data.article_topic">
     <!-- 小标签弹框内部 -->
@@ -289,86 +280,108 @@ const isPublished = async baseData => {
     </van-grid>
   </van-dialog>
 
-  <van-form ref="formRef">
-    <van-row>
-      <van-col span="8">
-        <van-cell
-          is-link
-          :title="data.article_topic"
-          class="title"
-          @click="choose_show = true"
-        />
-        <van-action-sheet
-          v-model:show="choose_show"
-          :actions="actions"
-          close-on-click-action
-          :default-index="defaultIndex"
-          @select="onSelect"
-        />
-      </van-col>
-    </van-row>
-    <van-field
-      v-model="content"
-      placeholder="开始你的精彩书写"
-      label-align="top"
-      maxlength="300"
-      minlength="100"
-      show-word-limit
-      autocomplete="off"
-      name="articleContent"
-      :rules="rules"
-      :autosize="{ minHeight: 100, maxHeight: 260 }"
-      type="textarea"
-      validate-trigger="onSubmit"
-    >
-      <!-- <template v-slot:label>
+  <!-- 头部导航 -->
+  <van-nav-bar
+    title="发布"
+    left-arrow
+    right-text="发布"
+    @click-right="onSubmit"
+    @click-left="router.back()"
+  />
+  <div class="main">
+    <van-form ref="formRef">
+      <van-row>
+        <van-col span="10">
+          <van-cell
+            is-link
+            :title="data.article_topic"
+            class="title"
+            @click="choose_show = true"
+          >
+            <template #icon>
+              <i-icon icon="icon-park:topic" />
+            </template>
+          </van-cell>
+          <van-action-sheet
+            v-model:show="choose_show"
+            :actions="actions"
+            close-on-click-action
+            :default-index="defaultIndex"
+            @select="onSelect"
+          />
+        </van-col>
+      </van-row>
+      <van-field
+        v-model="content"
+        placeholder="开始你的精彩书写"
+        label-align="top"
+        maxlength="300"
+        minlength="100"
+        show-word-limit
+        autocomplete="off"
+        name="articleContent"
+        :rules="rules"
+        :autosize="{ minHeight: 100, maxHeight: 260 }"
+        type="textarea"
+        validate-trigger="onSubmit"
+      >
+        <!-- <template v-slot:label>
         <div class="label-content">内容</div>
       </template> -->
-    </van-field>
-    <van-uploader
-      ref="mediaUploader"
-      v-model="fileList"
-      multiple
-      class="uploader-container"
-      accept="image/*,video/*"
-      @oversize="onOversize"
-    />
-    <!-- <van-cell title="图片/视频" icon="location-o" class="select" /> -->
+      </van-field>
+      <van-uploader
+        ref="mediaUploader"
+        v-model="fileList"
+        multiple
+        class="uploader-container"
+        accept="image/*,video/*"
+        @oversize="onOversize"
+      />
+      <!-- <van-cell title="图片/视频" icon="location-o" class="select" /> -->
 
-    <van-cell class="select">
-      <template #title>
-        <!-- 在这里添加多个标题元素 -->
-        <van-tag
-          v-for="item in littleTag"
-          :key="item.id"
-          type="primary"
-          closeable
-          size="medium"
-          @close="close(item, item.id)"
-        >
-          <i-icon icon="mdi:tag-outline" />{{ item.tag_name }}
-        </van-tag>
-      </template>
-    </van-cell>
-    <van-cell>
-      <template #title>
-        <van-button
-          color="linear-gradient(to right, #ff6034, #ee0a24)"
-          size="small"
-          @click="showLittleTag"
-        >
-          #添加热点标签
-        </van-button>
-      </template>
-    </van-cell>
-  </van-form>
+      <van-cell class="select">
+        <template #title>
+          <!-- 在这里添加多个标题元素 -->
+          <van-tag
+            v-for="item in littleTag"
+            :key="item.id"
+            type="primary"
+            closeable
+            size="medium"
+            @close="close(item, item.id)"
+          >
+            <i-icon icon="mdi:tag-outline" />{{ item.tag_name }}
+          </van-tag>
+        </template>
+      </van-cell>
+      <van-cell>
+        <template #title>
+          <van-button
+            color="linear-gradient(to right, #ff6034, #ee0a24)"
+            size="small"
+            @click="showLittleTag"
+          >
+            #添加热点标签
+          </van-button>
+        </template>
+      </van-cell>
+    </van-form>
+  </div>
 </template>
 
 <style scoped>
+.main {
+  margin: 0 5px;
+}
 .title {
-  font-size: 0.9375rem;
+  font-size: 17px;
   font-weight: 700;
   color: black;
+  text-align: center;
+  .i-icon {
+    width: 24px;
+    height: 24px;
+  }
 }
 .active {
   --van-grid-item-content-background: #f2f2f2;
