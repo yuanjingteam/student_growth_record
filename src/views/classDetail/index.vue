@@ -3,6 +3,7 @@
 // const route = useRoute()
 // const id = this.$route.params.id;
 // console.log(id);
+// 11
 </script>
 
 <template>
