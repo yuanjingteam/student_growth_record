@@ -19,6 +19,7 @@ const props = defineProps({
       <div>
         <i-icon :icon="icon" />
       </div>
+      <div>{{ data.not_time }}</div>
     </template>
     <template #icon>
       <van-image round width="3rem" height="3rem" :src="data.user_headshot" />

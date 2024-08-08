@@ -1,6 +1,13 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { getUserInfo } from "@/api/user";
+import {
+  getUserData,
+  changeUserHeadshot,
+  changeUserMotto,
+  changeUserPhone,
+  changeUserEmail,
+  changeUserBirth
+} from "@/api/user";
 // import { getTopicListService } from "@/api/topic";
 
 //用户信息管理
@@ -10,7 +17,21 @@ export const useUserStore = defineStore(
     const username = ref(0);
     const token = ref("");
     const role = ref("");
-    const userInfo = ref({});
+
+    // 用户详细资料
+    const userData = ref({
+      name: "",
+      user_headshot: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
+      user_class: "",
+      user_Identity: "",
+      user_gender: "",
+      user_motto: "",
+      phone_number: 111,
+      user_email: "",
+      user_birthday: "",
+      user_year: ""
+    });
+
     const setUserInfo = obj => {
       username.value = obj.username;
       token.value = obj.token;
@@ -21,22 +42,80 @@ export const useUserStore = defineStore(
       token.value = "";
       role.value = "";
     };
-    // 获取用户信息
-    const getUerInfo = async () => {
-      const { data } = await getUserInfo(username.value);
-      console.log(1111);
 
-      userInfo.value = data;
+    // 获取用户详细信息
+    const baseUserData = async () => {
+      const res = await getUserData({ username: username });
+
+      userData.value = res.data;
+      console.log(userData);
     };
-    getUerInfo();
+
+    // 更新用户头像
+    const submitHeadshot = async data => {
+      const { code } = await changeUserHeadshot(data);
+      if (code == 200) {
+        console.log("yeah");
+        userData.value.user_headshot = data.user_headshot;
+      }
+    };
+
+    // 更新用户个签
+    const submitMotto = async data => {
+      const { code } = await changeUserMotto(data);
+      if (code == 200) {
+        console.log("yeah");
+        userData.value.user_motto = data.user_motto;
+        // 一个修改成功的弹窗
+      }
+    };
+
+    // 更新用户电话
+    const submitPhone = async data => {
+      const { code } = await changeUserPhone(data);
+      if (code == 200) {
+        console.log("yeah");
+        userData.value.phone_number = data.phone_number;
+        // 一个修改成功的弹窗
+      }
+    };
+
+    // 更新用户邮箱
+    const submitEmail = async data => {
+      const { code } = await changeUserEmail(data);
+      if (code == 200) {
+        console.log("yeah");
+        // 一个修改成功的弹窗
+        userData.value.user_email = data.user_email;
+      }
+    };
+
+    // 更新用户生日
+    const submitBirth = async data => {
+      const { code } = await changeUserBirth(data);
+      if (code == 200) {
+        console.log("yeah");
+
+        // 一个修改成功的弹窗
+        userData.value.user_birthday = data.user_birthday;
+      }
+    };
+
+    // 用户详细信息
+    baseUserData();
+
     return {
       username,
       token,
       role,
-      userInfo,
-      getUerInfo,
+      userData,
       setUserInfo,
-      removeUserInfo
+      removeUserInfo,
+      submitBirth,
+      submitEmail,
+      submitPhone,
+      submitMotto,
+      submitHeadshot
     };
   },
   {

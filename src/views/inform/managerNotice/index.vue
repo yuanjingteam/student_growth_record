@@ -3,11 +3,11 @@ import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { getManagerNotification } from "@/api/user";
 const router = useRouter();
-
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
+const result = ref([]);
 
 const onLoad = async () => {
   if (refreshing.value) {
@@ -15,10 +15,10 @@ const onLoad = async () => {
     refreshing.value = false;
   }
 
-  const result = await getManagerNotification();
-  console.log(result.data);
+  const { data } = await getManagerNotification();
+  result.value = data.manager_info;
 
-  list.value = [...list.value, ...result.data.manager_info];
+  list.value = [...list.value, ...result.value];
 
   loading.value = false;
 
