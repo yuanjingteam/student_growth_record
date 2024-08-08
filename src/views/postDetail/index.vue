@@ -26,6 +26,7 @@ const articleData = ref({
 onMounted(() => {
   //发获取评论请求和帖子详情请求
   //得到data后渲染
+  console.log(111);
 });
 </script>
 <template>
