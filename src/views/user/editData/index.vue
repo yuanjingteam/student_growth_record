@@ -33,16 +33,20 @@ const columnsType = ["year", "month", "day"];
 const minDate = new Date(2000, 0, 1);
 const maxDate = new Date(2023, 5, 1);
 
+// 初始化数据
 const data = ref({
-  name: "小明",
-  user_class: "教育222",
-  user_gender: "男",
-  user_motto: "都完全签订日期当前地区",
-  phone_number: 18893462838,
-  user_email: "3240288774@qq.com",
+  name: "",
+  user_headshot: userStore.userData.user_headshot,
+  user_class: "",
+  user_gender: "",
+  user_Identity: "",
+  user_motto: "",
+  phone_number: "",
+  user_email: "",
   user_birthday: currentDate.value.join("-"),
   user_year: currentDate.value.join("-")
 });
+
 // 初始化页面
 const baseUserData = async () => {
   const res = await getUserData();
@@ -68,33 +72,29 @@ const formatter = (type, option) => {
   return option;
 };
 
-// 定义一个中间变量存储改变之前的值，防止用户不更改
-let mid = "";
-
 // 生日弹层
 const showBirthday = () => {
-  mid = data.value.user_birthday;
+  // 定义一个中间值
   birthday_out.value = true;
 };
 
-// 更新当前日期
+// 更新生日
 const updateCurrentDate = async value => {
-  // 记录修改之前的值
-  mid = value.selectedValues;
-
+  // 当前值修改为被选的值
   currentDate.value = value.selectedValues;
+  // 弹窗隐藏
   birthday_out.value = false;
   // 将修改后的数据传到后端
-  submitChange();
+  userStore.submitHeadshot(currentDate.value);
+  window.location.reload();
 };
 
-// 提交修改后的数据
-const submitChange = async () => {
-  const { code } = await changeUserData({ username: userId });
-  if (code == 200) {
-    // 刷新页面数据为最新
-    refreshPage();
-  }
+// 更新头像
+const updataUserHeadshot = () => {
+  const formData = new FormData();
+  // 将当前最新的数据提交到后端
+  formData.append("file", files.value[0].file);
+  userStore.submitHeadshot({ username: userId, user_headshot: formData });
 };
 </script>
 <template>
@@ -196,7 +196,7 @@ const submitChange = async () => {
                 <span class="custom-title">电子邮箱</span>
               </template>
               <template #value>
-                <div class="both">{{ data.user_email }}</div>
+                <div class="both over">{{ data.user_email }}</div>
               </template>
             </van-cell>
 
@@ -231,9 +231,12 @@ const submitChange = async () => {
 } */
 .userImg {
   position: absolute;
-  top: -60px;
-  left: 130px;
+  top: -45px;
+  left: 146px;
   z-index: 10;
+}
+.van-uploader >>> .van-uploader__preview-image {
+  border-radius: 50px;
 }
 .custom-title {
   width: 10px;
