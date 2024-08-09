@@ -135,7 +135,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/otherInfo:id",
+    path: "/otherInfo/:id",
     name: "otherInfo",
     component: () => import("@/views/otherInfo/index.vue"),
     meta: {
