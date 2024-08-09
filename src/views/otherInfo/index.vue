@@ -4,28 +4,59 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-// 立即执行函数
-// (function () {
-//   console.log(data.value); //这段代码要用就会立马执行,不需要再调用
-// })();
+const list = ref([]);
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
+const onLoad = () => {
+  if (refreshing.value) {
+    list.value = [];
+    refreshing.value = false;
+  }
 
-// 传入的数据
-const data = ref({});
+  for (let i = 0; i < 10; i++) {
+    list.value.push(list.value.length + 1);
+  }
+  loading.value = false;
 
-// 事件处理函数
+  if (list.value.length >= 40) {
+    finished.value = true;
+  }
+};
+
+const onRefresh = () => {
+  // 清空列表数据
+  finished.value = false;
+  // 重新加载数据
+  // 将 loading 设置为 true，表示处于加载状态
+  loading.value = true;
+  onLoad();
+};
 </script>
 
 <template>
   <div class="main">
     <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
-    <user-info>
-      <template #class="classProps">
-        <span class="other">{{ classProps.text }}</span>
-      </template>
-      <template #office="officeProps">
-        <span class="other">{{ officeProps.text }}</span>
-      </template>
-    </user-info>
+    <div class="my-w">
+      <user-info>
+        <template #class="classProps">
+          <span class="other">{{ classProps.text }}</span>
+        </template>
+        <template #office="officeProps">
+          <span class="other">{{ officeProps.text }}</span>
+        </template>
+      </user-info>
+    </div>
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-list
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <cell-card v-for="item in list" :key="item" @click="console.log(1)" />
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -36,8 +67,7 @@ const data = ref({});
 }
 .my-w {
   overflow: hidden;
-  height: 100%;
-  margin: 0 10.3333vmin;
+  margin: 0 10px 20px;
 }
 .other {
   border-radius: 5px;

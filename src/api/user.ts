@@ -6,6 +6,7 @@ type ListResult = {
   data: Object;
 };
 
+// 用户信息
 type userList = {
   code: number;
   data: {
@@ -22,6 +23,7 @@ type userList = {
   msg: string;
 };
 
+// 用户详细资料
 type UserData = {
   code: number;
   message: string;
@@ -38,6 +40,7 @@ type UserData = {
   };
 };
 
+// 系统通知列表
 type adminList = {
   code: 0;
   data: {
@@ -52,6 +55,7 @@ type adminList = {
   };
 };
 
+// 管理员列表
 type managerList = {
   code: 0;
   data: {
@@ -66,6 +70,7 @@ type managerList = {
   };
 };
 
+// 点赞列表
 type thumbsList = {
   code: 0;
   data: {
@@ -81,6 +86,7 @@ type thumbsList = {
   };
 };
 
+// 收藏列表
 type starList = {
   code: 0;
   data: {
@@ -96,6 +102,7 @@ type starList = {
   };
 };
 
+// 评论列表
 type comList = {
   code: 0;
   data: {
@@ -110,6 +117,7 @@ type comList = {
     unread_count: 0;
   };
 };
+
 // 获取登录页标题
 export function getLoginTitle(data?: Object): Promise<ListResult> {
   return http.request({
@@ -208,43 +216,35 @@ export function changeUserEmail(data?: Object): Promise<ListResult> {
   });
 }
 
-// 修改用户生日
-export function changeUserBirth(data?: Object): Promise<ListResult> {
-  data = JSON.stringify(data);
-  return http.request({
-    url: "/user/updateUserBirth",
-    method: "post",
-    data
-  });
-}
-
 // 获取系统消息列表
-export function getSystemNotification(): Promise<adminList> {
+export function getSystemNotification(data?: Object): Promise<adminList> {
   return http.request({
     url: "/system/get_notification",
-    method: "get"
-  });
-}
-
-// 获取管理员消息列表
-export function getManagerNotification(): Promise<managerList> {
-  return http.request({
-    url: "/manager/get_notification",
-    method: "get"
-  });
-}
-
-// 获取互动消息列表
-export function getUserNotification(data?: Object): Promise<managerList> {
-  return http.request({
-    url: "/user/get_notification",
     method: "get",
     data: JSON.stringify(data)
   });
 }
 
+// 获取管理员消息列表
+export function getManagerNotification(data?: Object): Promise<managerList> {
+  return http.request({
+    url: "/manager/get_notification",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
+// 获取举报邮箱
+export function getreportEmail(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/rerport_box/getlist",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
 // 已读系统消息
-export function readSystemNotice(data?: Object): Promise<managerList> {
+export function readSystemNotice(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/system/read_notice",
     method: "post",
@@ -253,7 +253,7 @@ export function readSystemNotice(data?: Object): Promise<managerList> {
 }
 
 // 已读管理员消息
-export function readManagerNotice(data?: Object): Promise<managerList> {
+export function readManagerNotice(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/manager/read_notice",
     method: "post",
@@ -262,9 +262,18 @@ export function readManagerNotice(data?: Object): Promise<managerList> {
 }
 
 // 已读互动消息
-export function readUserNotice(data?: Object): Promise<managerList> {
+export function readUserNotice(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/read_notice",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 已读邮箱消息
+export function readEmailNotice(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/email/read_notice",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -292,6 +301,15 @@ export function getUserStarNotification(data?: Object): Promise<starList> {
 export function getUserComNotification(data?: Object): Promise<comList> {
   return http.request({
     url: "/user/get_comList",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
+// 获取班级成员
+export function getUserClass(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/get_class",
     method: "get",
     data: JSON.stringify(data)
   });

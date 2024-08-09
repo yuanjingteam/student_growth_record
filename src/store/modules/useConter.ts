@@ -5,8 +5,7 @@ import {
   changeUserHeadshot,
   changeUserMotto,
   changeUserPhone,
-  changeUserEmail,
-  changeUserBirth
+  changeUserEmail
 } from "@/api/user";
 // import { getTopicListService } from "@/api/topic";
 
@@ -28,7 +27,6 @@ export const useUserStore = defineStore(
       user_motto: "",
       phone_number: 111,
       user_email: "",
-      user_birthday: "",
       user_year: ""
     });
 
@@ -90,18 +88,7 @@ export const useUserStore = defineStore(
       }
     };
 
-    // 更新用户生日
-    const submitBirth = async data => {
-      const { code } = await changeUserBirth(data);
-      if (code == 200) {
-        console.log("yeah");
-
-        // 一个修改成功的弹窗
-        userData.value.user_birthday = data.user_birthday;
-      }
-    };
-
-    // 用户详细信息
+    // 初始化用户详细信息
     baseUserData();
 
     return {
@@ -111,7 +98,6 @@ export const useUserStore = defineStore(
       userData,
       setUserInfo,
       removeUserInfo,
-      submitBirth,
       submitEmail,
       submitPhone,
       submitMotto,

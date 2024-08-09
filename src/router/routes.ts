@@ -95,6 +95,30 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: "/myclass",
+    name: "myclass",
+    component: () => import("@/views/user/myClass/index.vue"),
+    meta: {
+      title: "我的班级"
+    }
+  },
+  {
+    path: "/myInteration",
+    name: "myInteration",
+    component: () => import("@/views/user/myInteration/index.vue"),
+    meta: {
+      title: "我的互动"
+    }
+  },
+  {
+    path: "/integralConverter",
+    name: "integralConverter",
+    component: () => import("@/views/user/integralConverter/index.vue"),
+    meta: {
+      title: "积分换算器"
+    }
+  },
+  {
     path: "/myPublish",
     name: "myPublish",
     component: () => import("@/views/user/myPublish/index.vue"),
@@ -135,7 +159,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/otherInfo/:id",
+    path: "/otherInfo/:username",
     name: "otherInfo",
     component: () => import("@/views/otherInfo/index.vue"),
     meta: {
@@ -221,6 +245,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/inform/userNotice/index.vue"),
     meta: {
       title: "互动消息"
+    }
+  },
+  {
+    path: "/permNotice",
+    name: "permNotice",
+    component: () => import("@/views/inform/PermNotice/index.vue"),
+    meta: {
+      title: "举报邮箱"
     }
   }
 ];

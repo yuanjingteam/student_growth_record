@@ -9,10 +9,15 @@ import { useRouter } from "vue-router";
 
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
 const userStore = useUserStore();
+const router = useRouter();
 
 // 获取普通属性:
-const username = userStore.username;
-const router = useRouter();
+const username = ref(userStore.username);
+if (router.currentRoute.value.params.username) {
+  username.value = router.currentRoute.value.params.username;
+  console.log(21312424);
+}
+
 const data = ref({
   username: "",
   user_headshot: "",
@@ -64,9 +69,8 @@ const handleImagePreview = src => {
     </div>
     <!-- 头部总组件 -->
     <div class="user-header">
-      <div class="my-inside" />
-      <div class="change-info" @click="router.push('./editData')">
-        <button>编辑资料</button>
+      <div class="my">
+        <slot name="self" />
       </div>
       <!-- 我的座右铭 -->
       <div class="my-motto">
@@ -120,24 +124,6 @@ const handleImagePreview = src => {
   margin-top: 1.6667vmin;
   margin-left: 12px;
   font-size: 15px;
-  font-weight: 700;
-}
-
-.my-inside {
-  position: absolute;
-  top: -4.4vmin;
-  right: -6.3333vmin;
-  width: 24.6667vmin;
-  height: 12.6667vmin;
-  border-radius: 9.3333vmin;
-  background-color: #e5edff;
-}
-
-.change-info {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  color: #4580ff;
   font-weight: 700;
 }
 

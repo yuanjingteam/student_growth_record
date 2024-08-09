@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { getManagerNotification, readManagerNotice } from "@/api/user";
+import { readManagerNotice } from "@/api/user";
 import { useUserStore } from "@/store";
+import { useInformation } from "@/store";
+
+const userInfo = useInformation();
 // 父传子
 const props = defineProps({
   base: Object
@@ -20,6 +23,10 @@ const data = ref({
   ],
   unread_count: 0
 });
+
+// 获取管理员消息
+data.value = userInfo.manager;
+
 // 是否已读
 const checkManager = async () => {
   const res = await readManagerNotice({ username: username });
@@ -29,12 +36,6 @@ const checkManager = async () => {
 
   router.push("./managerNotice");
 };
-// 获取管理员消息
-const managerInfo = async () => {
-  const res = await getManagerNotification();
-  data.value = res.data;
-};
-managerInfo();
 </script>
 <template>
   <van-cell center @click="checkManager">

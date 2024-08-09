@@ -4,9 +4,6 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-// 设置当前页面子组件发布文章按钮的位置
-const offset = ref({ x: 355, y: 700 });
-
 // 当前页面默认渲染的数据
 const base = reactive([
   {
@@ -20,6 +17,10 @@ const base = reactive([
   {
     userImg: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
     userName: "互动消息"
+  },
+  {
+    userImg: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
+    userName: "举报邮箱"
   }
 ]);
 </script>
@@ -38,7 +39,10 @@ const base = reactive([
   <!-- 用户通知 -->
   <inter-info :base="base[2]" />
 
+  <!-- 举报邮箱 -->
+  <perm-notice :base="base[3]" />
+
   <!-- 发布文章按钮 -->
-  <article-add :offset="offset" />
+  <article-add />
 </template>
 <style scoped></style>

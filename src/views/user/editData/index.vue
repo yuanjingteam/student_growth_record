@@ -17,23 +17,13 @@ const height = ref(anchors[0]);
 // 初始化学号
 const userId = userStore.username;
 
-// const initialImage = ;
-
 const files = ref([{ url: userStore.userData.user_headshot }]);
-
-// 生日弹出框
-// const birthday_out = ref(false);
 
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
 
-// 年月日格式化
-const columnsType = ["year", "month", "day"];
-
-const minDate = new Date(2000, 0, 1);
-const maxDate = new Date(2023, 5, 1);
-
 // 初始化数据
+
 const data = ref({
   name: "",
   user_headshot: userStore.userData.user_headshot,
@@ -49,37 +39,6 @@ const data = ref({
 // 初始化页面
 data.value = userStore.userData;
 
-// 年月日格式化代码
-const formatter = (type, option) => {
-  if (type === "year") {
-    option.text += "年";
-  }
-  if (type === "month") {
-    option.text += "月";
-  }
-  if (type === "day") {
-    option.text += "日";
-  }
-  return option;
-};
-
-// 生日弹层
-// const showBirthday = () => {
-//   // 定义一个中间值
-//   birthday_out.value = true;
-// };
-
-// 更新生日
-// const updateCurrentDate = async value => {
-//   // 当前值修改为被选的值
-//   currentDate.value = value.selectedValues;
-//   // 弹窗隐藏
-//   birthday_out.value = false;
-//   // 将修改后的数据传到后端
-//   userStore.submitHeadshot(currentDate.value);
-//   window.location.reload();
-// };
-
 // 更新头像
 const updataUserHeadshot = () => {
   const formData = new FormData();
@@ -91,25 +50,6 @@ const updataUserHeadshot = () => {
 <template>
   <!-- <router-view /> -->
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
-
-  <!-- 生日弹出层 -->
-  <!-- <van-popup
-    v-model:show="birthday_out"
-    closeable
-    close-icon-position="top-left"
-    position="bottom"
-    :style="{ height: '30%' }"
-  >
-    <van-date-picker
-      v-model="currentDate"
-      title="选择年月日"
-      :min-date="minDate"
-      :max-date="maxDate"
-      :formatter="formatter"
-      :columns-type="columnsType"
-      @confirm="updateCurrentDate"
-    />
-  </van-popup> -->
 
   <div class="main">
     <div class="bg">
@@ -190,7 +130,7 @@ const updataUserHeadshot = () => {
                 <span class="custom-title">电子邮箱</span>
               </template>
               <template #value>
-                <div class="both over">{{ data.user_email }}</div>
+                <div class="both">{{ data.user_email }}</div>
               </template>
             </van-cell>
             <van-cell>

@@ -1,8 +1,11 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { getSystemNotification, readSystemNotice } from "@/api/user";
+import { readSystemNotice } from "@/api/user";
 import { useUserStore } from "@/store";
+import { useInformation } from "@/store";
+
+const useInfor = useInformation();
 // 父传子
 const props = defineProps({
   base: Object
@@ -20,14 +23,9 @@ const data = ref({
   ],
   unread_count: 0
 });
+
 // 获取系统消息
-const systemInfo = async () => {
-  const res = await getSystemNotification();
-
-  data.value = res.data;
-};
-
-systemInfo();
+data.value = useInfor.system;
 
 // 是否已读
 const checkSystem = async () => {

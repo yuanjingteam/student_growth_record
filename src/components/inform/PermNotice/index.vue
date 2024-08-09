@@ -1,47 +1,52 @@
 <script setup>
-import { readUserNotice } from "@/api/user";
-import { useUserStore } from "@/store";
-import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { ref } from "vue";
+import { readEmailNotice } from "@/api/user";
+import { useUserStore } from "@/store";
 import { useInformation } from "@/store";
 const userInfo = useInformation();
-const router = useRouter();
 // 父传子
+// 给一个默认值
 const props = defineProps({
   base: Object
 });
+const router = useRouter();
 const userStore = useUserStore();
 const username = userStore.username;
 const data = ref({
-  thumbsUp: [
+  article_ban: [
     {
-      not_time: ""
+      article_id: 0,
+      article_content: "",
+      report_msg: "dawdwa",
+      report_time: ""
     }
   ],
   unread_count: 0
 });
 
-// 获取页面消息
-data.value = userInfo.thumbs;
+// 获取举报邮箱
+data.value = userInfo.email;
 
 // 是否已读
-const checkUser = async () => {
-  const res = await readUserNotice({ username: username });
+const checkEmaill = async () => {
+  const res = await readEmailNotice({ username: username });
   if (res.code == 200) {
-    console.log("ccc");
+    console.log("ddd");
   }
-  router.push("./userNotice");
+
+  router.push("/permNotice");
 };
 </script>
 <template>
-  <van-cell center @click="checkUser">
+  <van-cell center @click="checkEmaill">
     <template #title>
       {{ base.userName }}
     </template>
     <template #value>
       <div class="right-content">
-        <div class="va-time">{{ data.thumbsUp[0].not_time }}</div>
-        <van-badge :content="data.unread_count" />
+        <div class="va-time">{{ data.article_ban[0].report_time }}</div>
+        <van-badge :content="data.unread_count" max="99" />
       </div>
     </template>
     <template #icon>

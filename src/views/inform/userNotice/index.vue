@@ -1,14 +1,13 @@
 <script setup>
 import { ref } from "vue";
+import { useUserStore, useInformation } from "@/store";
+import { useRouter } from "vue-router";
 import {
   getUserThumNotification,
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
-
-import { useUserStore } from "@/store";
-import { useRouter } from "vue-router";
-
+const userInfo = useInformation();
 // 路由
 const router = useRouter();
 
@@ -19,12 +18,22 @@ const username = userStore.username;
 // 获取到的列表
 // 点赞
 const thumbList = ref([]);
+const page1 = ref(1);
+// 初始化数据
+const res1 = userInfo.thumbs.thumbsUp;
+thumbList.value = [...thumbList.value, ...res1];
 
 // 评论
 const comList = ref([]);
+const page2 = ref(1);
+const res2 = userInfo.comments.comments;
+comList.value = [...comList.value, ...res2];
 
 // 收藏
 const starList = ref([]);
+const page3 = ref(1);
+const res3 = userInfo.star.star;
+starList.value = [...starList.value, ...res3];
 
 // 哪一栏
 const active = ref(0);
@@ -58,6 +67,31 @@ const onClickTab = active => {
   onLoad();
 };
 
+// 获取点赞列表
+const loadData1 = async () => {
+  const { data } = await getUserThumNotification({
+    page: page1.value++,
+    username: username
+  });
+  thumbList.value = [...thumbList.value, ...data.thumbsUp];
+};
+// 获取评论列表
+const loadData2 = async () => {
+  const { data } = await getUserComNotification({
+    page: page2.value++,
+    username: username
+  });
+  comList.value = [...comList.value, ...data.comments];
+};
+
+// 获取收藏列表
+const loadData3 = async () => {
+  const { data } = await getUserStarNotification({
+    page: page3.value++,
+    username: username
+  });
+  starList.value = [...starList.value, ...data.star];
+};
 // 下拉
 // 点赞下拉刷新
 const onLoad = async () => {
@@ -66,10 +100,13 @@ const onLoad = async () => {
   if (refreshing.value) {
     if (active.value == 0) {
       thumbList.value = [];
+      page1.value = 0;
     } else if (active.value == 1) {
       comList.value = [];
+      page2.value = 0;
     } else if (active.value == 2) {
       starList.value = [];
+      page3.value = 0;
     }
     refreshing.value = false;
   }
@@ -78,15 +115,12 @@ const onLoad = async () => {
 
   switch (active.value) {
     case 0:
+      // 有就不重复请求了
       if (thumbList.value.length >= 20) {
         return;
       }
-      const data1 = await getUserThumNotification({
-        username: username
-      });
-
-      thumbList.value = [...thumbList.value, ...data1.data.thumbsUp];
-
+      await loadData1();
+      console.log(page1.value, 31313);
       // 加载状态结束
       loading.value = false;
 
@@ -100,10 +134,8 @@ const onLoad = async () => {
       if (comList.value.length >= 20) {
         return;
       }
-      const data2 = await getUserComNotification({
-        username: username
-      });
-      comList.value = [...comList.value, ...data2.data.comments];
+      await loadData2();
+      console.log(page2.value, 31313);
 
       // 加载状态结束
       loading.value = false;
@@ -118,10 +150,8 @@ const onLoad = async () => {
       if (starList.value.length >= 20) {
         return;
       }
-      const data3 = await getUserStarNotification({
-        username: username
-      });
-      starList.value = [...starList.value, ...data3.data.star];
+      await loadData3();
+      console.log(page3.value, 31313);
 
       // 加载状态结束
       loading.value = false;

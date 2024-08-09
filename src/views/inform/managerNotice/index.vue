@@ -1,29 +1,42 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { useInformation } from "@/store";
 import { getManagerNotification } from "@/api/user";
 const router = useRouter();
+const userInfo = useInformation();
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
+
+// 初始化页面数据
 const result = ref([]);
+const res = userInfo.manager;
+result.value = res.manager_info;
+list.value = [...list.value, ...result.value];
+loading.value = false;
+const page = ref(1);
+
+// 获取管理员消息
+const loadData = async () => {
+  const { data } = await getManagerNotification({ page: page.value++ });
+  list.value = [...list.value, ...data.manager_info];
+};
 
 const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];
+    page.value = 0;
     refreshing.value = false;
   }
-
-  const { data } = await getManagerNotification();
-  result.value = data.manager_info;
-
-  list.value = [...list.value, ...result.value];
+  await loadData();
+  console.log(page.value, 31313);
 
   loading.value = false;
 
   // 数据全部加载完成
-  if (list.value.length >= 5) {
+  if (list.value.length >= 20) {
     finished.value = true;
   }
 };
