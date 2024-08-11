@@ -9,16 +9,10 @@ const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const page = ref(1);
-const inter_info = ref([
-  {
-    article_id: 1,
-    i_content: "dwadwa",
-    i_type: "点赞",
-    name: "李华",
-    like_total: 12,
-    i_time: "8:00"
-  }
-]);
+const inter_info = ref([]);
+
+// 初始化
+inter_info.value = userStore.tracks.inter_info;
 
 const getTracks = async () => {
   const { data } = await getUserTracks({
@@ -27,8 +21,6 @@ const getTracks = async () => {
   });
   inter_info.value = [...inter_info.value, ...data.inter_info];
 };
-// 初始化
-getTracks();
 
 const onLoad = async () => {
   if (refreshing.value) {

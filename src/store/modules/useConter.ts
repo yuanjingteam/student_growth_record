@@ -5,7 +5,8 @@ import {
   changeUserHeadshot,
   changeUserMotto,
   changeUserPhone,
-  changeUserEmail
+  changeUserEmail,
+  getUserTracks
 } from "@/api/user";
 // import { getTopicListService } from "@/api/topic";
 
@@ -17,6 +18,8 @@ export const useUserStore = defineStore(
     const token = ref("");
     const role = ref("");
 
+    const tracks = ref({});
+    const page = 1;
     // 用户详细资料
     const userData = ref({
       name: "",
@@ -39,6 +42,15 @@ export const useUserStore = defineStore(
       username.value = 0;
       token.value = "";
       role.value = "";
+    };
+
+    // 获取我的足迹
+    const getTracks = async () => {
+      const res = await getUserTracks({
+        username: username,
+        page: page
+      });
+      tracks.value = res.data;
     };
 
     // 获取用户详细信息
@@ -91,10 +103,14 @@ export const useUserStore = defineStore(
     // 初始化用户详细信息
     baseUserData();
 
+    // 初始化我的足迹
+    getTracks();
+
     return {
       username,
       token,
       role,
+      tracks,
       userData,
       setUserInfo,
       removeUserInfo,

@@ -30,7 +30,7 @@ export const useInformation = defineStore(
     const star = ref({});
     const comments = ref({});
 
-    const page = ref(1);
+    const page = 1;
     const username = userStore.username;
     // 获取系统消息
     const systemNotification = async () => {
