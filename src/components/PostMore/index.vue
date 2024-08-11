@@ -1,13 +1,89 @@
 <script setup>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
+import {
+  articleUpvoteService,
+  articleCollectService,
+  articleCommentService,
+  articleReportService
+} from "@/api/article";
 const props = defineProps({
-  data: Object
+  data: Object,
+  articleId: String
 });
 
+//是否展示评论输入框
+const showCommentTable = ref(false);
+//是否点赞
+const ifLike = ref(false);
+//是否收藏
+const ifCollect = ref(false);
+//点击三个点是否展示选择框
 const showPopover = ref(false);
-const actions = [{ text: "举报" }, { text: "选项二" }];
+//选择框内容
+const actions = [{ text: "举报" }, { text: "封禁" }];
+//是否打开举报框
+const showReport = ref(false);
+//选中选择框后
 const select = (action, index) => {
-  console.log(action, index);
+  if (action.text == "举报") {
+    showReport.value = !showReport.value;
+    console.log("举报");
+  } else if (action.text == "封禁") {
+    console.log("封建");
+  }
+};
+//评论信息
+const comment = ref();
+//举报理由
+const report = ref();
+//举报信息
+const reportData = reactive({
+  article_id: 0,
+  report_msg: ""
+});
+//点赞信息
+const likeData = reactive({
+  id: 0,
+  like_type: 0
+});
+//收藏信息
+const collectData = reactive({
+  id: 0
+});
+//点赞文章
+const likeBtn = async state => {
+  ifLike.value = !state;
+  likeData.id = props.articleId;
+  const res = await articleUpvoteService(likeData);
+  console.log(res);
+};
+//收藏文章
+const collectBtn = async state => {
+  ifCollect.value = !state;
+
+  collectData.id = props.articleId;
+  const res = await articleCollectService(collectData);
+  console.log(res);
+};
+//评论文章
+const commentBtn = () => {
+  comment.value = "";
+  showCommentTable.value = !showCommentTable.value;
+};
+//提交评论
+const submitComment = async () => {
+  showCommentTable.value = !showCommentTable.value;
+  const res = await articleCommentService();
+  console.log(res);
+};
+//提交举报理由
+const submitReport = async () => {
+  reportData.article_id = props.articleId;
+  reportData.report_msg = report.value;
+  const res = await articleReportService(reportData);
+  console.log(res);
+  report.value = "";
+  showReport.value = !showReport.value;
 };
 </script>
 
@@ -17,10 +93,10 @@ const select = (action, index) => {
       <van-card>
         <template #tags>
           <div class="info-box">
-            <van-image round :src="data.article_content.user_image" />
+            <van-image round :src="data.user_headshot" />
             <div class="info">
               <div style="display: flex; justify-content: space-between">
-                <p class="name">{{ data.article_content.username }}</p>
+                <p class="name">{{ data.name }}</p>
                 <van-popover
                   v-model:show="showPopover"
                   theme="dark"
@@ -33,34 +109,97 @@ const select = (action, index) => {
                   </template>
                 </van-popover>
               </div>
-              <p class="grade">{{ data.article_content.user_class }}</p>
+              <p class="grade">{{ data.user_class }}</p>
             </div>
           </div>
           <p class="post-content">{{ data.article_content.article_text }}</p>
           <div>
             <button class="btn">
               <i-icon icon="icon-park:message" />
-              <p class="btn-title">文体活动</p>
+              <p class="btn-title">{{ data.tag_name }}</p>
             </button>
           </div>
-          <p class="time">{{ data.article_content.article_post_time }}</p>
+          <p class="time">{{ data.post_time }}</p>
         </template>
         <template #footer>
           <div class="btn-box">
-            <van-button size="mini" icon="star-o">{{
-              data.article_collect_sum
-            }}</van-button>
-            <van-button size="mini" icon="comment-o">{{
+            <van-button
+              v-if="!ifCollect"
+              size="mini"
+              icon="star-o"
+              @click="collectBtn(ifCollect)"
+              >{{ data.article_collect_sum }}</van-button
+            >
+            <van-button
+              v-else
+              size="mini"
+              icon="star-o"
+              color="#3371d3"
+              @click="collectBtn(ifCollect)"
+              >{{ data.article_collect_sum + 1 }}</van-button
+            >
+            <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
               data.article_comment_sum
             }}</van-button>
-            <van-button size="mini" icon="good-job-o">{{
-              data.article_content.article_like_sum
-            }}</van-button>
+            <van-action-sheet v-model:show="showCommentTable" title="发布评论">
+              <div class="content">
+                <van-cell-group inset>
+                  <van-field
+                    v-model="comment"
+                    rows="2"
+                    autosize
+                    type="textarea"
+                    maxlength="70"
+                    placeholder="请输入您的评论信息"
+                    show-word-limit
+                  />
+                </van-cell-group>
+                <van-button round block type="primary" @click="submitComment()">
+                  提交
+                </van-button>
+              </div>
+            </van-action-sheet>
+            <van-button
+              v-if="!ifLike"
+              size="mini"
+              icon="good-job-o"
+              @click="likeBtn(ifLike)"
+              >{{ data.article_like_sum }}</van-button
+            >
+            <van-button
+              v-else
+              size="mini"
+              icon="good-job-o"
+              color="#3371d3"
+              @click="likeBtn(ifLike)"
+              >{{ data.article_like_sum + 1 }}</van-button
+            >
           </div>
         </template>
       </van-card>
     </div>
   </van-cell-group>
+  <van-popup
+    v-model:show="showReport"
+    round
+    closeable
+    :style="{ padding: '25px' }"
+  >
+    <van-cell-group inset>
+      <van-field
+        v-model="report"
+        rows="2"
+        autosize
+        type="textarea"
+        maxlength="20"
+        placeholder="请输入您的举报理由"
+        show-word-limit
+      />
+    </van-cell-group>
+    <van-button round block type="primary" @click="submitReport()">
+      提交
+    </van-button>
+  </van-popup>
 </template>
 
 <style scoped lang="less">
@@ -142,5 +281,8 @@ const select = (action, index) => {
 
 .van-cell-group {
   margin-top: 10px;
+}
+.content {
+  padding: 16px 16px 160px;
 }
 </style>

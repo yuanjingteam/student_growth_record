@@ -1,12 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import {
-  getUserData,
   changeUserHeadshot,
   changeUserMotto,
   changeUserPhone,
-  changeUserEmail,
-  changeUserBirth
+  changeUserEmail
 } from "@/api/user";
 // import { getTopicListService } from "@/api/topic";
 
@@ -41,14 +39,6 @@ export const useUserStore = defineStore(
       username.value = 0;
       token.value = "";
       role.value = "";
-    };
-
-    // 获取用户详细信息
-    const baseUserData = async () => {
-      const res = await getUserData({ username: username });
-
-      userData.value = res.data;
-      console.log(userData);
     };
 
     // 更新用户头像
@@ -90,28 +80,12 @@ export const useUserStore = defineStore(
       }
     };
 
-    // 更新用户生日
-    const submitBirth = async data => {
-      const { code } = await changeUserBirth(data);
-      if (code == 200) {
-        console.log("yeah");
-
-        // 一个修改成功的弹窗
-        userData.value.user_birthday = data.user_birthday;
-      }
-    };
-
-    // 用户详细信息
-    baseUserData();
-
     return {
       username,
       token,
       role,
-      userData,
       setUserInfo,
       removeUserInfo,
-      submitBirth,
       submitEmail,
       submitPhone,
       submitMotto,

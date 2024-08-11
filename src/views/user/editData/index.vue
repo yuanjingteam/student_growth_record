@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from "vue";
-// 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
-import { useUserStore } from "@/store";
+import { reactive, ref } from "vue";
+import { changeUserData, getUserData } from "@/api/user";
+
 import { useRouter } from "vue-router";
 
 // 路由
@@ -47,6 +47,14 @@ const data = ref({
 });
 
 // 初始化页面
+const baseUserData = async () => {
+  const res = await getUserData();
+  data.value = res.data;
+};
+// 调用
+baseUserData();
+
+// 初始化页面
 data.value = userStore.userData;
 
 // 年月日格式化代码
@@ -90,6 +98,7 @@ const updataUserHeadshot = () => {
 </script>
 <template>
   <!-- <router-view /> -->
+  <!-- <router-view /> -->
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
 
   <!-- 生日弹出层 -->
@@ -128,6 +137,8 @@ const updataUserHeadshot = () => {
       <div>
         <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
         <van-form>
+        <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
+        <van-form>
           <van-cell-group inset>
             <van-cell>
               <template #title>
@@ -151,6 +162,7 @@ const updataUserHeadshot = () => {
               </template>
               <template #value>
                 <div class="both">{{ data.user_gender }}</div>
+                <div class="both">{{ data.user_gender }}</div>
               </template>
             </van-cell>
             <van-cell>
@@ -161,14 +173,7 @@ const updataUserHeadshot = () => {
                 <div class="both">{{ data.user_class }}</div>
               </template>
             </van-cell>
-            <van-cell>
-              <template #title>
-                <span class="custom-title">职务</span>
-              </template>
-              <template #value>
-                <div class="both">{{ data.user_Identity }}</div>
-              </template>
-            </van-cell>
+            <van-cell is-link @click="router.push('/editData/motto')">
             <van-cell is-link @click="router.push('/editData/motto')">
               <template #title>
                 <span class="custom-title">个性签名</span>
@@ -193,11 +198,21 @@ const updataUserHeadshot = () => {
                 <div class="both over">{{ data.user_email }}</div>
               </template>
             </van-cell>
+
+            <van-cell is-link @click="showBirthday">
+              <template #title>
+                <span class="custom-title">电子邮箱</span>
+              </template>
+              <template #value>
+                <div class="both">{{ data.user_birthday }}</div>
+              </template>
+            </van-cell>
             <van-cell>
               <template #title>
                 <span class="custom-title">入学年份</span>
               </template>
               <template #value>
+                <div class="both">{{ data.user_year }}</div>
                 <div class="both">{{ data.user_year }}</div>
               </template>
             </van-cell>

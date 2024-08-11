@@ -139,7 +139,7 @@ onMounted(async () => {
     <van-tab
       v-for="item in topicList"
       :key="item.topic_id"
-      :title="item.topic_title"
+      :title="item.topic_name.slice(0, 2)"
       :name="item.topic_name"
     >
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
