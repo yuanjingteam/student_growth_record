@@ -28,9 +28,9 @@ const router = useRouter();
           <p><i-icon icon="mingcute:classify-2-fill" /></p>
           我的班级
         </div>
-        <div class="op-icon" @click="router.push('./myInteration')">
+        <div class="op-icon" @click="router.push('./myTracks')">
           <p><i-icon icon="hugeicons:touch-interaction-04" /></p>
-          我的动态
+          我的足迹
         </div>
         <div class="op-icon" @click="router.push('./integralConverter')">
           <p><i-icon icon="mdi:account-convert" /></p>

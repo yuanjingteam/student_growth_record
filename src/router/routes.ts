@@ -103,11 +103,11 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/myInteration",
-    name: "myInteration",
-    component: () => import("@/views/user/myInteration/index.vue"),
+    path: "/myTracks",
+    name: "myTracks",
+    component: () => import("@/views/user/myTracks/index.vue"),
     meta: {
-      title: "我的互动"
+      title: "我的足迹"
     }
   },
   {

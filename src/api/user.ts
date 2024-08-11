@@ -314,3 +314,12 @@ export function getUserClass(data?: Object): Promise<ListResult> {
     data: JSON.stringify(data)
   });
 }
+
+// 获取我的足迹
+export function getUserTracks(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/tracks_get",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
