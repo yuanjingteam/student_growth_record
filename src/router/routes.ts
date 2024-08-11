@@ -47,38 +47,6 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: "/editData",
-    name: "editData",
-    component: () => import("@/views/user/editData/index.vue"),
-    meta: {
-      title: "编辑资料"
-    }
-  },
-  {
-    path: "/editData/email",
-    name: "email",
-    component: () => import("@/views/user/editData/userEmail/index.vue"),
-    meta: {
-      title: "我的邮箱"
-    }
-  },
-  {
-    path: "/editData/motto",
-    name: "motto",
-    component: () => import("@/views/user/editData/userMotto/index.vue"),
-    meta: {
-      title: "个性签名"
-    }
-  },
-  {
-    path: "/editData/phone",
-    name: "phone",
-    component: () => import("@/views/user/editData/userPhone/index.vue"),
-    meta: {
-      title: "我的电话"
-    }
-  },
-  {
     path: "/articleWait",
     name: "articleWait",
     component: () => import("@/views/articleWait/index.vue"),
