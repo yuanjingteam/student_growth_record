@@ -5,7 +5,8 @@ import {
   changeUserMotto,
   changeUserPhone,
   changeUserEmail,
-  getUserTracks
+  getUserTracks,
+  getUserData
 } from "@/api/user";
 // import { getTopicListService } from "@/api/topic";
 

@@ -63,6 +63,22 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: "/userFans",
+    name: "userFans",
+    component: () => import("@/views/user/fansList/index.vue"),
+    meta: {
+      title: "粉丝列表"
+    }
+  },
+  {
+    path: "/userAttention",
+    name: "userAttention",
+    component: () => import("@/views/user/attentionList/index.vue"),
+    meta: {
+      title: "关注列表"
+    }
+  },
+  {
     path: "/myclass",
     name: "myclass",
     component: () => import("@/views/user/myClass/index.vue"),

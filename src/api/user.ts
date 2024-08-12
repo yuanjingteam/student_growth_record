@@ -333,6 +333,15 @@ export function getAttentionList(data?: Object): Promise<ListResult> {
   });
 }
 
+// 改变关注状态
+export function changeAttentionState(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/attention_change",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
 // 获取我的足迹
 export function getUserTracks(data?: Object): Promise<ListResult> {
   return http.request({
