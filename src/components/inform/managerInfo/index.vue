@@ -32,9 +32,8 @@ const checkManager = async () => {
   const res = await readManagerNotice({ username: username });
   if (res.code == 200) {
     console.log("bbb");
+    router.push("./managerNotice");
   }
-
-  router.push("./managerNotice");
 };
 </script>
 <template>

@@ -8,6 +8,7 @@ const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
+
 const onLoad = () => {
   if (refreshing.value) {
     list.value = [];

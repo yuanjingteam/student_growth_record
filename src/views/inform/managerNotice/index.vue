@@ -5,6 +5,10 @@ import { useInformation } from "@/store";
 import { getManagerNotification } from "@/api/user";
 const router = useRouter();
 const userInfo = useInformation();
+
+// 到这个页面就清除未读消息数量
+userInfo.manager.unread_count = null;
+
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
@@ -14,6 +18,7 @@ const refreshing = ref(false);
 const result = ref([]);
 const res = userInfo.manager;
 result.value = res.manager_info;
+// 从全局状态管理中获取
 list.value = [...list.value, ...result.value];
 loading.value = false;
 const page = ref(1);
@@ -66,7 +71,12 @@ const onRefresh = () => {
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <manage-item v-for="(item, index) in list" :key="index" :data="item" />
+      <manage-item
+        v-for="(item, index) in list"
+        :key="index"
+        :data="item"
+        @click="router.push(`/postDetail/${item.article_id}`)"
+      />
     </van-list>
   </van-pull-refresh>
 </template>

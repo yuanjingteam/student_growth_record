@@ -11,17 +11,24 @@ import { useRouter } from "vue-router";
 const userStore = useUserStore();
 const router = useRouter();
 
+const own = ref(true);
 // 获取普通属性:
 const username = ref(userStore.username);
 // 如果能解析出用户信息,说明不是当前用户,是他人主页
-// 赋值一个新的username,就是对当前username进行操作的
-if (router.currentRoute.value.params.username) {
-  username.value = router.currentRoute.value.params.username;
-  console.log(21312424);
+const routerName = router.currentRoute.value.params.username;
+if (routerName) {
+  if (routerName == username.value) {
+    own.value = false;
+  } else {
+    // 赋值一个新的username,就是对当前username进行操作的
+    username.value = router.currentRoute.value.params.username;
+    console.log(21312424);
+  }
 }
 
 const data = ref({
   username: "",
+  name: "",
   user_headshot: "",
   user_motto: "",
   userfans: 0,
@@ -64,7 +71,7 @@ const handleImagePreview = src => {
       />
       <!-- 昵称 -->
       <div class="my-name">
-        {{ data.username }}
+        {{ data.name }}
         <!-- 用户等级 -->
         <!-- <span>LV.{{ userInfo.level }}</span> -->
       </div>
@@ -90,7 +97,7 @@ const handleImagePreview = src => {
         <div>积分：{{ data.score }}</div>
       </div>
       <!-- 其他人 -->
-      <div class="other">
+      <div v-if="!own" class="other">
         <slot name="class" :text="data.user_class" />
         <slot name="office" :text="data.user_Identity" />
       </div>

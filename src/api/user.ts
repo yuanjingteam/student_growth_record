@@ -153,24 +153,6 @@ export function userLogin(data?: Object): Promise<ListResult> {
   });
 }
 
-// 获取用户自述
-export function getSelfCotnent(data?: Object): Promise<ListResult> {
-  return http.request({
-    url: "/student/getSelfCotnent",
-    method: "post",
-    data: JSON.stringify(data)
-  });
-}
-
-// 修改用户自述
-export function changeSelfCotnent(data?: Object): Promise<ListResult> {
-  return http.request({
-    url: "/student/updateSelfContent",
-    method: "post",
-    data: JSON.stringify(data)
-  });
-}
-
 // 获取用户资料
 export function getUserData(data?: Object): Promise<UserData> {
   return http.request({
@@ -337,7 +319,7 @@ export function getAttentionList(data?: Object): Promise<ListResult> {
 export function changeAttentionState(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/attention_change",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -347,6 +329,33 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/tracks_get",
     method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
+// 获取用户收藏
+export function getStar(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/star_get",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
+// 获取用户自述
+export function getSelfCotnent(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/student/getSelfCotnent",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 修改用户自述
+export function changeSelfCotnent(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/student/updateSelfContent",
+    method: "post",
     data: JSON.stringify(data)
   });
 }

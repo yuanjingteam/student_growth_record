@@ -37,7 +37,7 @@ class Http {
         NProgress.start();
         // 发送请求前，可在此携带 token
         // if (token) {
-        //   config.headers['token'] = token
+        //   config.headers["token"] = token;
         // }
         return config;
       },

@@ -32,10 +32,8 @@ data.value = userInfo.email;
 const checkEmaill = async () => {
   const res = await readEmailNotice({ username: username });
   if (res.code == 200) {
-    console.log("ddd");
+    router.push("/permNotice");
   }
-
-  router.push("/permNotice");
 };
 </script>
 <template>

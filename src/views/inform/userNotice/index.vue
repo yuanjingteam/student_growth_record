@@ -7,7 +7,11 @@ import {
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
+
 const userInfo = useInformation();
+
+// 到这个页面就清空未读数据
+userInfo.thumbs.unread_count = null;
 // 路由
 const router = useRouter();
 
