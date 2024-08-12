@@ -153,6 +153,9 @@ const updataUserHeadshot = () => {
 /* .van-floating-panel {
   position: relative;
 } */
+.bg {
+  width: 100%;
+}
 .userImg {
   position: absolute;
   top: -45px;

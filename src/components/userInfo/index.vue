@@ -1,7 +1,7 @@
 <script setup>
 import { showImagePreview } from "vant";
 import { ref } from "vue";
-import { getUserInfo } from "@/api/user";
+import { getUserFans, getUserInfo } from "@/api/user";
 // 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useUserStore } from "@/store";
 
@@ -13,6 +13,8 @@ const router = useRouter();
 
 // 获取普通属性:
 const username = ref(userStore.username);
+// 如果能解析出用户信息,说明不是当前用户,是他人主页
+// 赋值一个新的username,就是对当前username进行操作的
 if (router.currentRoute.value.params.username) {
   username.value = router.currentRoute.value.params.username;
   console.log(21312424);
@@ -44,6 +46,11 @@ const handleImagePreview = src => {
     closeable: true
   });
 };
+
+// 获取用户粉丝数量
+const getFans = async () => {
+  const { data } = await getUserFans({ username: username });
+};
 </script>
 
 <template>
@@ -69,6 +76,7 @@ const handleImagePreview = src => {
     </div>
     <!-- 头部总组件 -->
     <div class="user-header">
+      <!-- 编辑资料部分 -->
       <div class="my">
         <slot name="self" />
       </div>
@@ -79,8 +87,8 @@ const handleImagePreview = src => {
       </div>
       <!-- 我的个人信息 -->
       <div class="user-info">
-        <div>粉丝：{{ data.userfans }}</div>
-        <div>关注：{{ data.user_concern }}</div>
+        <div @click="router.push('./')">粉丝：{{ data.userfans }}</div>
+        <div @click="router.push('./')">关注：{{ data.user_concern }}</div>
         <div>获赞：{{ data.user_like }}</div>
         <div>积分：{{ data.score }}</div>
       </div>

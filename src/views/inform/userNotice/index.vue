@@ -15,23 +15,21 @@ const router = useRouter();
 const userStore = useUserStore();
 const username = userStore.username;
 
+const page = ref(1);
 // 获取到的列表
 // 点赞
 const thumbList = ref([]);
-const page1 = ref(1);
 // 初始化数据
 const res1 = userInfo.thumbs.thumbsUp;
 thumbList.value = [...thumbList.value, ...res1];
 
 // 评论
 const comList = ref([]);
-const page2 = ref(1);
 const res2 = userInfo.comments.comments;
 comList.value = [...comList.value, ...res2];
 
 // 收藏
 const starList = ref([]);
-const page3 = ref(1);
 const res3 = userInfo.star.star;
 starList.value = [...starList.value, ...res3];
 
@@ -47,13 +45,6 @@ const finished = ref(false);
 // 重新刷新页面
 const refreshing = ref(false);
 
-// 页面数据
-const data = ref({
-  thumbsUp: [],
-  comments: [],
-  star: []
-});
-
 const icon = [
   "ph:thumbs-up-duotone",
   "icon-park-outline:comment",
@@ -63,6 +54,7 @@ const icon = [
 const state = ["点赞了你的文章", "评论了你的文章", "收藏了你的文章"];
 
 const onClickTab = active => {
+  page.value = 1;
   // 切换清空列表
   onLoad();
 };
@@ -70,7 +62,7 @@ const onClickTab = active => {
 // 获取点赞列表
 const loadData1 = async () => {
   const { data } = await getUserThumNotification({
-    page: page1.value++,
+    page: page.value++,
     username: username
   });
   thumbList.value = [...thumbList.value, ...data.thumbsUp];
@@ -78,7 +70,7 @@ const loadData1 = async () => {
 // 获取评论列表
 const loadData2 = async () => {
   const { data } = await getUserComNotification({
-    page: page2.value++,
+    page: page.value++,
     username: username
   });
   comList.value = [...comList.value, ...data.comments];
@@ -87,7 +79,7 @@ const loadData2 = async () => {
 // 获取收藏列表
 const loadData3 = async () => {
   const { data } = await getUserStarNotification({
-    page: page3.value++,
+    page: page.value++,
     username: username
   });
   starList.value = [...starList.value, ...data.star];
@@ -100,14 +92,13 @@ const onLoad = async () => {
   if (refreshing.value) {
     if (active.value == 0) {
       thumbList.value = [];
-      page1.value = 0;
     } else if (active.value == 1) {
       comList.value = [];
-      page2.value = 0;
     } else if (active.value == 2) {
       starList.value = [];
-      page3.value = 0;
     }
+    page.value = 0;
+
     refreshing.value = false;
   }
   // 重置刷新的值
@@ -120,7 +111,7 @@ const onLoad = async () => {
         return;
       }
       await loadData1();
-      console.log(page1.value, 31313);
+      console.log(page.value, 31313);
       // 加载状态结束
       loading.value = false;
 
@@ -135,7 +126,7 @@ const onLoad = async () => {
         return;
       }
       await loadData2();
-      console.log(page2.value, 31313);
+      console.log(page.value, 31313);
 
       // 加载状态结束
       loading.value = false;
@@ -151,7 +142,7 @@ const onLoad = async () => {
         return;
       }
       await loadData3();
-      console.log(page3.value, 31313);
+      console.log(page.value, 31313);
 
       // 加载状态结束
       loading.value = false;

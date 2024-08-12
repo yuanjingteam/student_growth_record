@@ -315,6 +315,24 @@ export function getUserClass(data?: Object): Promise<ListResult> {
   });
 }
 
+// 获取用户粉丝列表
+export function getUserFansList(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/fans_get",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
+// 获取用户关注列表
+export function getAttentionList(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/atttention_get",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
 // 获取我的足迹
 export function getUserTracks(data?: Object): Promise<ListResult> {
   return http.request({
