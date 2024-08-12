@@ -30,6 +30,7 @@ const cachedViews = computed(() => {
   .clearfix();
   position: relative;
   width: 100%;
+  height: 100%;
   background-color: #f0f1f5;
 }
 </style>

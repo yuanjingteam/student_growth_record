@@ -7,7 +7,7 @@ const commentData = ref({
   comment_count: 5
 });
 const props = defineProps({
-  article_id: String
+  article_id: Number
 });
 
 // const res = await getArticlesService()

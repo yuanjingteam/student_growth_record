@@ -36,12 +36,10 @@ const searchData = reactive({
   article_count: "5"
 });
 
-console.log("aaaa");
-
 //获取注册天数
 const registerDay = async () => {
   const { data } = await getRegisterDay({ username: username });
-  // registerTime.value = data.plus_time;
+  registerTime.value = data.plus_time;
 };
 registerDay();
 
@@ -95,10 +93,6 @@ const onRefresh = () => {
 const onSearch = id => {
   console.log(id);
 };
-onMounted(async () => {
-  const { data } = await getRegisterDay({ username: "1" });
-  registerTime.value = data.plus_time;
-});
 </script>
 <template>
   <div class="topShow">
@@ -139,7 +133,7 @@ onMounted(async () => {
     <van-tab
       v-for="item in topicList"
       :key="item.topic_id"
-      :title="item.topic_title"
+      :title="item.topic_name.slice(0, 2)"
       :name="item.topic_name"
     >
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
@@ -194,5 +188,10 @@ span {
 .van-search >>> .van-search__action {
   padding: 0px;
   display: flex;
+}
+
+.van-tab__panel,
+.van-tab__panel-wrapper {
+  background-color: #f0f1f5;
 }
 </style>

@@ -36,12 +36,12 @@ export function getCommentsService(data?: object): Promise<ListResult> {
 }
 export function searchArticleService(data?: object): Promise<Search> {
   return http.request({
-    url: "/search/article",
+    url: "/article//search_first",
     method: "post",
     data
   });
 }
-//点赞文章
+//点赞、取消点赞     文章、评论
 export function articleUpvoteService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/upvote",
@@ -50,6 +50,42 @@ export function articleUpvoteService(data?: object): Promise<ListResult> {
   });
 }
 
+//收藏文章
+export function articleCollectService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/article/collect",
+    method: "post",
+    data
+  });
+}
+//发布文章评论
+export function articleCommentService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/article/comment",
+    method: "post",
+    data
+  });
+}
+
+//举报文章
+export function articleReportService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/article/report",
+    method: "post",
+    data
+  });
+}
+
+//封禁文章
+export function articleBanService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/article/report",
+    method: "post",
+    data
+  });
+}
+
+//获取热帖标题，一次10条
 export function getHotPostService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/hotpost/title",

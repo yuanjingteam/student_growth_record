@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import {
-  getUserData,
   changeUserHeadshot,
   changeUserMotto,
   changeUserPhone,
