@@ -66,20 +66,24 @@ const onSearch = id => {
 };
 
 const articleData = ref({
-  article_collect_sum: 998,
-  article_comment_sum: 0,
+  if_ban: false,
+  user_headshot: "http://dummyimage.com/180x150",
+  name: "马强",
+  username: "2555",
+  user_class: "计科222",
+  tag_name: "考研复习",
+  post_time: "2天前",
   article_content: {
-    article_image: "Navic",
-    article_text: "17KJyF0uOM",
-    article_video: "Secur",
-    article_id: 1,
-    article_like_sum: 685,
-    article_post_time: "6980天前",
-    topic_id: "If th",
-    user_class: "计科222",
-    user_image: "nUYfgNlhhp",
-    username: "韩韩韩"
-  }
+    article_image: "http://dummyimage.com/120x90",
+    article_text:
+      "西切议已以利活之采克究件称。照别大定适角众然理般全权世活实合价。空按多层务除等做向取而强整相战规利。七米律族报设流形为定质明江年。美且情实程白且这王队走平织。西相规过眼式等合好亲向速广市办。多六白东战价程响满条内水验近要土。",
+    article_video: 79
+  },
+  article_like_sum: 72,
+  article_collect_sum: 46,
+  article_comment_sum: 75,
+  if_like: true,
+  if_collect: true
 });
 </script>
 <template>

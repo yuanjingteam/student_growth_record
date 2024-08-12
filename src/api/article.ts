@@ -36,7 +36,7 @@ export function getCommentsService(data?: object): Promise<ListResult> {
 }
 export function searchArticleService(data?: object): Promise<Search> {
   return http.request({
-    url: "/search/article",
+    url: "/article//search_first",
     method: "post",
     data
   });

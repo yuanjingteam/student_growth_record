@@ -158,6 +158,7 @@ function numberToEnglish(number) {
   }
 }
 .star {
+  margin-bottom: 10px;
   .van-cell >>> .van-cell__title {
     font-size: 20px;
     font-weight: 600;
