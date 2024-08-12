@@ -1,5 +1,8 @@
 <script setup>
-import { getUserFansList } from "@/api/user";
+import { getUserFansList, changeAttentionState } from "@/api/user";
+import { useUserStore } from "@/store";
+const userStore = useUserStore();
+const username = userStore.username;
 import { ref } from "vue";
 const fansList = ref({});
 const buttonText = ref("关注");
@@ -7,9 +10,16 @@ const getList = async () => {
   const { data } = await getUserFansList();
   fansList.value = data.userfans;
 };
+
+const changState = async () => {
+  const { code } = await changeAttentionState({ username: username });
+  if (code == 200) {
+    changeRole();
+  }
+};
 getList();
-const changeRole = buttonText => {
-  buttonText = buttonText === "关注" ? "已关注" : "关注";
+const changeRole = () => {
+  buttonText.value = buttonText.value === "关注" ? "已关注" : "关注";
 };
 </script>
 <template>
@@ -17,7 +27,7 @@ const changeRole = buttonText => {
     <van-cell v-for="(item, index) in fansList" :key="index">
       <template #title>{{ item.name }}</template>
       <template #value>
-        <button @click="changeRole(buttonText)">{{ buttonText }}</button>
+        <button @click="changState()">{{ buttonText }}</button>
       </template>
       <template #label>{{ item.user_motto }}</template>
       <template #icon>

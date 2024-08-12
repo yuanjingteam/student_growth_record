@@ -1,7 +1,7 @@
 <script setup>
 import { showImagePreview } from "vant";
 import { ref } from "vue";
-import { getUserFans, getUserInfo } from "@/api/user";
+import { getUserInfo } from "@/api/user";
 // 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useUserStore } from "@/store";
 
@@ -46,11 +46,6 @@ const handleImagePreview = src => {
     closeable: true
   });
 };
-
-// 获取用户粉丝数量
-const getFans = async () => {
-  const { data } = await getUserFans({ username: username });
-};
 </script>
 
 <template>
@@ -87,8 +82,10 @@ const getFans = async () => {
       </div>
       <!-- 我的个人信息 -->
       <div class="user-info">
-        <div @click="router.push('./')">粉丝：{{ data.userfans }}</div>
-        <div @click="router.push('./')">关注：{{ data.user_concern }}</div>
+        <div @click="router.push('./userFans')">粉丝：{{ data.userfans }}</div>
+        <div @click="router.push('./userAttention')">
+          关注：{{ data.user_concern }}
+        </div>
         <div>获赞：{{ data.user_like }}</div>
         <div>积分：{{ data.score }}</div>
       </div>
