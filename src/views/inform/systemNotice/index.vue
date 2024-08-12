@@ -1,30 +1,40 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { useInformation } from "@/store";
 import { getSystemNotification } from "@/api/user";
-
 const router = useRouter();
-
+const userInfo = useInformation();
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const result = ref([]);
+const res = userInfo.system;
+result.value = res.admin_info;
 
+list.value = [...list.value, ...result.value];
+
+const page = ref(1);
+// 获取系统消息
+const loadData = async () => {
+  const { data } = await getSystemNotification({ page: page.value++ });
+  list.value = [...list.value, ...data.admin_info];
+};
 const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];
+    page.value = 0;
+
     refreshing.value = false;
   }
-  const { data } = await getSystemNotification();
-  result.value = data.admin_info;
-
-  list.value = [...list.value, ...result.value];
+  await loadData();
+  console.log(page.value, 31313);
 
   loading.value = false;
 
   // 数据全部加载完成
-  if (list.value.length >= 5) {
+  if (list.value.length >= 20) {
     finished.value = true;
   }
 };

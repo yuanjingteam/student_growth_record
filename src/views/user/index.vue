@@ -10,22 +10,29 @@ const router = useRouter();
   <div class="main">
     <div class="my-w">
       <!-- 个人信息 -->
-      <user-info />
+      <user-info>
+        <template #self>
+          <div class="my-inside" />
+          <div class="change-info" @click="router.push('./editData')">
+            <button>编辑资料</button>
+          </div>
+        </template>
+      </user-info>
       <!-- 我的操作 -->
       <div class="my-operation">
         <div class="op-icon">
           <p><i-icon icon="mingcute:calendar-time-add-line" /></p>
           我的成就
         </div>
-        <div class="op-icon">
+        <div class="op-icon" @click="router.push('./myclass')">
           <p><i-icon icon="mingcute:classify-2-fill" /></p>
           我的班级
         </div>
-        <div class="op-icon">
+        <div class="op-icon" @click="router.push('./myTracks')">
           <p><i-icon icon="hugeicons:touch-interaction-04" /></p>
-          我的互动
+          我的足迹
         </div>
-        <div class="op-icon">
+        <div class="op-icon" @click="router.push('./integralConverter')">
           <p><i-icon icon="mdi:account-convert" /></p>
           积分换算器
         </div>
@@ -85,11 +92,30 @@ const router = useRouter();
 .my-content .van-cell {
   height: 60px;
 }
-.other {
+
+.my-inside {
+  position: absolute;
+  top: -4.4vmin;
+  right: -6.3333vmin;
+  width: 24.6667vmin;
+  height: 12.6667vmin;
+  border-radius: 9.3333vmin;
+  background-color: #e5edff;
+}
+
+.change-info {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #4580ff;
+  font-weight: 700;
+}
+
+/* .other {
   background-color: pink;
   padding: 3px;
   border-radius: 5px;
   margin-right: 5px;
   font-size: 11px;
-}
+} */
 </style>

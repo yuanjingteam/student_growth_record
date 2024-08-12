@@ -1,7 +1,7 @@
 <script setup>
 import { showImagePreview } from "vant";
 import { ref } from "vue";
-import { getUserInfo } from "@/api/user";
+import { getUserFans, getUserInfo } from "@/api/user";
 // 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useUserStore } from "@/store";
 
@@ -9,10 +9,17 @@ import { useRouter } from "vue-router";
 
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
 const userStore = useUserStore();
+const router = useRouter();
 
 // 获取普通属性:
-const username = userStore.username;
-const router = useRouter();
+const username = ref(userStore.username);
+// 如果能解析出用户信息,说明不是当前用户,是他人主页
+// 赋值一个新的username,就是对当前username进行操作的
+if (router.currentRoute.value.params.username) {
+  username.value = router.currentRoute.value.params.username;
+  console.log(21312424);
+}
+
 const data = ref({
   username: "",
   user_headshot: "",
@@ -39,6 +46,11 @@ const handleImagePreview = src => {
     closeable: true
   });
 };
+
+// 获取用户粉丝数量
+const getFans = async () => {
+  const { data } = await getUserFans({ username: username });
+};
 </script>
 
 <template>
@@ -64,9 +76,9 @@ const handleImagePreview = src => {
     </div>
     <!-- 头部总组件 -->
     <div class="user-header">
-      <div class="my-inside" />
-      <div class="change-info" @click="router.push('./editData')">
-        <button>编辑资料</button>
+      <!-- 编辑资料部分 -->
+      <div class="my">
+        <slot name="self" />
       </div>
       <!-- 我的座右铭 -->
       <div class="my-motto">
@@ -75,8 +87,8 @@ const handleImagePreview = src => {
       </div>
       <!-- 我的个人信息 -->
       <div class="user-info">
-        <div>粉丝：{{ data.userfans }}</div>
-        <div>关注：{{ data.user_concern }}</div>
+        <div @click="router.push('./')">粉丝：{{ data.userfans }}</div>
+        <div @click="router.push('./')">关注：{{ data.user_concern }}</div>
         <div>获赞：{{ data.user_like }}</div>
         <div>积分：{{ data.score }}</div>
       </div>
@@ -120,24 +132,6 @@ const handleImagePreview = src => {
   margin-top: 1.6667vmin;
   margin-left: 12px;
   font-size: 15px;
-  font-weight: 700;
-}
-
-.my-inside {
-  position: absolute;
-  top: -4.4vmin;
-  right: -6.3333vmin;
-  width: 24.6667vmin;
-  height: 12.6667vmin;
-  border-radius: 9.3333vmin;
-  background-color: #e5edff;
-}
-
-.change-info {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  color: #4580ff;
   font-weight: 700;
 }
 
