@@ -13,9 +13,9 @@ import {
 export const useUserStore = defineStore(
   "user",
   () => {
-    const username = ref(0);
+    const username = ref("passenger");
     const token = ref("");
-    const role = ref("");
+    const role = ref("0");
 
     // 用户详细资料
     const userData = ref({
@@ -36,7 +36,7 @@ export const useUserStore = defineStore(
       role.value = obj.role;
     };
     const removeUserInfo = () => {
-      username.value = 0;
+      username.value = "";
       token.value = "";
       role.value = "";
     };

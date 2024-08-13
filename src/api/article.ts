@@ -12,13 +12,8 @@ type Search = {
   };
   msg: string;
 };
-// export function getListApi(params?: object): Promise<ListResult> {
-//   return http.request({
-//     url: "/list/get",
-//     method: "get",
-//     params
-//   });
-// }
+
+//获取文章详情页的文章
 export function getArticlesService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/content",
@@ -26,7 +21,7 @@ export function getArticlesService(data?: object): Promise<ListResult> {
     data
   });
 }
-
+//获取文章详情页的评论
 export function getCommentsService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/articles/getcomments",
@@ -34,9 +29,10 @@ export function getCommentsService(data?: object): Promise<ListResult> {
     data
   });
 }
+//首页展示搜索列表
 export function searchArticleService(data?: object): Promise<Search> {
   return http.request({
-    url: "/article//search_first",
+    url: "/article/search_first",
     method: "post",
     data
   });
