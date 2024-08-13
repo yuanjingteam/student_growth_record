@@ -31,6 +31,14 @@ const searchData = reactive({
   username: userStore.username
 });
 
+// 防抖函数
+function debounce(func, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
+}
 //首页帖子列表
 const articleList = ref([]);
 
@@ -51,6 +59,9 @@ const onSearch = async () => {
   } = await searchArticleService(searchData);
   articleList.value = content;
 };
+
+// 创建防抖后的搜索函数
+const debouncedSearch = debounce(onSearch, 300);
 
 //监听activeName的变化，从而发送请求
 watch(activeName, async (newValue, oldValue) => {
@@ -121,7 +132,7 @@ const onRefresh = () => {
         size="small"
         color="#004ff7"
         round
-        @click="onSearch"
+        @click="debouncedSearch"
         >搜索</van-button
       >
     </template>
