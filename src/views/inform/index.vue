@@ -32,17 +32,24 @@ const base = reactive([
     left-arrow
     @click-left="router.push('/home')"
   />
-  <!-- 系统通知 -->
-  <system-info :base="base[0]" />
-  <!-- 管理员通知 -->
-  <manager-info :base="base[1]" />
-  <!-- 用户通知 -->
-  <inter-info :base="base[2]" />
+  <div class="main">
+    <!-- 系统通知 -->
+    <system-info :base="base[0]" />
+    <!-- 管理员通知 -->
+    <manager-info :base="base[1]" />
+    <!-- 用户通知 -->
+    <inter-info :base="base[2]" />
 
-  <!-- 举报邮箱 -->
-  <perm-notice :base="base[3]" />
+    <!-- 举报邮箱 -->
+    <perm-notice :base="base[3]" />
+  </div>
 
   <!-- 发布文章按钮 -->
   <article-add />
 </template>
-<style scoped></style>
+<style scoped>
+.main {
+  height: 82vh;
+  overflow: hidden;
+}
+</style>
