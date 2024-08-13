@@ -21,8 +21,13 @@ const router = useRouter();
       <!-- 我的操作 -->
       <div class="my-operation">
         <div class="op-icon">
-          <p><i-icon icon="mingcute:calendar-time-add-line" /></p>
-          我的成就
+          <p>
+            <i-icon
+              icon="mingcute:calendar-time-add-line"
+              @click="router.push('./myPublish')"
+            />
+          </p>
+          我发布的内容
         </div>
         <div class="op-icon" @click="router.push('./myclass')">
           <p><i-icon icon="mingcute:classify-2-fill" /></p>
@@ -39,11 +44,11 @@ const router = useRouter();
       </div>
       <!-- 我的内容 -->
       <div class="my-content">
-        <van-cell
+        <!-- <van-cell
           title="我发布的内容"
           is-link
           @click="router.push('./myPublish')"
-        />
+        /> -->
         <van-cell
           title="我的收藏"
           is-link

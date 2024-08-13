@@ -5,6 +5,10 @@ import { useInformation } from "@/store";
 import { getSystemNotification } from "@/api/user";
 const router = useRouter();
 const userInfo = useInformation();
+
+// 清除未读消息数量
+userInfo.system.unread_count = null;
+
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
@@ -13,6 +17,7 @@ const result = ref([]);
 const res = userInfo.system;
 result.value = res.admin_info;
 
+// 从全局状态管理中获取
 list.value = [...list.value, ...result.value];
 
 const page = ref(1);

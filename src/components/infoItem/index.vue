@@ -1,4 +1,7 @@
 <script setup>
+import { useRouter } from "vue-router";
+
+const router = new useRouter();
 // 父传子
 const props = defineProps({
   data: Object,
@@ -9,7 +12,7 @@ const props = defineProps({
 <template>
   <van-cell center>
     <template #title>
-      {{ data.username }}
+      {{ data.name }}
     </template>
     <template #label>
       <span>{{ state }}</span>
@@ -22,7 +25,13 @@ const props = defineProps({
       <div>{{ data.not_time }}</div>
     </template>
     <template #icon>
-      <van-image round width="3rem" height="3rem" :src="data.user_headshot" />
+      <van-image
+        round
+        width="4rem"
+        height="4rem"
+        :src="data.user_headshot"
+        @click="router.push(`/otherInfo/${data.username}`)"
+      />
     </template>
   </van-cell>
 </template>
@@ -31,5 +40,12 @@ const props = defineProps({
 .van-text-ellipsis {
   color: black;
   width: 240px;
+}
+.van-image {
+  margin-right: 5px;
+}
+.i-icon {
+  width: 25px;
+  height: 25px;
 }
 </style>
