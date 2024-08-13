@@ -3,23 +3,20 @@ import { useRouter } from "vue-router";
 import { defineProps, ref, reactive } from "vue";
 
 const props = defineProps({
-  articleList: Array
+  article: Object
 });
-
-console.log(props.articleList);
-
 const router = useRouter();
-const text =
-  "那一天我二十一岁，在我一生的黄金时代。我有好多奢望。我想爱，想吃，还想在一瞬间变成天上半明半暗的云。后来我才知道，生活就是个缓慢受锤的过程，人一天天老下去，奢望也一天天消失，最后变得像挨了锤的牛一样。可是我过二十一岁生日时没有预见到这一点。我觉得自己会永远生猛下去，什么也锤不了我。";
-// const articleId = ref('')
+//获取传过来的帖子id
+const articleId = props.article.article_id;
 
-const gotoArticleDetail = articleId => {
+//跳转到帖子详情页
+const gotoArticleDetail = () => {
   router.push(`/postDetail/${articleId}`);
 };
 </script>
 
 <template>
-  <div class="cell" @click="gotoArticleDetail('1')">
+  <div class="cell" @click="gotoArticleDetail()">
     <van-card>
       <template #tags>
         <div class="info-box">
@@ -27,23 +24,32 @@ const gotoArticleDetail = articleId => {
             round
             width="3rem"
             height="3rem"
-            src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+            :src="article.user_headshot"
           />
           <div class="info">
-            <p class="name">赵一鸣</p>
-            <p class="grade">计科222</p>
+            <p class="name">{{ article.name }}</p>
+            <p class="grade">{{ article.user_class }}</p>
           </div>
         </div>
-        <van-text-ellipsis rows="3" :content="text" />
+        <van-text-ellipsis
+          rows="3"
+          :content="article.article_content.article_text"
+        />
       </template>
       <template #footer>
         <button class="btn">
           <i-icon icon="icon-park:message" />
-          <p class="btn-title">文体活动</p>
+          <p class="btn-title">{{ article.tag_name }}</p>
         </button>
-        <van-button size="mini" icon="good-job-o">26</van-button>
-        <van-button size="mini" icon="comment-o">12</van-button>
-        <van-button size="mini" icon="star-o">180</van-button>
+        <van-button size="mini" icon="good-job-o">{{
+          article.upvote_amount
+        }}</van-button>
+        <van-button size="mini" icon="comment-o">{{
+          article.comment_amount
+        }}</van-button>
+        <van-button size="mini" icon="star-o">{{
+          article.collect_amount
+        }}</van-button>
       </template>
     </van-card>
   </div>

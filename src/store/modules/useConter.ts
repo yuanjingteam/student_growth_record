@@ -5,7 +5,8 @@ import {
   changeUserMotto,
   changeUserPhone,
   changeUserEmail,
-  getUserTracks
+  getUserTracks,
+  getUserData
 } from "@/api/user";
 // import { getTopicListService } from "@/api/topic";
 
@@ -13,9 +14,9 @@ import {
 export const useUserStore = defineStore(
   "user",
   () => {
-    const username = ref(0);
+    const username = ref("passenger");
     const token = ref("");
-    const role = ref("");
+    const role = ref("0");
 
     const tracks = ref({});
     const page = 1;
@@ -38,7 +39,7 @@ export const useUserStore = defineStore(
       role.value = obj.role;
     };
     const removeUserInfo = () => {
-      username.value = 0;
+      username.value = "";
       token.value = "";
       role.value = "";
     };

@@ -1,23 +1,13 @@
 <script setup>
-import { getArticlesService, getCommentsService } from "@/api/article";
-import { ref } from "vue";
-const commentData = ref({
-  article_id: "",
-  comment_way: "",
-  comment_count: 5
-});
-const props = defineProps({
-  article_id: Number
-});
+import { ref, defineEmits } from "vue";
+const emit = defineEmits(["get_type"]);
 
-// const res = await getArticlesService()
-// console.log(res);
+//是否有当前类（有当前背景）
 const isActive = ref(false);
+//切换状态，子传父
 const getNew = async state => {
   isActive.value = !isActive.value;
-  commentData.value.article_id = props.article_id;
-  commentData.value.comment_way = state;
-  // const res = await getCommentsService(commentData)
+  emit("get_type", state);
 };
 </script>
 

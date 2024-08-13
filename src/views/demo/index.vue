@@ -1,15 +1,11 @@
 <script setup lang="ts" name="Demo">
-import { onMounted, reactive } from "vue";
-import { ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { showToast } from "vant";
 import CellCard from "@/components/CellCard/index.vue";
 import { getRegisterDay } from "@/api/topic";
 
-import { getArticlesService, searchArticleService } from "@/api/article";
+import { searchArticleService } from "@/api/article";
 import { useTopicStore, useUserStore } from "@/store";
-// const data = { article_id: '1' }
-// const res = await getArticlesService(data)
-// console.log(res);
 
 const userStore = useUserStore();
 const topicStore = useTopicStore();
@@ -20,10 +16,7 @@ topicStore.getTopicList();
 topicList.value = topicStore.topicList;
 //搜索框输入内容
 const inputValue = ref("");
-//存储当前用户账号
-const username = ref("");
 //获取当前用户id
-// username.value = userStore.username;
 //控制tab栏显示
 const activeName = ref("全部");
 //初始化记录注册天数
@@ -31,30 +24,45 @@ const registerTime = ref("");
 //搜索框数据
 const searchData = reactive({
   key_word: "",
-  topic_id: "",
+  topic_name: "",
   article_sort: "new",
-  article_count: "5"
+  article_count: 8,
+  article_page: 0,
+  username: userStore.username
 });
+
+//首页帖子列表
+const articleList = ref([]);
 
 //获取注册天数
 const registerDay = async () => {
-  const { data } = await getRegisterDay({ username: username });
+  const { data } = await getRegisterDay({ username: searchData.username });
   registerTime.value = data.plus_time;
 };
 registerDay();
 
 //搜索框事件
-const onClickButton = async () => {
-  const topicId = topicStore.findTopicId(activeName.value);
+const onSearch = async () => {
+  searchData.article_page = 1;
   searchData.key_word = inputValue.value;
-  searchData.topic_id = topicId;
+  searchData.topic_name = activeName.value;
   const {
     data: { content }
   } = await searchArticleService(searchData);
-  list.value = content;
+  articleList.value = content;
 };
 
-const list = ref([]);
+//监听activeName的变化，从而发送请求
+watch(activeName, async (newValue, oldValue) => {
+  searchData.article_page = 1;
+  searchData.key_word = inputValue.value;
+  searchData.topic_name = newValue;
+  const {
+    data: { content }
+  } = await searchArticleService(searchData);
+  articleList.value = content;
+});
+
 //控制列表加载状态的显示和隐藏
 const loading = ref(false);
 //绑定了 finished 变量，用于标记是否加载完成
@@ -63,25 +71,25 @@ const finished = ref(false);
 const refreshing = ref(false);
 
 //当用户滚动到底部时会触发加载更多数据的事件
-const onLoad = () => {
-  setTimeout(() => {
-    if (refreshing.value) {
-      list.value = [];
-      refreshing.value = false;
-    }
-
-    for (let i = 0; i < 10; i++) {
-      list.value.push(list.value.length + 1);
-    }
+const onLoad = async () => {
+  if (refreshing.value) {
+    searchData.article_page = 0;
+    articleList.value = [];
+    refreshing.value = false;
+  }
+  searchData.key_word = inputValue.value;
+  searchData.topic_name = activeName.value;
+  searchData.article_page += 1;
+  const res = await searchArticleService(searchData);
+  if (res.code == 200) {
     loading.value = false;
-
-    if (list.value.length >= 40) {
-      finished.value = true;
-    }
-  }, 1000);
+    articleList.value = [...articleList.value, ...res.data.content];
+  } else {
+    finished.value = true;
+  }
 };
 
-//监听了刷新事件
+// 监听了刷新事件;
 const onRefresh = () => {
   // 清空列表数据
   finished.value = false;
@@ -89,9 +97,6 @@ const onRefresh = () => {
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;
   onLoad();
-};
-const onSearch = id => {
-  console.log(id);
 };
 </script>
 <template>
@@ -109,7 +114,6 @@ const onSearch = id => {
     placeholder="请输入搜索关键词"
     background="#fff"
     class="search"
-    @search="onSearch(1)"
   >
     <template #action>
       <van-button
@@ -117,7 +121,7 @@ const onSearch = id => {
         size="small"
         color="#004ff7"
         round
-        @click="onClickButton"
+        @click="onSearch"
         >搜索</van-button
       >
     </template>
@@ -144,10 +148,9 @@ const onSearch = id => {
           @load="onLoad"
         >
           <cell-card
-            v-for="item in list"
-            :key="item.article_id"
-            :articleList="list"
-            @click="console.log(1)"
+            v-for="(item, index) in articleList"
+            :key="index"
+            :article="item"
           />
         </van-list>
       </van-pull-refresh>

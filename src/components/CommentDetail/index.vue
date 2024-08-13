@@ -1,14 +1,18 @@
 <script setup>
-import { ref } from "vue";
-const text =
-  "那一天我二十一岁，在我一生的黄金时代。我有好多奢望。我想爱，想吃，还想在一瞬间变成天上半明半暗的云。后来我才知道，生活就是个缓慢受锤的过程，人一天天老下去，奢望也一天天消失，最后变得像挨了锤的牛一样。可是我过二十一岁生日时没有预见到这一点。我觉得自己会永远生猛下去，什么也锤不了我。";
+import { ref, defineProps } from "vue";
+const props = defineProps({
+  data: Object
+});
 
 const showPopover = ref(false);
-const actions = [{ text: "举报" }, { text: "选项二" }];
+const actions = [{ text: "举报" }, { text: "删除" }];
 const select = (action, index) => {
   console.log(action, index);
 };
+const activeNames = ref(["1"]);
+const num = 10;
 </script>
+s
 
 <template>
   <div class="cell">
@@ -16,12 +20,14 @@ const select = (action, index) => {
       <template #tags>
         <div class="info-box">
           <van-image
+            width="5rem"
+            height="3rem"
             round
-            src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+            :src="data.user_headshot"
           />
           <div class="info">
             <div class="info-row">
-              <p class="name">赵一鸣</p>
+              <p class="name">{{ data.name }}</p>
               <van-popover
                 v-model:show="showPopover"
                 theme="dark"
@@ -34,14 +40,26 @@ const select = (action, index) => {
                 </template>
               </van-popover>
             </div>
-            <p class="comment-comtent">{{ text }}</p>
+            <p class="comment-comtent">{{ data.comment_text }}</p>
             <div class="comment-footer">
-              <p class="btn-title">1小时前</p>
+              <p class="btn-title">{{ data.comment_time }}</p>
               <div>
-                <van-button size="mini" icon="comment-o">12</van-button>
-                <van-button size="mini" icon="good-job-o">26</van-button>
+                <van-button size="mini" icon="comment-o">{{
+                  data.comment_num
+                }}</van-button>
+                <van-button size="mini" icon="good-job-o">{{
+                  data.comment_like
+                }}</van-button>
               </div>
             </div>
+            <van-collapse v-model="activeNames">
+              <van-collapse-item :title="`共有${num}条回复`" name="1">
+                代码是写出来给人看的，附带能在机器上运行。
+                <van-button size="mini" icon="good-job-o">{{
+                  data.comment_like
+                }}</van-button>
+              </van-collapse-item>
+            </van-collapse>
           </div>
         </div>
       </template>
@@ -59,11 +77,6 @@ const select = (action, index) => {
 
     .info-box {
       display: flex;
-
-      .van-image {
-        height: 40px;
-        width: 300px;
-      }
 
       .info {
         display: flex;
