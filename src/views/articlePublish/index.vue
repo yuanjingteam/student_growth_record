@@ -204,22 +204,20 @@ const validator = val => {
   if (data.article_topic === "选择话题") {
     return "必须选择标签类型";
   }
-  if (littleTag.value.length === 0) {
-    console.log(data.article_tags.length, 1111);
-    return "必须选择热点标签";
-  }
 };
 // 校验规则
-const rules = [
-  // { validator, message: "内容不能为空" }
-  // { articleContent: [{ required: true, message: "内容不能为空" }] }
-];
+const rules = [{ validator, message: "内容不能为空" }];
 
 // 点击发布文章
 const onSubmit = async () => {
   try {
     // 表单校验
     await formRef.value.validate();
+    if (littleTag.value.length === 0) {
+      console.log(data.article_tags.length, 1111);
+      showToast("必须选择热点标签");
+      return;
+    }
     // console.log(fileList.value);
     // 文件上传
     handleSubmit();
@@ -234,6 +232,7 @@ const onSubmit = async () => {
       })
       .catch(() => {
         // on cancel
+        // fileList.value = [];
       });
   } catch (error) {
     console.log("validate failed", error);

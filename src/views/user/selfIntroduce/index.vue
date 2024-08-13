@@ -44,11 +44,12 @@ const rules = ref([
 ]);
 
 // 可修改的状态
-const changeState = () => {
+const changeState = function () {
+  const inputElement = fieldText.value;
   isEditing.value = true;
   isNav.value = false;
   // 获得焦点
-  fieldText.value.focus();
+  inputElement.focus();
 };
 
 // 退出编辑
@@ -95,8 +96,7 @@ const onSubmit = async () => {
     await formRef.value.validate();
     showConfirmDialog({
       title: "发布文章",
-      message:
-        "如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。"
+      message: "确认要更改个人介绍吗?"
     })
       .then(async () => {
         // 调用修改文章请求
@@ -126,8 +126,8 @@ const onSubmit = async () => {
       <template #left>
         <div class="top">
           <span class="back" @click="router.go(-1)"
-            ><i-icon icon="weui:back-filled" /></span
-          >|
+            ><i-icon icon="weui:back-filled" />
+          </span>
           <span class="home" @click="router.push('./demo')"
             ><i-icon icon="fa6-solid:house"
           /></span>
@@ -136,11 +136,11 @@ const onSubmit = async () => {
       <template #right>
         <div class="top">
           <span class="more"
-            ><i-icon icon="ri:more-fill" @click="showShare = true" /></span
-          >|
-          <span class="handle"
-            ><i-icon icon="icon-park-solid:handle-round"
+            ><i-icon icon="ri:more-fill" @click="showShare = true"
           /></span>
+          <!-- <span class="handle"
+            ><i-icon icon="icon-park-solid:handle-round"
+          /></span> -->
         </div>
       </template>
     </van-nav-bar>
@@ -222,14 +222,14 @@ const onSubmit = async () => {
 .more {
   margin-right: 10px;
 }
-.top {
+/* .top {
   border: 1px solid #000;
   border-radius: 5px;
   padding: 3px 0;
   span {
     margin: 0 5px;
   }
-}
+} */
 .self-title {
   line-height: 32px;
 }

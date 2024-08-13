@@ -4,6 +4,9 @@ import { ref } from "vue";
 import { useInformation } from "@/store";
 const router = useRouter();
 const userInfo = useInformation();
+// 清空未读消息数量
+userInfo.email.unread_count = null;
+
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
@@ -19,7 +22,7 @@ const onLoad = async () => {
   const res = userInfo.email;
 
   result.value = res.article_ban;
-
+  // 从全局状态管理中获取
   list.value = [...list.value, ...result.value];
 
   loading.value = false;
@@ -43,7 +46,7 @@ const onRefresh = () => {
 </script>
 <template>
   <van-nav-bar
-    title="管理员通知"
+    title="举报邮箱"
     left-text="返回"
     left-arrow
     @click-left="router.go(-1)"

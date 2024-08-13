@@ -5,7 +5,7 @@ import { readSystemNotice } from "@/api/user";
 import { useUserStore } from "@/store";
 import { useInformation } from "@/store";
 
-const useInfor = useInformation();
+const useInfo = useInformation();
 // 父传子
 const props = defineProps({
   base: Object
@@ -25,16 +25,15 @@ const data = ref({
 });
 
 // 获取系统消息
-data.value = useInfor.system;
+data.value = useInfo.system;
 
 // 是否已读
 const checkSystem = async () => {
   const res = await readSystemNotice({ username: username });
   if (res.code == 200) {
     console.log("aaa");
+    router.push("/systemNotice");
   }
-
-  router.push("/systemNotice");
 };
 </script>
 <template>

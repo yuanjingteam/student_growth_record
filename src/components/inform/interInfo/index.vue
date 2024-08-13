@@ -29,8 +29,8 @@ const checkUser = async () => {
   const res = await readUserNotice({ username: username });
   if (res.code == 200) {
     console.log("ccc");
+    router.push("./userNotice");
   }
-  router.push("./userNotice");
 };
 </script>
 <template>

@@ -10,11 +10,8 @@ const headshot = userStore.userData.user_headshot;
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-const page = ref(1);
+const page = ref(0);
 const inter_info = ref([]);
-
-// 初始化
-inter_info.value = userStore.tracks.inter_info;
 
 const getTracks = async () => {
   const { data } = await getUserTracks({
@@ -78,8 +75,11 @@ const onRefresh = () => {
           </template>
         </van-cell>
         <div v-if="item.i_type == '评论'">{{ item.content }}</div>
-        <div class="content">
-          <van-text-ellipsis rows="3" :content="item.i_content" />
+        <div
+          class="content"
+          @click="router.push(`/postDetail/${item.article_id}`)"
+        >
+          <van-text-ellipsis rows="3" :content="item.article_content" />
           <p class="remark">
             <span>{{ item.name }}</span>
             <span><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span>
@@ -95,7 +95,7 @@ const onRefresh = () => {
     </van-list>
   </van-pull-refresh>
 </template>
-<style>
+<style scoped>
 .van-cell-group {
   margin-bottom: 10px;
 }
