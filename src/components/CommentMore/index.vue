@@ -1,57 +1,14 @@
 <script setup>
 import { ref, defineProps, reactive } from "vue";
-import { getCommentsSecondService } from "@/api/article";
-import { useUserStore } from "@/store";
 
-const userStore = useUserStore();
 const props = defineProps({
   data: Object
 });
 
-// 防抖函数
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func.apply(this, args), delay);
-  };
-}
-
-//二级评论列表
-const commentSeList = ref();
 const showPopover = ref(false);
 const actions = [{ text: "举报" }, { text: "删除" }];
 const select = (action, index) => {
   console.log(action, index);
-};
-//二级评论数据
-const commentSeData = ref({
-  username: userStore.username,
-  comment_id: props.data.user_id,
-  page: 0,
-  limit: 3
-});
-//控制当前哪个下拉框展开
-const activeNames = ref(["0"]);
-//标志下拉框展开或合上
-const commentFold = ref(false);
-
-//点击下拉框触发事件
-const changeComment = async state => {
-  commentSeList.value = [];
-  if (!state) {
-    const {
-      data: { comment_se_list }
-    } = await getCommentsSecondService(commentSeData);
-    commentSeList.value = comment_se_list;
-  }
-  commentFold.value = !state;
-};
-// 创建防抖后的下拉框触发
-const debouncedchangeComment = debounce(changeComment, 300);
-const showCommentDetail = ref(false);
-const handleComment = () => {
-  showCommentDetail.value = true;
 };
 </script>
 
@@ -61,7 +18,7 @@ const handleComment = () => {
       <template #tags>
         <div class="info-box">
           <van-image
-            width="3rem"
+            width="5rem"
             height="3rem"
             round
             :src="data.user_headshot"
@@ -81,51 +38,23 @@ const handleComment = () => {
                 </template>
               </van-popover>
             </div>
-            <p class="comment-comtent">{{ data.comment_content }}</p>
+            <p class="comment-comtent">{{ data.comment_text }}</p>
             <div class="comment-footer">
               <p class="btn-title">{{ data.comment_time }}</p>
               <div>
-                <van-button size="mini" icon="comment-o" />
                 <van-button size="mini" icon="good-job-o">{{
-                  data.comment_like_num
+                  data.comment_like
                 }}</van-button>
               </div>
             </div>
-            <van-collapse
-              v-model="activeNames"
-              @change="debouncedchangeComment(commentFold)"
-            >
-              <van-collapse-item
-                :title="`共有${data.comment_son_num}条回复`"
-                name="1"
-              >
-                <div
-                  v-for="(item, index) in commentSeList"
-                  :key="index"
-                  @click="handleComment"
-                >
-                  <span>{{ item.name }}：</span>
-                  <span>{{ item.comment_content }}</span>
-                </div>
-                <div>...</div>
-              </van-collapse-item>
-            </van-collapse>
           </div>
         </div>
       </template>
     </van-card>
   </div>
-  <van-action-sheet v-model:show="showCommentDetail" title="评论详情">
-    <div class="content">
-      <comment-more :data="data" />
-    </div>
-  </van-action-sheet>
 </template>
 
 <style scoped>
-.content {
-  padding: 16px 16px 160px;
-}
 .cell {
   .van-card {
     background-color: #fff;
@@ -183,16 +112,5 @@ const handleComment = () => {
       }
     }
   }
-}
-.van-collapse >>> .van-collapse-item__title {
-  background-color: #f0f1f5;
-}
-.van-collapse-item {
-  background-color: rgba(166, 168, 173, 1);
-  --van-collapse-item-content-background: #f0f1f5;
-}
-
-.comment-detail {
-  float: right;
 }
 </style>
