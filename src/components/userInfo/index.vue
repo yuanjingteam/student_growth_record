@@ -5,20 +5,23 @@ import { getUserInfo } from "@/api/user";
 // 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useUserStore } from "@/store";
 
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
 const userStore = useUserStore();
 const router = useRouter();
 
-const own = ref(true);
+const own = ref(false);
+const route = useRoute();
 // 获取普通属性:
-const username = ref(userStore.username);
+const username = ref(userStore.username); // 0
 // 如果能解析出用户信息,说明不是当前用户,是他人主页
-const routerName = router.currentRoute.value.params.username;
+const routerName = route.params.username;
 if (routerName) {
   if (routerName == username.value) {
-    own.value = false;
+    // 说明是本人,不渲染班级
+    own.value = true;
+    console.log(own.value);
   } else {
     // 赋值一个新的username,就是对当前username进行操作的
     username.value = router.currentRoute.value.params.username;
@@ -77,31 +80,38 @@ const handleImagePreview = src => {
       </div>
     </div>
     <!-- 头部总组件 -->
-    <div class="user-header">
-      <!-- 编辑资料部分 -->
-      <div class="my">
-        <slot name="self" />
-      </div>
-      <!-- 我的座右铭 -->
-      <div class="my-motto">
-        <i-icon icon="uil:edit-alt" />
-        <van-text-ellipsis :content="data.user_motto" class="my-motto" />
-      </div>
-      <!-- 我的个人信息 -->
-      <div class="user-info">
-        <div @click="router.push('./userFans')">粉丝：{{ data.userfans }}</div>
-        <div @click="router.push('./userAttention')">
-          关注：{{ data.user_concern }}
+    <van-cell-group inset>
+      <div class="user-header">
+        <!-- 编辑资料部分 -->
+        <div>
+          <slot name="self" />
         </div>
-        <div>获赞：{{ data.user_like }}</div>
-        <div>积分：{{ data.score }}</div>
+        <div>
+          <slot name="other" />
+        </div>
+        <!-- 我的座右铭 -->
+        <div class="my-motto">
+          <i-icon icon="uil:edit-alt" />
+          <van-text-ellipsis :content="data.user_motto" class="my-motto" />
+        </div>
+        <!-- 我的个人信息 -->
+        <div class="user-info">
+          <div @click="router.push('./userFans')">
+            粉丝：{{ data.userfans }}
+          </div>
+          <div @click="router.push('./userAttention')">
+            关注：{{ data.user_concern }}
+          </div>
+          <div>获赞：{{ data.user_like }}</div>
+          <div>积分：{{ data.score }}</div>
+        </div>
+        <!-- 其他人,不是本人才给插槽 -->
+        <div v-if="!own" class="other">
+          <slot name="class" :text="data.user_class" />
+          <slot name="office" :text="data.user_Identity" />
+        </div>
       </div>
-      <!-- 其他人 -->
-      <div v-if="!own" class="other">
-        <slot name="class" :text="data.user_class" />
-        <slot name="office" :text="data.user_Identity" />
-      </div>
-    </div>
+    </van-cell-group>
   </div>
 </template>
 
@@ -117,9 +127,7 @@ const handleImagePreview = src => {
 
 .user-header {
   position: relative;
-  margin-top: 20px;
-  padding: 10.3333vmin 3.6667vmin 15px;
-  background-color: #ffff;
+  padding: 10vmin 3.6667vmin 15px;
   border-radius: 7px;
   overflow: hidden;
 }
@@ -132,7 +140,7 @@ const handleImagePreview = src => {
 .my-outside {
   position: absolute;
   display: flex;
-  top: -8.4vmin;
+  top: -30px;
   left: 31px;
   z-index: 2;
 }

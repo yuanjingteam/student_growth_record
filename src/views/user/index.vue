@@ -8,26 +8,27 @@ const router = useRouter();
 
 <template>
   <div class="main">
-    <div class="my-w">
-      <!-- 个人信息 -->
-      <user-info>
-        <template #self>
-          <div class="my-inside" />
-          <div class="change-info" @click="router.push('./editData')">
-            <button>编辑资料</button>
-          </div>
-        </template>
-      </user-info>
+    <!-- 个人信息 -->
+    <user-info>
+      <template #self>
+        <div class="my-inside" />
+        <div class="change-info" @click="router.push('./editData')">
+          <button>编辑资料</button>
+        </div>
+      </template>
+    </user-info>
+
+    <van-cell-group inset class="mid">
       <!-- 我的操作 -->
       <div class="my-operation">
         <div class="op-icon">
           <p>
             <i-icon
               icon="mingcute:calendar-time-add-line"
-              @click="router.push('./myPublish')"
+              @click="router.push('./myHistory')"
             />
           </p>
-          我发布的内容
+          浏览记录
         </div>
         <div class="op-icon" @click="router.push('./myclass')">
           <p><i-icon icon="mingcute:classify-2-fill" /></p>
@@ -42,44 +43,44 @@ const router = useRouter();
           积分换算器
         </div>
       </div>
-      <!-- 我的内容 -->
-      <div class="my-content">
-        <!-- <van-cell
-          title="我发布的内容"
-          is-link
-          @click="router.push('./myPublish')"
-        /> -->
-        <van-cell
-          title="我的收藏"
-          is-link
-          @click="router.push('./myCollect')"
-        />
-        <van-cell
-          title="个人介绍"
-          is-link
-          @click="router.push('./selfIntroduce')"
-        />
-        <van-cell title="意见反馈" is-link @click="router.push('./feedBack')" />
-        <van-cell title="设置" is-link @click="router.push('./sets')" />
-      </div>
-    </div>
+    </van-cell-group>
+
+    <!-- 我的内容 -->
+    <van-cell-group inset class="end">
+      <van-cell
+        title="我发布的内容"
+        is-link
+        @click="router.push('./myPublish')"
+      />
+      <van-cell title="我的收藏" is-link @click="router.push('./myCollect')" />
+      <van-cell
+        title="个人介绍"
+        is-link
+        @click="router.push('./selfIntroduce')"
+      />
+      <!-- <van-cell title="意见反馈" is-link @click="router.push('./feedBack')" /> -->
+      <van-cell title="关于我们" is-link @click="router.push('./feedBack')" />
+      <van-cell title="设置" is-link @click="router.push('./sets')" />
+    </van-cell-group>
   </div>
 </template>
 
 <style scoped>
 .main {
   overflow: hidden;
-  background-color: #f0f1f5;
+  height: 85vh;
 }
-.my-w {
-  margin: 0 10px;
+.mid {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.end {
+  padding: 10px 0px 40px 0px;
 }
 .my-operation {
   display: flex;
-  background-color: #fff;
-  margin: 10px 0;
+  margin: 8px 0;
   padding: 25px 2.6667vmin;
-  border-radius: 3.3333vmin;
   justify-content: space-between;
 }
 .my-operation p {
@@ -88,11 +89,6 @@ const router = useRouter();
 .my-operation .op-icon svg {
   width: 2.2rem;
   height: 2.2rem;
-}
-.my-content {
-  padding-top: 15px;
-  background-color: #fff;
-  border-radius: 10px;
 }
 .my-content .van-cell {
   height: 60px;
@@ -115,12 +111,4 @@ const router = useRouter();
   color: #4580ff;
   font-weight: 700;
 }
-
-/* .other {
-  background-color: pink;
-  padding: 3px;
-  border-radius: 5px;
-  margin-right: 5px;
-  font-size: 11px;
-} */
 </style>

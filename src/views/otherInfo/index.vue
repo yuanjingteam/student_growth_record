@@ -40,6 +40,12 @@ const onRefresh = () => {
     <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
     <div class="my-w">
       <user-info>
+        <template #other>
+          <div class="my-inside" />
+          <div class="change-info" @click="router.push('./otherIntroduce')">
+            <button>个人简介</button>
+          </div>
+        </template>
         <template #class="classProps">
           <span class="other">{{ classProps.text }}</span>
         </template>
@@ -76,5 +82,23 @@ const onRefresh = () => {
   background-color: #e5edff;
   margin-right: 10px;
   font-size: 12px;
+}
+
+.my-inside {
+  position: absolute;
+  top: -4.4vmin;
+  right: -6.3333vmin;
+  width: 24.6667vmin;
+  height: 12.6667vmin;
+  border-radius: 9.3333vmin;
+  background-color: #e5edff;
+}
+
+.change-info {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #4580ff;
+  font-weight: 700;
 }
 </style>

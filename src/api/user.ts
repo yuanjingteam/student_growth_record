@@ -324,6 +324,15 @@ export function changeAttentionState(data?: Object): Promise<ListResult> {
   });
 }
 
+// 获取浏览历史
+export function getUserHistory(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/history_get",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
 // 获取我的足迹
 export function getUserTracks(data?: Object): Promise<ListResult> {
   return http.request({

@@ -111,6 +111,14 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: "/myHistory",
+    name: "myHistory",
+    component: () => import("@/views/user/userHistory/index.vue"),
+    meta: {
+      title: "浏览记录"
+    }
+  },
+  {
     path: "/myclass",
     name: "myclass",
     component: () => import("@/views/user/myClass/index.vue"),
@@ -148,6 +156,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/user/myCollect/index.vue"),
     meta: {
       title: "我的收藏"
+    }
+  },
+  {
+    path: "/otherInfo/otherIntroduce",
+    name: "otherIntroduce",
+    component: () => import("@/views/otherIntroduce/index.vue"),
+    meta: {
+      title: "他人介绍"
     }
   },
   {
