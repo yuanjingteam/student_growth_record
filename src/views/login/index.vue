@@ -38,6 +38,9 @@ const onsubmit = async () => {
   if (checked.value) {
     const res = await userLogin(userForm);
     if (res.code == 200) {
+      localStorage.setItem("username", res.data.username);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role);
       userStore.setUserInfo(res.data);
       // showSuccessToast("登录成功");
       router.push("/demo");
@@ -76,6 +79,11 @@ const confirmTip = () => {
 const cancelTip = () => {
   console.log("取消");
   showTip.value = false;
+};
+//游客登录
+const passengerLogin = () => {
+  localStorage.setItem("username", "passenger");
+  router.push("/demo");
 };
 </script>
 
@@ -137,7 +145,7 @@ const cancelTip = () => {
       <span style="text-decoration: underline" @click="showDialog = true"
         >忘记密码</span
       >
-      <span style="text-decoration: underline" @click="router.push('/demo')"
+      <span style="text-decoration: underline" @click="passengerLogin"
         >游客登录</span
       >
     </div>

@@ -13,7 +13,7 @@ import {
 export const useUserStore = defineStore(
   "user",
   () => {
-    const username = ref(0);
+    const username = ref("passenger");
     const token = ref("");
     const role = ref(1);
 
@@ -36,7 +36,7 @@ export const useUserStore = defineStore(
       role.value = obj.role;
     };
     const removeUserInfo = () => {
-      username.value = 0;
+      username.value = "";
       token.value = "";
       role.value = 0;
     };

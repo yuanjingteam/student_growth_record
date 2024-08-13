@@ -1,36 +1,56 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useUserStore } from "@/store";
+import { getArticlesService, getCommentsService } from "@/api/article";
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 
+const comment_total = ref(0);
 const articleId = route.params.id;
+//文章详情数据
+//初始化数据要写
 const articleData = ref({
-  if_ban: false,
-  user_headshot: "http://dummyimage.com/180x150",
-  name: "马强",
-  username: "2555",
-  user_class: "计科222",
-  tag_name: "考研复习",
-  post_time: "2天前",
   article_content: {
-    article_image: "http://dummyimage.com/120x90",
-    article_text:
-      "西切议已以利活之采克究件称。照别大定适角众然理般全权世活实合价。空按多层务除等做向取而强整相战规利。七米律族报设流形为定质明江年。美且情实程白且这王队走平织。西相规过眼式等合好亲向速广市办。多六白东战价程响满条内水验近要土。",
-    article_video: 79
-  },
-  article_like_sum: 72,
-  article_collect_sum: 46,
-  article_comment_sum: 75,
-  if_like: true,
-  if_collect: true
+    article_text: ""
+  }
 });
+//评论详情数据
+const commentData = {
+  article_id: articleId,
+  comment_way: "hot",
+  comment_count: 5,
+  comment_page: 0,
+  username: userStore.username
+};
+//评论详情列表
+const commentList = ref([]);
+//获取评论详情列表
+const getCommentsList = async () => {
+  const { data } = await getCommentsService(commentData);
+  commentList.value = data.comment_list;
+  comment_total.value = data.comment_num;
+};
+getCommentsList();
+//获取帖子详情列表
+const getArticleDetailList = async () => {
+  const { data } = await getArticlesService({
+    article_id: articleId,
+    username: userStore.username
+  });
+  articleData.value = data;
+  console.log(data);
+};
+getArticleDetailList();
 
-onMounted(() => {
-  //发获取评论请求和帖子详情请求
-  //得到data后渲染
-  console.log(111);
-});
+//切换状态获取类型信息
+const getType = async state => {
+  commentData.comment_way = state;
+  const { data } = await getCommentsService(commentData);
+  commentList.value = data.comment_list;
+  comment_total.value = data.comment_num;
+};
 </script>
 <template>
   <div class="detail">
@@ -46,15 +66,18 @@ onMounted(() => {
       <!-- 使用 title 插槽来自定义标题 -->
       <template #title>
         <span class="custom-title">评论</span>
-        <span class="comment_count">12</span>
+        <span class="comment_count">{{ comment_total }}</span>
       </template>
       <template #value>
-        <change-btn :article_id="1" style="float: right" />
+        <change-btn style="float: right" @get_type="getType" />
       </template>
     </van-cell>
 
-    <comment-detail />
-    <comment-detail />
+    <comment-detail
+      v-for="(item, index) in commentList"
+      :key="index"
+      :data="item"
+    />
   </div>
 </template>
 

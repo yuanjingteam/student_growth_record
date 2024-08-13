@@ -8,6 +8,8 @@ import { ContentTypeEnum, ResultEnum } from "@/enums/requestEnum";
 import NProgress from "../progress";
 import { showFailToast } from "vant";
 import "vant/es/toast/style";
+import { useUserStore } from "@/store";
+
 // ContentTypeEnum
 // 默认 axios 实例请求配置
 //  || ContentTypeEnum.FORM_URLENCODED
@@ -21,7 +23,6 @@ const configDefault = {
     "http://127.0.0.1:4523/m1/4869431-0-default" ||
     "http://192.168.22.62:8881" ||
     import.meta.env.VITE_BASE_API
-  // data: {}
 };
 
 class Http {
@@ -35,10 +36,12 @@ class Http {
     Http.axiosInstance.interceptors.request.use(
       config => {
         NProgress.start();
+        const userStore = useUserStore();
+        const token = userStore.token;
         // 发送请求前，可在此携带 token
-        // if (token) {
-        //   config.headers["token"] = token;
-        // }
+        if (token) {
+          config.headers["token"] = token;
+        }
         return config;
       },
       (error: AxiosError) => {
