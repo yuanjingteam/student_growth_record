@@ -7,6 +7,7 @@ const router = useRouter();
 </script>
 
 <template>
+  <br />
   <div class="main">
     <!-- 个人信息 -->
     <user-info>
@@ -79,7 +80,6 @@ const router = useRouter();
 }
 .my-operation {
   display: flex;
-  margin: 8px 0;
   padding: 25px 2.6667vmin;
   justify-content: space-between;
 }

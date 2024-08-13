@@ -15,7 +15,7 @@ export const useUserStore = defineStore(
   () => {
     const username = ref(0);
     const token = ref("");
-    const role = ref("");
+    const role = ref(1);
 
     // 用户详细资料
     const userData = ref({
@@ -38,7 +38,7 @@ export const useUserStore = defineStore(
     const removeUserInfo = () => {
       username.value = 0;
       token.value = "";
-      role.value = "";
+      role.value = 0;
     };
 
     // 获取用户详细信息

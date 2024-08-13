@@ -2,7 +2,6 @@
 import { showImagePreview } from "vant";
 import { ref } from "vue";
 import { getUserInfo } from "@/api/user";
-// 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
 import { useUserStore } from "@/store";
 
 import { useRoute, useRouter } from "vue-router";
@@ -10,6 +9,10 @@ import { useRoute, useRouter } from "vue-router";
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
 const userStore = useUserStore();
 const router = useRouter();
+
+// 判断是否为管理员
+const role = ref(1);
+// role.value = userStore.role;
 
 const own = ref(false);
 const route = useRoute();
@@ -83,6 +86,9 @@ const handleImagePreview = src => {
     <van-cell-group inset>
       <div class="user-header">
         <!-- 编辑资料部分 -->
+        <div v-if="role == 1 && !own">
+          <slot name="role" />
+        </div>
         <div>
           <slot name="self" />
         </div>

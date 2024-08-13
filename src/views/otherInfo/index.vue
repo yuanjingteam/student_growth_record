@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-
+import { useUserStore } from "@/store";
 const router = useRouter();
 
 const list = ref([]);
@@ -46,6 +46,9 @@ const onRefresh = () => {
             <button>个人简介</button>
           </div>
         </template>
+        <template #role>
+          <div class="ban">封禁</div>
+        </template>
         <template #class="classProps">
           <span class="other">{{ classProps.text }}</span>
         </template>
@@ -61,7 +64,9 @@ const onRefresh = () => {
         finished-text="没有更多了"
         @load="onLoad"
       >
-        <cell-card v-for="item in list" :key="item" @click="console.log(1)" />
+        <van-cell-group inset>
+          <cell-card v-for="item in list" :key="item" @click="console.log(1)" />
+        </van-cell-group>
       </van-list>
     </van-pull-refresh>
   </div>
@@ -70,11 +75,10 @@ const onRefresh = () => {
 <style scoped>
 .main {
   background-color: #f0f1f5;
-  height: 100%;
 }
 .my-w {
   overflow: hidden;
-  margin: 0 10px 20px;
+  margin-bottom: 10px;
 }
 .other {
   border-radius: 5px;
@@ -82,6 +86,12 @@ const onRefresh = () => {
   background-color: #e5edff;
   margin-right: 10px;
   font-size: 12px;
+}
+.ban {
+  position: absolute;
+  top: 3px;
+  right: 100px;
+  z-index: 20;
 }
 
 .my-inside {
