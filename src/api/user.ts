@@ -359,3 +359,12 @@ export function changeSelfCotnent(data?: Object): Promise<ListResult> {
     data: JSON.stringify(data)
   });
 }
+
+// 获取用户积分统计表
+export function getUserPoints(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/points_get",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}

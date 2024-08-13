@@ -85,7 +85,7 @@ const handleImagePreview = src => {
       <!-- 我的座右铭 -->
       <div class="my-motto">
         <i-icon icon="uil:edit-alt" />
-        {{ data.user_motto }}
+        <van-text-ellipsis :content="data.user_motto" class="my-motto" />
       </div>
       <!-- 我的个人信息 -->
       <div class="user-info">
@@ -122,6 +122,11 @@ const handleImagePreview = src => {
   background-color: #ffff;
   border-radius: 7px;
   overflow: hidden;
+}
+
+.my-motto .i-icon {
+  margin-top: 3px;
+  float: left;
 }
 
 .my-outside {

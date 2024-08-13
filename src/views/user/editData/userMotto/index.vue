@@ -36,3 +36,4 @@ const onClickRight = () => {
     </van-cell>
   </van-cell-group>
 </template>
+<style scoped></style>

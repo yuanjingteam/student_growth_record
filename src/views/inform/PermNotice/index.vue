@@ -46,7 +46,7 @@ const onRefresh = () => {
 </script>
 <template>
   <van-nav-bar
-    title="管理员通知"
+    title="举报邮箱"
     left-text="返回"
     left-arrow
     @click-left="router.go(-1)"
