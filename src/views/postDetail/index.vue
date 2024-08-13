@@ -7,6 +7,7 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 
+//评论总数
 const comment_total = ref(0);
 const articleId = route.params.id;
 //文章详情数据
@@ -19,7 +20,7 @@ const articleData = ref({
 //评论详情数据
 const commentData = {
   article_id: articleId,
-  comment_way: "hot",
+  comment_sort: "hot",
   comment_count: 5,
   comment_page: 0,
   username: userStore.username

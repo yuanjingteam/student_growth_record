@@ -29,6 +29,14 @@ export function getCommentsService(data?: object): Promise<ListResult> {
     data
   });
 }
+//获取二级评论
+export function getCommentsSecondService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/comment/getsecond",
+    method: "post",
+    data
+  });
+}
 //首页展示搜索列表
 export function searchArticleService(data?: object): Promise<Search> {
   return http.request({
@@ -40,7 +48,7 @@ export function searchArticleService(data?: object): Promise<Search> {
 //点赞、取消点赞     文章、评论
 export function articleUpvoteService(data?: object): Promise<ListResult> {
   return http.request({
-    url: "/article/upvote",
+    url: "/article/like",
     method: "post",
     data
   });
@@ -75,7 +83,7 @@ export function articleReportService(data?: object): Promise<ListResult> {
 //封禁文章
 export function articleBanService(data?: object): Promise<ListResult> {
   return http.request({
-    url: "/article/report",
+    url: "/article/list/ban",
     method: "post",
     data
   });
