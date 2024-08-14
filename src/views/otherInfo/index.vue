@@ -55,7 +55,12 @@ const onRefresh = () => {
         finished-text="没有更多了"
         @load="onLoad"
       >
-        <cell-card v-for="item in list" :key="item" @click="console.log(1)" />
+        <cell-card
+          v-for="item in list"
+          :key="item"
+          :article="item"
+          @click="console.log(1)"
+        />
       </van-list>
     </van-pull-refresh>
   </div>

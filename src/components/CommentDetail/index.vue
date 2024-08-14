@@ -1,13 +1,17 @@
 <script setup>
 import { ref, defineProps, reactive } from "vue";
-import { getCommentsSecondService } from "@/api/article";
+import {
+  getCommentsSecondService,
+  articleCommentService,
+  deleteCommentsService
+} from "@/api/article";
 import { useUserStore } from "@/store";
 
 const userStore = useUserStore();
 const props = defineProps({
   data: Object
 });
-
+const emit = defineEmits(["refresh"]);
 // 防抖函数
 function debounce(func, delay) {
   let timer;
@@ -20,14 +24,11 @@ function debounce(func, delay) {
 //二级评论列表
 const commentSeList = ref();
 const showPopover = ref(false);
-const actions = [{ text: "举报" }, { text: "删除" }];
-const select = (action, index) => {
-  console.log(action, index);
-};
+
 //二级评论数据
 const commentSeData = ref({
   username: userStore.username,
-  comment_id: props.data.user_id,
+  comment_id: props.data.id,
   page: 0,
   limit: 3
 });
@@ -52,6 +53,52 @@ const debouncedchangeComment = debounce(changeComment, 300);
 const showCommentDetail = ref(false);
 const handleComment = () => {
   showCommentDetail.value = true;
+};
+//评论内容
+const comment = ref("");
+//是否展示评论输入框
+const showCommentTable = ref(false);
+//点击评论
+const commentClick = () => {
+  comment.value = "";
+  showCommentTable.value = !showCommentTable.value;
+};
+//评论校验
+const commentRef = ref();
+//提交评论
+const submitComment = async () => {
+  await commentRef.value.validate();
+  showCommentTable.value = !showCommentTable.value;
+  const res = await articleCommentService({
+    comment_type: "1",
+    id: props.data.id,
+    comment_content: comment.value
+  });
+  console.log(res);
+};
+//子传父，重新发起请求接收二级评论
+const reloadCommentSec = async () => {
+  const {
+    data: { comment_se_list }
+  } = await getCommentsSecondService(commentSeData);
+  commentSeList.value = comment_se_list;
+};
+//下拉选择框数据
+const actions = [{ text: "删除" }];
+const select = (action, index) => {
+  if (action.text == "删除") {
+    showDelete.value = !showDelete.value;
+  }
+};
+//是否删除
+const showDelete = ref(false);
+//确认删除
+const confirmDelete = async () => {
+  const res = await deleteCommentsService({
+    comment_id: props.data.id
+  });
+  console.log(res);
+  emit("refresh");
 };
 </script>
 
@@ -85,7 +132,11 @@ const handleComment = () => {
             <div class="comment-footer">
               <p class="btn-title">{{ data.comment_time }}</p>
               <div>
-                <van-button size="mini" icon="comment-o" />
+                <van-button
+                  size="mini"
+                  icon="comment-o"
+                  @click="commentClick"
+                />
                 <van-button size="mini" icon="good-job-o">{{
                   data.comment_like_num
                 }}</van-button>
@@ -117,9 +168,44 @@ const handleComment = () => {
   </div>
   <van-action-sheet v-model:show="showCommentDetail" title="评论详情">
     <div class="content">
-      <comment-more :data="data" />
+      <comment-more
+        v-for="(item, index) in commentSeList"
+        :key="index"
+        :comment_com="item"
+        :commentId="data.id"
+        @reload="reloadCommentSec"
+      />
     </div>
   </van-action-sheet>
+  <van-action-sheet v-model:show="showCommentTable" title="发布评论">
+    <div class="content">
+      <van-cell-group inset>
+        <van-form ref="commentRef">
+          <van-field
+            v-model="comment"
+            rows="2"
+            autosize
+            type="textarea"
+            maxlength="70"
+            placeholder="请输入您的评论信息"
+            show-word-limit
+            :rules="[{ required: true, message: '评论信息不能为空' }]"
+          />
+        </van-form>
+      </van-cell-group>
+      <van-button round block type="primary" @click="submitComment()">
+        提交
+      </van-button>
+    </div>
+  </van-action-sheet>
+  <van-dialog
+    v-model:show="showDelete"
+    title="提示"
+    message="您确定要删除当前帖子吗？"
+    show-cancel-button
+    showConfirmButton
+    @confirm="confirmDelete"
+  />
 </template>
 
 <style scoped>

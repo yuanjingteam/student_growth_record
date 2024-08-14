@@ -24,7 +24,7 @@ export function getArticlesService(data?: object): Promise<ListResult> {
 //获取文章详情页的评论
 export function getCommentsService(data?: object): Promise<ListResult> {
   return http.request({
-    url: "/articles/getcomments",
+    url: "/comment/get_lel1comment",
     method: "post",
     data
   });
@@ -32,7 +32,16 @@ export function getCommentsService(data?: object): Promise<ListResult> {
 //获取二级评论
 export function getCommentsSecondService(data?: object): Promise<ListResult> {
   return http.request({
-    url: "/comment/getsecond",
+    url: "/comment/get_lel2comment",
+    method: "post",
+    data
+  });
+}
+
+//删除评论
+export function deleteCommentsService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/comment/delete",
     method: "post",
     data
   });
@@ -88,7 +97,14 @@ export function articleBanService(data?: object): Promise<ListResult> {
     data
   });
 }
-
+//删除文章
+export function articleDeleteService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/article/list/delete",
+    method: "post",
+    data
+  });
+}
 //获取热帖标题，一次10条
 export function getHotPostService(data?: object): Promise<ListResult> {
   return http.request({

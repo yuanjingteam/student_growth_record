@@ -54,9 +54,9 @@ const gotoDetail = id => {
           <i-icon icon="icon-park:message" style="font-size: 25px" />
           <div class="content">
             <p class="topic-top">{{ item.class_name }}</p>
-            <p class="topic-content">
+            <!-- <p class="topic-content">
               {{ "班长：" + item.header_name }}
-            </p>
+            </p> -->
           </div>
         </div>
       </template>
