@@ -324,6 +324,15 @@ export function changeAttentionState(data?: Object): Promise<ListResult> {
   });
 }
 
+// 获取浏览历史
+export function getUserHistory(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/history_get",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
 // 获取我的足迹
 export function getUserTracks(data?: Object): Promise<ListResult> {
   return http.request({
@@ -333,6 +342,14 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
   });
 }
 
+// 获取用户发布的文章
+export function getArticlePublish(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/other/article_publish",
+    method: "get",
+    data: JSON.stringify(data)
+  });
+}
 // 获取用户收藏
 export function getStar(data?: Object): Promise<ListResult> {
   return http.request({
@@ -345,7 +362,7 @@ export function getStar(data?: Object): Promise<ListResult> {
 // 获取用户自述
 export function getSelfCotnent(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/student/getSelfCotnent",
+    url: "/user/getSelfCotnent",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -354,7 +371,7 @@ export function getSelfCotnent(data?: Object): Promise<ListResult> {
 // 修改用户自述
 export function changeSelfCotnent(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/student/updateSelfContent",
+    url: "/user/updateSelfContent",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -365,6 +382,24 @@ export function getUserPoints(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/points_get",
     method: "get",
+    data: JSON.stringify(data)
+  });
+}
+
+// 封禁用户
+export function userIsBan(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/ban",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 解封用户
+export function userUnBan(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/Unban",
+    method: "post",
     data: JSON.stringify(data)
   });
 }

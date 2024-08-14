@@ -161,6 +161,16 @@ const updataUserHeadshot = () => {
   left: 146px;
   z-index: 10;
 }
+/* .userImg::before {
+  position: absolute;
+  left: 0px;
+  top: 0;
+  width: 80px;
+  height: 80px;
+  content: "";
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 40px;
+} */
 .van-uploader >>> .van-uploader__preview-image {
   border-radius: 50px;
 }
