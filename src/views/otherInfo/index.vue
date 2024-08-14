@@ -1,26 +1,39 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-
+import { useUserStore } from "@/store";
+import { getArticlePublish } from "@/api/user";
 const router = useRouter();
-
+const userStore = useUserStore();
 const list = ref([]);
+const page = ref(0);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-
-const onLoad = () => {
+const username = userStore.username;
+// 获得他人文章信息
+const articlePublish = async () => {
+  const { data } = await getArticlePublish({
+    username: username,
+    page: page.value++
+  });
+  list.value = [...list.value, ...data.content];
+  console.log(list.value);
+};
+articlePublish();
+const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];
+    page.value = 0;
     refreshing.value = false;
   }
 
-  for (let i = 0; i < 10; i++) {
-    list.value.push(list.value.length + 1);
-  }
+  await articlePublish();
+  console.log(page.value, 31313);
+
   loading.value = false;
 
-  if (list.value.length >= 40) {
+  if (list.value.length >= 20) {
     finished.value = true;
   }
 };
@@ -33,6 +46,10 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
+const show = ref(false);
+const banwei = () => {
+  show.value = true;
+};
 </script>
 
 <template>
@@ -40,18 +57,8 @@ const onRefresh = () => {
     <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
     <div class="my-w">
       <user-info>
-        <template #other>
-          <div class="my-inside" />
-          <div class="change-info" @click="router.push('./otherIntroduce')">
-            <button>个人简介</button>
-          </div>
-        </template>
-        <template #class="classProps">
-          <span class="other">{{ classProps.text }}</span>
-        </template>
-        <template #office="officeProps">
-          <span class="other">{{ officeProps.text }}</span>
-        </template>
+        <template #other />
+        <template #office />
       </user-info>
     </div>
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
@@ -61,7 +68,14 @@ const onRefresh = () => {
         finished-text="没有更多了"
         @load="onLoad"
       >
-        <cell-card v-for="item in list" :key="item" @click="console.log(1)" />
+        <van-cell-group inset>
+          <cell-card
+            v-for="(item, index) in list"
+            :key="index"
+            :article="item"
+            @click="console.log(1)"
+          />
+        </van-cell-group>
       </van-list>
     </van-pull-refresh>
   </div>
@@ -70,20 +84,21 @@ const onRefresh = () => {
 <style scoped>
 .main {
   background-color: #f0f1f5;
-  height: 100%;
 }
 .my-w {
   overflow: hidden;
-  margin: 0 10px 20px;
-}
-.other {
-  border-radius: 5px;
-  padding: 3px;
-  background-color: #e5edff;
-  margin-right: 10px;
-  font-size: 12px;
+  margin-bottom: 10px;
 }
 
+.ban {
+  position: absolute;
+  top: 0px;
+  right: 100px;
+  z-index: 20;
+}
+.ban .i-icon {
+  float: left;
+}
 .my-inside {
   position: absolute;
   top: -4.4vmin;

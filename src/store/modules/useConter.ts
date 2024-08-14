@@ -7,15 +7,15 @@ import {
   changeUserEmail,
   getUserData
 } from "@/api/user";
-// import { getTopicListService } from "@/api/topic";
-
+import { useRouter } from "vue-router";
 //用户信息管理
 export const useUserStore = defineStore(
   "user",
   () => {
     const username = ref("passenger");
     const token = ref("");
-    const role = ref("0");
+    const role = ref(1);
+    const router = useRouter();
 
     // 用户详细资料
     const userData = ref({
@@ -38,7 +38,7 @@ export const useUserStore = defineStore(
     const removeUserInfo = () => {
       username.value = "";
       token.value = "";
-      role.value = "";
+      role.value = 0;
     };
 
     // 获取用户详细信息
@@ -88,6 +88,17 @@ export const useUserStore = defineStore(
       }
     };
 
+    // 区分身份信息
+    const otherSwitch = user => {
+      // 如果是自己的主页就跳自己
+      if (user === username) {
+        router.push(`./user/name=${user.value}`);
+      } else {
+        // 否则跳他人主页
+        router.push(`./otherInfo/name=${username.value}`);
+      }
+    };
+
     // 初始化用户详细信息
     baseUserData();
 
@@ -101,7 +112,8 @@ export const useUserStore = defineStore(
       submitEmail,
       submitPhone,
       submitMotto,
-      submitHeadshot
+      submitHeadshot,
+      otherSwitch
     };
   },
   {

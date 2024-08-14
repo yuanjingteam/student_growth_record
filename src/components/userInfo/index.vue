@@ -1,38 +1,83 @@
 <script setup>
 import { showImagePreview } from "vant";
 import { ref } from "vue";
-import { getUserInfo } from "@/api/user";
-// 导入自定义的 useUserStore 函数,该函数返回 Pinia 中的 useCounterStore 实例
+import { getUserInfo, userIsBan, userUnBan } from "@/api/user";
 import { useUserStore } from "@/store";
-
+import { showToast } from "vant";
 import { useRoute, useRouter } from "vue-router";
 
-// 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
-const userStore = useUserStore();
+// const userStore = useUserStore();
 const router = useRouter();
 
-const own = ref(false);
+// 判断是否为管理员
+const role = ref(1);
+
+// 判断是否为本人
+const own = ref(true);
+
+// 解析路由参数
 const route = useRoute();
-// 获取普通属性:
-const username = ref(userStore.username); // 0
-// 如果能解析出用户信息,说明不是当前用户,是他人主页
-const routerName = route.params.username;
+
+// 获取当前用户id
+let username = useUserStore.username;
+
+// 解析路由获取是否为本人
+let routerName = route.params.username;
 if (routerName) {
-  if (routerName == username.value) {
-    // 说明是本人,不渲染班级
-    own.value = true;
-    console.log(own.value);
-  } else {
-    // 赋值一个新的username,就是对当前username进行操作的
-    username.value = router.currentRoute.value.params.username;
-    console.log(21312424);
+  if (routerName !== username) {
+    own.value = false;
   }
+  username = routerName;
 }
+
+// 修改头像
+const show = ref(false);
+const handleImagePreview = src => {
+  showImagePreview({
+    images: [src],
+    closeable: true
+  });
+};
+
+// 封禁用户显示
+const showPopover = ref(false);
+const actions = [
+  { text: "封禁一天", ban_time: 1 },
+  { text: "封禁三天", ban_time: 3 },
+  { text: "封禁十天", ban_time: 10 }
+];
+
+// 封禁用户
+const onSelect = async action => {
+  const { code } = await userIsBan({
+    username: username,
+    ban_time: action.ban_time
+  });
+  if (code === 200) {
+    showToast(`已将该用户封禁${action.ban_time}天`);
+    setTimeout(function () {
+      window.location.reload();
+    }, 500);
+  }
+};
+// 解封用户
+const unBan = async () => {
+  const { code } = await userUnBan({
+    username: username
+  });
+  if (code === 200) {
+    showToast("解封成功");
+    setTimeout(function () {
+      window.location.reload();
+    }, 500);
+  }
+};
 
 const data = ref({
   username: "",
   name: "",
   user_headshot: "",
+  ban: true,
   user_motto: "",
   userfans: 0,
   score: 0,
@@ -48,14 +93,6 @@ const UerInfo = async () => {
   data.value = res.data;
 };
 UerInfo();
-
-const show = ref(false);
-const handleImagePreview = src => {
-  showImagePreview({
-    images: [src],
-    closeable: true
-  });
-};
 </script>
 
 <template>
@@ -75,20 +112,41 @@ const handleImagePreview = src => {
       <!-- 昵称 -->
       <div class="my-name">
         {{ data.name }}
-        <!-- 用户等级 -->
-        <!-- <span>LV.{{ userInfo.level }}</span> -->
       </div>
     </div>
     <!-- 头部总组件 -->
     <van-cell-group inset>
       <div class="user-header">
-        <!-- 编辑资料部分 -->
-        <div>
-          <slot name="self" />
+        <div v-if="!own" name="other">
+          <div class="my-inside" />
+          <div class="change-info" @click="router.push('./otherIntroduce')">
+            <button>个人简介</button>
+          </div>
         </div>
-        <div>
-          <slot name="other" />
+
+        <div v-else name="self">
+          <div class="my-inside" />
+          <div class="change-info" @click="router.push('./editData')">
+            <button>编辑资料</button>
+          </div>
         </div>
+
+        <div v-if="!own && role == 1" name="ban" class="user_ban">
+          <van-popover
+            v-if="data.ban"
+            v-model:show="showPopover"
+            :actions="actions"
+            @select="onSelect"
+          >
+            <template #reference>
+              <van-button type="primary" size="small">封禁用户</van-button>
+            </template>
+          </van-popover>
+          <van-button v-else type="primary" size="small" @click="unBan"
+            >解封用户</van-button
+          >
+        </div>
+
         <!-- 我的座右铭 -->
         <div class="my-motto">
           <i-icon icon="uil:edit-alt" />
@@ -105,10 +163,10 @@ const handleImagePreview = src => {
           <div>获赞：{{ data.user_like }}</div>
           <div>积分：{{ data.score }}</div>
         </div>
-        <!-- 其他人,不是本人才给插槽 -->
-        <div v-if="!own" class="other">
-          <slot name="class" :text="data.user_class" />
-          <slot name="office" :text="data.user_Identity" />
+        <!-- 职位 -->
+        <div v-if="!own" name="office">
+          <span class="other">{{ data.user_class }}</span>
+          <span class="other">{{ data.user_Identity }}</span>
         </div>
       </div>
     </van-cell-group>
@@ -137,6 +195,24 @@ const handleImagePreview = src => {
   float: left;
 }
 
+.my-inside {
+  position: absolute;
+  top: -4.4vmin;
+  right: -6.3333vmin;
+  width: 24.6667vmin;
+  height: 12.6667vmin;
+  border-radius: 9.3333vmin;
+  background-color: #e5edff;
+}
+
+.change-info {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #4580ff;
+  font-weight: 700;
+}
+
 .my-outside {
   position: absolute;
   display: flex;
@@ -152,14 +228,29 @@ const handleImagePreview = src => {
   font-weight: 700;
 }
 
+.my-name span {
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .user-info {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
 }
 
-.my-name span {
-  font-size: 11px;
-  font-weight: 700;
+.other {
+  border-radius: 5px;
+  padding: 3px;
+  background-color: #e5edff;
+  margin-right: 10px;
+  font-size: 12px;
+}
+
+.user_ban {
+  position: absolute;
+  top: 0px;
+  right: 80px;
+  z-index: 200;
 }
 </style>
