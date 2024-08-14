@@ -1,11 +1,13 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { useTopicStore } from "@/store";
-import { ref } from "vue";
+import { useTopicStore, useUserStore } from "@/store";
+import { reactive, ref, watch } from "vue";
+import { searchArticleService } from "@/api/article";
 const route = useRoute();
 const router = useRouter();
 const useTopic = useTopicStore();
-const list = ref([
+const userStore = useUserStore();
+const roleList = ref([
   {
     id: "hot",
     name: "最热",
@@ -23,8 +25,38 @@ const activeName = ref("最热");
 //获取动态路由的参数
 const topicId = route.params.id;
 //声明当前话题
-const topic = ref({});
+const topic = ref();
 topic.value = useTopic.findTopic(topicId);
+
+//获取文章列表的数据
+const articleData = reactive({
+  key_word: "",
+  topic_name: topic.value.topic_name,
+  article_sort: "hot",
+  article_count: 8,
+  article_page: 0,
+  username: userStore.username
+});
+//声明存储文章列表
+const articleList = ref([]);
+//获取文章列表
+const getArticleList = async () => {
+  const {
+    data: { content }
+  } = await searchArticleService(articleData);
+  articleList.value = content;
+};
+//监听切换排序方式
+watch(activeName, (newValue, oldValue) => {
+  articleData.article_page = 1;
+  if (newValue == "最热") {
+    newValue = "hot";
+  } else {
+    newValue = "new";
+  }
+  articleData.article_sort = newValue;
+  getArticleList();
+});
 
 //控制列表加载状态的显示和隐藏
 const loading = ref(false);
@@ -34,22 +66,20 @@ const finished = ref(false);
 const refreshing = ref(false);
 
 //当用户滚动到底部时会触发加载更多数据的事件
-const onLoad = () => {
-  setTimeout(() => {
-    if (refreshing.value) {
-      list.value = [];
-      refreshing.value = false;
-    }
-
-    for (let i = 0; i < 10; i++) {
-      list.value.push(list.value.length + 1);
-    }
+const onLoad = async () => {
+  if (refreshing.value) {
+    articleData.article_page = 0;
+    articleList.value = [];
+    refreshing.value = false;
+  }
+  articleData.article_page += 1;
+  const res = await searchArticleService(articleData);
+  if (res.code == 200) {
     loading.value = false;
-
-    if (list.value.length >= 40) {
-      finished.value = true;
-    }
-  }, 1000);
+    articleList.value = [...articleList.value, ...res.data.content];
+  } else {
+    finished.value = true;
+  }
 };
 
 //监听了刷新事件
@@ -61,30 +91,6 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
-const onSearch = id => {
-  console.log(id);
-};
-
-const articleData = ref({
-  if_ban: false,
-  user_headshot: "http://dummyimage.com/180x150",
-  name: "马强",
-  username: "2555",
-  user_class: "计科222",
-  tag_name: "考研复习",
-  post_time: "2天前",
-  article_content: {
-    article_image: "http://dummyimage.com/120x90",
-    article_text:
-      "西切议已以利活之采克究件称。照别大定适角众然理般全权世活实合价。空按多层务除等做向取而强整相战规利。七米律族报设流形为定质明江年。美且情实程白且这王队走平织。西相规过眼式等合好亲向速广市办。多六白东战价程响满条内水验近要土。",
-    article_video: 79
-  },
-  article_like_sum: 72,
-  article_collect_sum: 46,
-  article_comment_sum: 75,
-  if_like: true,
-  if_collect: true
-});
 </script>
 <template>
   <van-nav-bar left-arrow @click-left="router.go(-1)">
@@ -106,7 +112,12 @@ const articleData = ref({
     background="#f0f1f5"
     color="#041833"
   >
-    <van-tab v-for="item in list" :key="item.id" :title="item.title">
+    <van-tab
+      v-for="item in roleList"
+      :key="item.id"
+      :title="item.title"
+      :name="item.name"
+    >
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
         <van-list
           v-model:loading="loading"
@@ -114,9 +125,12 @@ const articleData = ref({
           finished-text="没有更多了"
           @load="onLoad"
         >
-          <post-more :data="articleData" />
-          <post-more :data="articleData" />
-          <post-more :data="articleData" />
+          <post-more
+            v-for="(item, index) in articleList"
+            :key="index"
+            :data="item"
+            :articleId="item.article_id"
+          />
         </van-list>
       </van-pull-refresh>
     </van-tab>

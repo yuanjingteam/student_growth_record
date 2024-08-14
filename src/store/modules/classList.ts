@@ -9,33 +9,27 @@ export const useClassStore = defineStore(
     const classList = ref([
       {
         class_id: "1",
-        header_name: "全部",
         class_name: "计科222"
       },
       {
         class_id: "2",
-        header_name: "学习",
         class_name: "计科221"
       },
       {
         class_id: "3",
-        header_name: "奖项",
         class_name: " 计科223"
       },
       {
         class_id: "4",
-        header_name: "志愿",
         class_name: "计科224"
       },
       {
         class_id: "5",
-        header_name: "文体",
         class_name: "计科225"
       },
 
       {
         class_id: "6",
-        header_name: "日常",
         class_name: "计科226"
       }
     ]);

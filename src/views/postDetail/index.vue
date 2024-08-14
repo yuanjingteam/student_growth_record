@@ -41,13 +41,18 @@ const getArticleDetailList = async () => {
     username: userStore.username
   });
   articleData.value = data;
-  console.log(data);
 };
 getArticleDetailList();
 
 //切换状态获取类型信息
 const getType = async state => {
   commentData.comment_way = state;
+  const { data } = await getCommentsService(commentData);
+  commentList.value = data.comment_list;
+  comment_total.value = data.comment_num;
+};
+//重新获取数据
+const refresh = async () => {
   const { data } = await getCommentsService(commentData);
   commentList.value = data.comment_list;
   comment_total.value = data.comment_num;
@@ -78,6 +83,7 @@ const getType = async state => {
       v-for="(item, index) in commentList"
       :key="index"
       :data="item"
+      @refresh="refresh"
     />
   </div>
 </template>

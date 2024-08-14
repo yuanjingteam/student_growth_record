@@ -42,13 +42,13 @@ const gotoArticleDetail = () => {
           <p class="btn-title">{{ article.tag_name }}</p>
         </button>
         <van-button size="mini" icon="good-job-o">{{
-          article.upvote_amount
+          article.article_like_sum
         }}</van-button>
         <van-button size="mini" icon="comment-o">{{
-          article.comment_amount
+          article.article_collect_sum
         }}</van-button>
         <van-button size="mini" icon="star-o">{{
-          article.collect_amount
+          article.article_comment_sum
         }}</van-button>
       </template>
     </van-card>

@@ -16,7 +16,7 @@ const getAll = () => {
   router.push("/topics");
 };
 
-//跳转进帖子详情页或者班级详情页
+//跳转进帖子详情页
 const gotoDetail = id => {
   router.push(`/topicDetail/${id}`);
 };

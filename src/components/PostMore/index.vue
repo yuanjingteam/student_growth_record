@@ -6,11 +6,12 @@ import {
   articleCollectService,
   articleCommentService,
   articleReportService,
-  articleBanService
+  articleBanService,
+  articleDeleteService
 } from "@/api/article";
 const props = defineProps({
   data: Object,
-  articleId: String
+  articleId: Number
 });
 const router = useRouter();
 const route = useRoute();
@@ -32,7 +33,7 @@ const ifCollect = ref(false);
 //点击三个点是否展示选择框
 const showPopover = ref(false);
 //选择框内容
-const actions = [{ text: "举报" }, { text: "封禁" }];
+const actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
 //是否打开举报框
 const showReport = ref(false);
 //是否封禁
@@ -53,6 +54,8 @@ const select = (action, index) => {
     showReport.value = !showReport.value;
   } else if (action.text == "封禁") {
     showBan.value = !showBan.value;
+  } else if (action.text == "删除") {
+    showDelete.value = !showDelete.value;
   }
 };
 //评论信息
@@ -95,7 +98,11 @@ const reportRef = ref();
 const submitComment = async () => {
   await commentRef.value.validate();
   showCommentTable.value = !showCommentTable.value;
-  const res = await articleCommentService();
+  const res = await articleCommentService({
+    comment_type: "0",
+    id: props.articleId,
+    comment_content: comment.value
+  });
   console.log(res);
 };
 //提交举报理由
@@ -109,10 +116,116 @@ const submitReport = async () => {
   report.value = "";
   showReport.value = !showReport.value;
 };
+//标志删除文章
+const showDelete = ref(false);
+//确认删除
+const confirmDelete = async () => {
+  const res = await articleDeleteService({
+    article_id: props.articleId
+  });
+  console.log(res);
+  router.push("/demo");
+};
 </script>
 
 <template>
-  <van-cell-group v-if="route.name == 'PostDetail'">
+  <div v-if="route.name == 'PostDetail'" class="cell">
+    <van-card>
+      <template #tags>
+        <div class="info-box">
+          <van-image
+            round
+            :src="data.user_headshot"
+            @click="router.push(`/otherInfo/${data.username}`)"
+          />
+          <div class="info">
+            <div style="display: flex; justify-content: space-between">
+              <p class="name">{{ data.name }}</p>
+              <van-popover
+                v-model:show="showPopover"
+                theme="dark"
+                :actions="actions"
+                placement="left"
+                @select="select"
+              >
+                <template #reference>
+                  <i-icon icon="ant-design:more-outlined" />
+                </template>
+              </van-popover>
+            </div>
+            <p class="grade">{{ data.user_class }}</p>
+          </div>
+        </div>
+        <p class="post-content">{{ data.article_content.article_text }}</p>
+        <div>
+          <button class="btn">
+            <i-icon icon="icon-park:message" />
+            <p class="btn-title">{{ data.tag_name }}</p>
+          </button>
+        </div>
+        <p class="time2">{{ data.post_time }}</p>
+      </template>
+      <template #footer>
+        <div class="btn-box">
+          <van-button
+            v-if="!ifCollect"
+            size="mini"
+            icon="star-o"
+            @click="collectBtn(ifCollect)"
+            >{{ data.article_collect_sum }}</van-button
+          >
+          <van-button
+            v-else
+            size="mini"
+            icon="star-o"
+            color="#3371d3"
+            @click="collectBtn(ifCollect)"
+            >{{ data.article_collect_sum + 1 }}</van-button
+          >
+          <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
+            data.article_comment_sum
+          }}</van-button>
+          <van-action-sheet v-model:show="showCommentTable" title="发布评论">
+            <div class="content">
+              <van-cell-group inset>
+                <van-form>
+                  <van-field
+                    v-model="comment"
+                    rows="2"
+                    autosize
+                    type="textarea"
+                    maxlength="70"
+                    placeholder="请输入您的评论信息"
+                    show-word-limit
+                    :rules="[{ required: true, message: '评论信息不能为空' }]"
+                  />
+                </van-form>
+              </van-cell-group>
+              <van-button round block type="primary" @click="submitComment()">
+                提交
+              </van-button>
+            </div>
+          </van-action-sheet>
+          <van-button
+            v-if="!ifLike"
+            size="mini"
+            icon="good-job-o"
+            @click="likeBtn(ifLike)"
+            >{{ data.article_like_sum }}</van-button
+          >
+          <van-button
+            v-else
+            size="mini"
+            icon="good-job-o"
+            color="#3371d3"
+            @click="likeBtn(ifLike)"
+            >{{ data.article_like_sum + 1 }}</van-button
+          >
+        </div>
+      </template>
+    </van-card>
+  </div>
+  <van-cell-group v-else inset>
     <div class="cell">
       <van-card>
         <template #tags>
@@ -143,7 +256,7 @@ const submitReport = async () => {
               <p class="btn-title">{{ data.tag_name }}</p>
             </button>
           </div>
-          <p class="time">{{ data.post_time }}</p>
+          <p class="time1">{{ data.post_time }}</p>
         </template>
         <template #footer>
           <div class="btn-box">
@@ -206,102 +319,7 @@ const submitReport = async () => {
       </van-card>
     </div>
   </van-cell-group>
-  <div v-else class="cell">
-    <van-card>
-      <template #tags>
-        <div class="info-box">
-          <van-image
-            round
-            :src="data.user_headshot"
-            @click="router.push(`/otherInfo/${data.username}`)"
-          />
-          <div class="info">
-            <div style="display: flex; justify-content: space-between">
-              <p class="name">{{ data.name }}</p>
-              <van-popover
-                v-model:show="showPopover"
-                theme="dark"
-                :actions="actions"
-                placement="left"
-                @select="select"
-              >
-                <template #reference>
-                  <i-icon icon="ant-design:more-outlined" />
-                </template>
-              </van-popover>
-            </div>
-            <p class="grade">{{ data.user_class }}</p>
-          </div>
-        </div>
-        <p class="post-content">{{ data.article_content.article_text }}</p>
-        <div>
-          <button class="btn">
-            <i-icon icon="icon-park:message" />
-            <p class="btn-title">{{ data.tag_name }}</p>
-          </button>
-        </div>
-        <p class="time">{{ data.post_time }}</p>
-      </template>
-      <template #footer>
-        <div class="btn-box">
-          <van-button
-            v-if="!ifCollect"
-            size="mini"
-            icon="star-o"
-            @click="collectBtn(ifCollect)"
-            >{{ data.article_collect_sum }}</van-button
-          >
-          <van-button
-            v-else
-            size="mini"
-            icon="star-o"
-            color="#3371d3"
-            @click="collectBtn(ifCollect)"
-            >{{ data.article_collect_sum + 1 }}</van-button
-          >
-          <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
-            data.article_comment_sum
-          }}</van-button>
-          <van-action-sheet v-model:show="showCommentTable" title="发布评论">
-            <div class="content">
-              <van-cell-group inset>
-                <van-form>
-                  <van-field
-                    v-model="comment"
-                    rows="2"
-                    autosize
-                    type="textarea"
-                    maxlength="70"
-                    placeholder="请输入您的评论信息"
-                    show-word-limit
-                    :rules="[{ required: true, message: '评论信息不能为空' }]"
-                  />
-                </van-form>
-              </van-cell-group>
-              <van-button round block type="primary" @click="submitComment()">
-                提交
-              </van-button>
-            </div>
-          </van-action-sheet>
-          <van-button
-            v-if="!ifLike"
-            size="mini"
-            icon="good-job-o"
-            @click="likeBtn(ifLike)"
-            >{{ data.article_like_sum }}</van-button
-          >
-          <van-button
-            v-else
-            size="mini"
-            icon="good-job-o"
-            color="#3371d3"
-            @click="likeBtn(ifLike)"
-            >{{ data.article_like_sum + 1 }}</van-button
-          >
-        </div>
-      </template>
-    </van-card>
-  </div>
+
   <van-popup
     v-model:show="showReport"
     round
@@ -333,6 +351,14 @@ const submitReport = async () => {
     show-cancel-button
     showConfirmButton
     @confirm="confirmBan"
+  />
+  <van-dialog
+    v-model:show="showDelete"
+    title="提示"
+    message="您确定要删除当前帖子吗？"
+    show-cancel-button
+    showConfirmButton
+    @confirm="confirmDelete"
   />
 </template>
 
@@ -405,8 +431,13 @@ const submitReport = async () => {
       margin-top: 10px;
     }
 
-    .time {
+    .time1 {
       margin-left: 250px;
+      font-size: 12px;
+      color: rgba(166, 168, 173, 1);
+    }
+    .time2 {
+      margin-left: 280px;
       font-size: 12px;
       color: rgba(166, 168, 173, 1);
     }
