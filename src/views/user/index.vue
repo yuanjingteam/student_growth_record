@@ -10,14 +10,7 @@ const router = useRouter();
   <br />
   <div class="main">
     <!-- 个人信息 -->
-    <user-info>
-      <template #self>
-        <div class="my-inside" />
-        <div class="change-info" @click="router.push('./editData')">
-          <button>编辑资料</button>
-        </div>
-      </template>
-    </user-info>
+    <user-info />
 
     <van-cell-group inset class="mid">
       <!-- 我的操作 -->
@@ -92,23 +85,5 @@ const router = useRouter();
 }
 .my-content .van-cell {
   height: 60px;
-}
-
-.my-inside {
-  position: absolute;
-  top: -4.4vmin;
-  right: -6.3333vmin;
-  width: 24.6667vmin;
-  height: 12.6667vmin;
-  border-radius: 9.3333vmin;
-  background-color: #e5edff;
-}
-
-.change-info {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  color: #4580ff;
-  font-weight: 700;
 }
 </style>

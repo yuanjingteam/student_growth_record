@@ -21,14 +21,18 @@
 
 <script setup lang="ts">
 import { ref, reactive } from "vue";
-
+import { useUserStore } from "@/store";
+const userStore = useUserStore();
 const active = ref(0);
 const tabbarData = reactive([
   {
     icon: "wap-home",
     title: "首页",
     to: {
-      name: "Demo"
+      name: "Demo",
+      params: {
+        username: userStore.username
+      }
     }
   },
   {

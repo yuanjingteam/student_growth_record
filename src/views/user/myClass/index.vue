@@ -42,7 +42,7 @@ getclass();
         <van-cell
           v-for="(item, index) in userClass.teacher_total"
           :key="index"
-          @click="router.push(`./otherInfo/username=${item.username}`)"
+          @click="userStore.otherSwitch(item.username)"
         >
           <template #title>{{ item.name }}</template>
           <template #icon>
@@ -62,7 +62,7 @@ getclass();
         <van-cell
           v-for="(item, index) in userClass.student_total"
           :key="index"
-          @click="router.push(`./otherInfo/name=${item.username}`)"
+          @click="userStore.otherSwitch(item.username)"
         >
           <template #title>{{ item.name }}</template>
           <template #icon>

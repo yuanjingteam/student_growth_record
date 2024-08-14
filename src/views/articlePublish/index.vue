@@ -37,14 +37,15 @@ nextTick(() => {
   console.dir(myRef.value);
 });
 
-// 文件存储
-const formData = new FormData();
-
 // 当前话题索引
 let defaultIndex = 0; // 默认选中"选项一"
 
 // 小标签项,动态添加
 const littleTag = ref([]);
+
+// 存储图片/视频
+const imageFormData = new FormData();
+const videoFormData = new FormData();
 
 // 文件列表
 const fileList = ref([
@@ -78,7 +79,8 @@ const data = reactive({
   word_count: contentLength,
   article_topic: actions[defaultIndex].name,
   article_tags: littleTag.value,
-  file: formData
+  imageForm: imageFormData,
+  videoForm: videoFormData
 });
 
 // 获取话题
@@ -186,8 +188,14 @@ const onOversize = file => {
 const handleSubmit = async () => {
   console.log(fileList.value, "12312321");
   fileList.value.forEach((file, index) => {
-    console.log(file);
-    formData.append(`files${index}`, file.file);
+    // 判断文件类型
+    if (file.file.type.startsWith("image/")) {
+      imageFormData.append(`image_files${index}`, file.file);
+      console.log(file, "图片");
+    } else if (file.file.type.startsWith("video/")) {
+      videoFormData.append(`video_files${index}`, file.flie);
+      console.log(file, "视频");
+    }
   });
 };
 
@@ -334,6 +342,7 @@ const isPublished = async baseData => {
         multiple
         class="uploader-container"
         accept="image/*,video/*"
+        max-count="6"
         @oversize="onOversize"
       />
       <!-- <van-cell title="图片/视频" icon="location-o" class="select" /> -->
