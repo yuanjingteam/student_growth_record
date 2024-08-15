@@ -34,17 +34,17 @@ export const useInformation = defineStore(
     const username = userStore.username;
     // 获取系统消息
     const systemNotification = async () => {
-      const { data } = await getSystemNotification({ page: page });
+      const { data } = await getSystemNotification({ page: page, limit: 10 });
       system.value = data;
     };
     // 获取管理员消息
     const managerNotification = async () => {
-      const { data } = await getManagerNotification({ page: page });
+      const { data } = await getManagerNotification({ page: page, limit: 10 });
       manager.value = data;
     };
     // 获取举报邮箱
     const reportEmail = async () => {
-      const { data } = await getreportEmail({ page: page });
+      const { data } = await getreportEmail({ page: page, limit: 10 });
       email.value = data;
     };
 
@@ -52,7 +52,8 @@ export const useInformation = defineStore(
     const thumNotification = async () => {
       const { data } = await getUserThumNotification({
         page: page,
-        username: username
+        username: username,
+        limit: 10
       });
       thumbs.value = data;
     };
@@ -61,7 +62,8 @@ export const useInformation = defineStore(
     const starNotification = async () => {
       const { data } = await getUserStarNotification({
         page: page,
-        username: username
+        username: username,
+        limit: 10
       });
       star.value = data;
     };
@@ -70,7 +72,8 @@ export const useInformation = defineStore(
     const comNotification = async () => {
       const { data } = await getUserComNotification({
         page: page,
-        username: username
+        username: username,
+        limit: 10
       });
       comments.value = data;
     };

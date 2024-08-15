@@ -11,7 +11,7 @@ const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const username = userStore.username;
-// 获得他人文章信息
+// 获得用户文章信息
 const articlePublish = async () => {
   const { data } = await getArticlePublish({
     username: username,

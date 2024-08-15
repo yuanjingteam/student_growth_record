@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { getUserData, changeUserHeadshot } from "@/api/user";
+import { changeUserHeadshot } from "@/api/user";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
 // 路由
@@ -63,11 +63,10 @@ const updataUserHeadshot = async () => {
   <!-- 其他内容 -->
 
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
-
+  <div class="bg">
+    <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+  </div>
   <div class="main">
-    <div class="bg">
-      <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
-    </div>
     <van-floating-panel v-model:height="height" :anchors="anchors">
       <div class="userImg">
         <van-uploader
@@ -191,11 +190,26 @@ const updataUserHeadshot = async () => {
 }
 .van-nav-bar {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  --van-nav-bar-background: rgba(255, 255, 255, 0);
+  z-index: 1; /* 确保导航栏位于背景图片上方 */
+  --van-nav-bar-background: rgba(255, 255, 255, 0.8); /* 设置半透明背景 */
   --van-nav-bar-icon-color: black;
   --van-nav-bar-text-color: black;
+  --van-nav-bar-border-color: transparent; /* 去除底部边框 */
 }
+.bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(2px); /* 模糊背景图片 */
+}
+
 .van-cell {
   padding: 15px 25px;
 }

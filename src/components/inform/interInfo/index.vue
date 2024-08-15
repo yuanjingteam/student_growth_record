@@ -26,10 +26,16 @@ data.value = userInfo.thumbs;
 
 // 是否已读
 const checkUser = async () => {
-  const res = await readUserNotice({ username: username });
-  if (res.code == 200) {
-    console.log("ccc");
-    router.push("./userNotice");
+  try {
+    const { data, code, msg } = await readUserNotice({ username: username });
+    if (code === 200) {
+      console.log("ccc");
+      router.push("./userNotice");
+    } else {
+      console.error("获取用户通知失败:", msg);
+    }
+  } catch (error) {
+    console.error("获取用户通知出错:", error);
   }
 };
 </script>

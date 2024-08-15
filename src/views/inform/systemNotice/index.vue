@@ -1,11 +1,12 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { useInformation } from "@/store";
+import { useInformation, useUserStore } from "@/store";
 import { getSystemNotification } from "@/api/user";
 const router = useRouter();
 const userInfo = useInformation();
-
+const userStore = useUserStore();
+const username = userStore.username;
 // 清除未读消息数量
 userInfo.system.unread_count = null;
 
@@ -23,11 +24,17 @@ list.value = [...list.value, ...result.value];
 const page = ref(1);
 // 获取系统消息
 const loadData = async () => {
-  const { data } = await getSystemNotification({
-    page: page.value++,
-    limit: 10
-  });
-  list.value = [...list.value, ...data.admin_info];
+  try {
+    const { data } = await getSystemNotification({
+      username: username,
+      page: page.value++,
+      limit: 10
+    });
+    list.value = [...list.value, ...data.admin_info];
+  } catch {
+    console.error("获取系统通知列表失败", error);
+    finished.value = true;
+  }
 };
 const onLoad = async () => {
   if (refreshing.value) {
@@ -40,11 +47,6 @@ const onLoad = async () => {
   console.log(page.value, 31313);
 
   loading.value = false;
-
-  // 数据全部加载完成
-  if (list.value.length >= 10) {
-    finished.value = true;
-  }
 };
 
 // 刷新列表

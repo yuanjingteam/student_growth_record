@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { readManagerNotice } from "@/api/user";
 import { useUserStore } from "@/store";
 import { useInformation } from "@/store";
+import { showDialog } from "vant";
 
 const userInfo = useInformation();
 // 父传子
@@ -16,9 +17,9 @@ const username = userStore.username;
 const data = ref({
   manager_info: [
     {
-      m_id: "",
-      m_content: "",
-      not_time: ""
+      id: "",
+      msg_content: "",
+      msg_time: ""
     }
   ],
   unread_count: 0
@@ -29,10 +30,17 @@ data.value = userInfo.manager;
 
 // 是否已读
 const checkManager = async () => {
-  const res = await readManagerNotice({ username: username });
-  if (res.code == 200) {
-    console.log("bbb");
-    router.push("./managerNotice");
+  try {
+    const { code } = await readManagerNotice({ username: username });
+    if (code === 200) {
+      router.push("./managerNotice");
+    } else {
+      console.error("请求失败:", res);
+      showDialog("请求失败");
+    }
+  } catch (error) {
+    console.error("请求出错:", error);
+    showDialog("请求出错");
   }
 };
 </script>
@@ -42,11 +50,11 @@ const checkManager = async () => {
       {{ base.userName }}
     </template>
     <template #label>
-      <van-text-ellipsis :content="data.manager_info[0].m_content" />
+      <van-text-ellipsis :content="data.manager_info[0].msg_content" />
     </template>
     <template #value>
       <div class="right-content">
-        <div class="va-time">{{ data.manager_info[0].not_time }}</div>
+        <div class="va-time">{{ data.manager_info[0].msg_time }}</div>
         <van-badge :content="data.unread_count" max="99" />
       </div>
     </template>

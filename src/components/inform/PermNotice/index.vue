@@ -26,14 +26,6 @@ const data = ref({
 
 // 获取举报邮箱
 data.value = userInfo.email;
-
-// 是否已读
-const checkEmaill = async () => {
-  const res = await readEmailNotice({ username: username });
-  if (res.code == 200) {
-    router.push("/permNotice");
-  }
-};
 </script>
 <template>
   <van-cell center @click="checkEmaill">

@@ -1,14 +1,15 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { useInformation } from "@/store";
+import { useUserStore, useInformation } from "@/store";
 import { getManagerNotification } from "@/api/user";
 const router = useRouter();
 const userInfo = useInformation();
 
 // 到这个页面就清除未读消息数量
 userInfo.manager.unread_count = null;
-
+const userStore = useUserStore;
+const username = userStore.username;
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
@@ -27,6 +28,7 @@ const page = ref(1);
 const loadData = async () => {
   try {
     const { data } = await getManagerNotification({
+      username: username,
       page: page.value++,
       limit: 10
     });

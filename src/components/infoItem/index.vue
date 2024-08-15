@@ -6,7 +6,8 @@ const router = new useRouter();
 const props = defineProps({
   data: Object,
   icon: String,
-  state: String
+  state1: String,
+  state2: String
 });
 </script>
 <template>
@@ -15,14 +16,20 @@ const props = defineProps({
       {{ data.name }}
     </template>
     <template #label>
-      <span>{{ state }}</span>
-      <van-text-ellipsis :content="data.article_content" />
+      <div v-if="data.type">
+        <span v-if="data.type === 0">{{ state1 }}</span>
+        <span v-else>{{ state2 }}</span>
+      </div>
+      <div v-else>
+        <span>{{ state1 }}</span>
+      </div>
+      <van-text-ellipsis :content="data.content" />
     </template>
     <template #value>
       <div>
         <i-icon :icon="icon" />
       </div>
-      <div>{{ data.not_time }}</div>
+      <div>{{ data.post_time }}</div>
     </template>
     <template #icon>
       <van-image

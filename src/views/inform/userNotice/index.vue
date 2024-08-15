@@ -7,6 +7,7 @@ import {
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
+import { showDialog } from "vant";
 
 const userInfo = useInformation();
 
@@ -55,7 +56,14 @@ const icon = [
   "tabler:star"
 ];
 
-const state = ["点赞了你的文章", "评论了你的文章", "收藏了你的文章"];
+const state = [
+  "点赞了你的文章",
+  "点赞了你的评论",
+  "评论了你的文章",
+  "回复了你的评论",
+  "收藏了你的文章",
+  "收藏了你的评论"
+];
 
 const onClickTab = active => {
   page.value = 1;
@@ -65,28 +73,69 @@ const onClickTab = active => {
 
 // 获取点赞列表
 const loadData1 = async () => {
-  const { data } = await getUserThumNotification({
-    page: page.value++,
-    username: username
-  });
-  thumbList.value = [...thumbList.value, ...data.thumbsUp];
+  try {
+    const { data, msg, code } = await getUserThumNotification({
+      page: page.value++,
+      username: username,
+      limit: 10
+    });
+    if (code === 200) {
+      thumbList.value = [...thumbList.value, ...data.thumbsUp];
+    } else {
+      console.error("请求失败:", msg);
+      showDialog(msg);
+      finished.value = true;
+    }
+  } catch (error) {
+    console.error("请求出错:", error);
+    showDialog("加载数据时出错");
+    finished.value = true;
+  }
 };
 // 获取评论列表
 const loadData2 = async () => {
-  const { data } = await getUserComNotification({
-    page: page.value++,
-    username: username
-  });
-  comList.value = [...comList.value, ...data.comments];
+  try {
+    const { data, msg, code } = await getUserComNotification({
+      page: page.value++,
+      username: username,
+      limit: 10
+    });
+
+    if (code === 200) {
+      comList.value = [...comList.value, ...data.comments];
+    } else {
+      console.error("获取评论列表失败:", msg);
+      showDialog(msg);
+      finished.value = true;
+    }
+  } catch (error) {
+    console.error("获取评论列表出错:", error);
+    showDialog("加载数据时出错");
+    finished.value = true;
+  }
 };
 
 // 获取收藏列表
 const loadData3 = async () => {
-  const { data } = await getUserStarNotification({
-    page: page.value++,
-    username: username
-  });
-  starList.value = [...starList.value, ...data.star];
+  try {
+    const { data, msg, code } = await getUserStarNotification({
+      page: page.value++,
+      username: username,
+      limit: 10
+    });
+
+    if (code === 200) {
+      starList.value = [...starList.value, ...data.star];
+    } else {
+      console.error("获取收藏列表失败:", msg);
+      showDialog(msg);
+      finished.value = true;
+    }
+  } catch (error) {
+    console.error("获取收藏列表出错:", error);
+    showDialog("获取收藏列表时出错");
+    finished.value = true;
+  }
 };
 // 下拉
 // 点赞下拉刷新
@@ -110,51 +159,27 @@ const onLoad = async () => {
 
   switch (active.value) {
     case 0:
-      // 有就不重复请求了
-      if (thumbList.value.length >= 20) {
-        return;
-      }
       await loadData1();
       console.log(page.value, 31313);
       // 加载状态结束
       loading.value = false;
 
-      // 只显示最近的40条数据
-      if (thumbList.value.length >= 20) {
-        finished.value = true;
-      }
       break;
     case 1:
-      // 有就不重复请求了
-      if (comList.value.length >= 20) {
-        return;
-      }
       await loadData2();
       console.log(page.value, 31313);
 
       // 加载状态结束
       loading.value = false;
 
-      // 只显示最近的40条数据
-      if (comList.value.length >= 20) {
-        finished.value = true;
-      }
       break;
     case 2:
-      // 有就不重复请求了
-      if (starList.value.length >= 20) {
-        return;
-      }
       await loadData3();
       console.log(page.value, 31313);
 
       // 加载状态结束
       loading.value = false;
 
-      // 只显示最近的40条数据
-      if (starList.value.length >= 20) {
-        finished.value = true;
-      }
       break;
   }
 };
@@ -187,7 +212,8 @@ const onRefresh = () => {
             :key="index"
             :data="item"
             :icon="icon[0]"
-            :state="state[0]"
+            :state1="state[0]"
+            :state2="state[1]"
           />
         </van-list>
       </van-pull-refresh>
@@ -205,7 +231,8 @@ const onRefresh = () => {
             :key="index"
             :data="item"
             :icon="icon[1]"
-            :state="state[1]"
+            :state1="state[2]"
+            :state2="state[3]"
           />
         </van-list>
       </van-pull-refresh>
@@ -223,7 +250,8 @@ const onRefresh = () => {
             :key="index"
             :data="item"
             :icon="icon[2]"
-            :state="state[2]"
+            :state1="state[4]"
+            :state2="state[5]"
           />
         </van-list>
       </van-pull-refresh>

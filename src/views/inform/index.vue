@@ -40,11 +40,11 @@ const base = reactive([
   </div>
 
   <!-- 发布文章按钮 -->
-  <article-add />
+  <!-- <article-add /> -->
 </template>
 <style scoped>
 .main {
-  height: 82vh;
+  height: 88vh;
   overflow: hidden;
 }
 </style>
