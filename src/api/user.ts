@@ -141,15 +141,15 @@ export function getVerifyImg(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/code",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //登录
 export function userLogin(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/hlogin",
+    url: "/user/qlogin",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 
@@ -255,7 +255,7 @@ export function readUserNotice(data?: Object): Promise<ListResult> {
 // 已读邮箱消息
 export function readEmailNotice(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/email/read_notice",
+    url: "/rerport_box/getlist",
     method: "post",
     data: JSON.stringify(data)
   });

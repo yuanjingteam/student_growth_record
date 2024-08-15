@@ -22,15 +22,32 @@ const userForm = reactive({
   username: "",
   password: "",
   verify: "",
-  verify_id: ""
+  verifyId: ""
 });
 //绑定表单
 const formRef = ref();
 
+//真实验证码
+const trueVerify = ref("");
+//生成blob对象的方法
+const convertBase64ToBlob = base64 => {
+  const binary = atob(base64);
+  const array = [];
+  for (let i = 0; i < binary.length; i++) {
+    array.push(binary.charCodeAt(i));
+  }
+  return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
+};
 //验证码换一换
 const changeVerify = async () => {
   const { data } = await getVerifyImg();
-  console.log(data);
+  console.log(data.Hcode);
+  userForm.verifyId = data.Id;
+  trueVerify.value = data.Hcode;
+  const base_code = data.B64;
+  const base64String = base_code.split(",")[1];
+  const blob = convertBase64ToBlob(base64String);
+  imageUrl.value = URL.createObjectURL(blob);
 };
 //提交时的表单校验
 const onsubmit = async () => {
@@ -59,27 +76,25 @@ const onsubmit = async () => {
 const imageUrl = ref("");
 //登录页标题
 const loginTitle = ref("");
-const login = async () => {
+//展示标题
+const showTitle = async () => {
   const {
     data: { title }
   } = await getLoginTitle();
   loginTitle.value = title;
-  const { data } = await getVerifyImg();
-  console.log(data);
-  userForm.verify_id = data.id;
 };
-login();
+// showTitle();
+//展示验证码图片
+const showVerify = async () => {
+  changeVerify();
+};
+showVerify();
 //提示框点击确认触发事件
 const confirmTip = () => {
-  console.log("确认");
   showTip.value = false;
   checked.value = true;
 };
-//提示框点击取消触发事件
-const cancelTip = () => {
-  console.log("取消");
-  showTip.value = false;
-};
+
 //游客登录
 const passengerLogin = () => {
   localStorage.setItem("username", "passenger");
@@ -177,7 +192,6 @@ const passengerLogin = () => {
     show-cancel-button
     showConfirmButton
     @confirm="confirmTip"
-    @cancel="cancelTip"
   />
 </template>
 
@@ -236,8 +250,9 @@ const passengerLogin = () => {
   .van-field {
     .van-button {
       width: 80px;
-      height: 40px;
-      background-size: cover;
+      height: 27px;
+      background-size: contain;
+      background-repeat: no-repeat;
       background-image: url("../../assets/image/img.jpg");
     }
   }

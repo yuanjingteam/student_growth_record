@@ -1,8 +1,8 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { useUserStore } from "@/store";
-import { useInformation } from "@/store";
+import { readEmailNotice } from "@/api/user";
+import { useUserStore, useInformation } from "@/store";
 const userInfo = useInformation();
 // 父传子
 // 给一个默认值

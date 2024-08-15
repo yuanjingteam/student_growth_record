@@ -31,24 +31,21 @@ const gotoArticleDetail = () => {
             <p class="grade">{{ article.user_class }}</p>
           </div>
         </div>
-        <van-text-ellipsis
-          rows="3"
-          :content="article.article_content.article_text"
-        />
+        <van-text-ellipsis rows="3" :content="article.article_content" />
       </template>
       <template #footer>
         <button class="btn">
           <i-icon icon="icon-park:message" />
-          <p class="btn-title">{{ article.tag_name }}</p>
+          <p class="btn-title">{{ article.article_tags[0] }}</p>
         </button>
         <van-button size="mini" icon="good-job-o">{{
-          article.article_like_sum
+          article.like_amount
         }}</van-button>
         <van-button size="mini" icon="comment-o">{{
-          article.article_collect_sum
+          article.collect_amount
         }}</van-button>
         <van-button size="mini" icon="star-o">{{
-          article.article_comment_sum
+          article.comment_amount
         }}</van-button>
       </template>
     </van-card>
