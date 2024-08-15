@@ -128,7 +128,7 @@ const onRefresh = () => {
           <post-more
             v-for="(item, index) in articleList"
             :key="index"
-            :data="item"
+            :post="item"
             :articleId="item.article_id"
           />
         </van-list>

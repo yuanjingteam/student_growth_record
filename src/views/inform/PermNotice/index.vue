@@ -58,7 +58,7 @@ const onRefresh = () => {
       finished-text="没有更多了"
       @load="onLoad"
     >
-      dawd
+      <report-detail />
     </van-list>
   </van-pull-refresh>
 </template>

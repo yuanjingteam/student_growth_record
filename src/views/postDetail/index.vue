@@ -9,7 +9,7 @@ const userStore = useUserStore();
 
 //评论总数
 const comment_total = ref(0);
-const articleId = route.params.id;
+const articleId = Number(route.params.id);
 //文章详情数据
 //初始化数据要写
 const articleData = ref({
@@ -66,7 +66,7 @@ const refresh = async () => {
       </template>
     </van-nav-bar>
 
-    <post-more :data="articleData" :articleId="articleId" />
+    <post-more :post="articleData" :articleId="articleId" />
 
     <van-cell>
       <!-- 使用 title 插槽来自定义标题 -->

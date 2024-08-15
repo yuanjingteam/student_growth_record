@@ -18,7 +18,7 @@ export function getArticlesService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/content",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //获取文章详情页的评论
@@ -26,7 +26,7 @@ export function getCommentsService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/comment/get_lel1comment",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //获取二级评论
@@ -34,7 +34,7 @@ export function getCommentsSecondService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/comment/get_lel2comment",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 
@@ -43,7 +43,7 @@ export function deleteCommentsService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/comment/delete",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //首页展示搜索列表
@@ -51,7 +51,7 @@ export function searchArticleService(data?: object): Promise<Search> {
   return http.request({
     url: "/article/search_first",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //点赞、取消点赞     文章、评论
@@ -59,7 +59,7 @@ export function articleUpvoteService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/like",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 
@@ -68,7 +68,7 @@ export function articleCollectService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/collect",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //发布文章评论
@@ -76,7 +76,7 @@ export function articleCommentService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/comment",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 
@@ -85,7 +85,7 @@ export function articleReportService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/report",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 
@@ -94,7 +94,7 @@ export function articleBanService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/list/ban",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //删除文章
@@ -102,7 +102,7 @@ export function articleDeleteService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/article/list/delete",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //获取热帖标题，一次10条
@@ -110,7 +110,7 @@ export function getHotPostService(data?: object): Promise<ListResult> {
   return http.request({
     url: "/hotpost/title",
     method: "get",
-    params: data
+    data: JSON.stringify(data)
   });
 }
 

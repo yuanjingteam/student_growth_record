@@ -106,7 +106,7 @@ function numberToEnglish(number) {
 
     <topic-card
       :message="topicData.message"
-      :list="topicData.topicList.slice(1, 3)"
+      :list="topicData.topicList.slice(0, 2)"
     />
     <class-card
       :message="classData.message"

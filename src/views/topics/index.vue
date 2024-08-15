@@ -7,7 +7,7 @@ const topicData = reactive({
   message: "话题分类",
   topicList: []
 });
-topicData.topicList = useTopic.topicList.slice(1);
+topicData.topicList = useTopic.topicList;
 </script>
 
 <template>
