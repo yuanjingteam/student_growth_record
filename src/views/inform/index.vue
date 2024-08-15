@@ -26,12 +26,7 @@ const base = reactive([
 </script>
 
 <template>
-  <van-nav-bar
-    title="通知"
-    left-text="返回"
-    left-arrow
-    @click-left="router.push('/home')"
-  />
+  <van-nav-bar title="通知" @click-left="router.push('/home')" />
   <div class="main">
     <!-- 系统通知 -->
     <system-info :base="base[0]" />

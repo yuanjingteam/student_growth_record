@@ -97,6 +97,14 @@ export function articleBanService(data?: object): Promise<ListResult> {
     data: JSON.stringify(data)
   });
 }
+//确认不处理文章
+export function articleIgnoreService(data?: object): Promise<ListResult> {
+  return http.request({
+    url: "/report_box/ack",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
 //删除文章
 export function articleDeleteService(data?: object): Promise<ListResult> {
   return http.request({
