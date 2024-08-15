@@ -55,7 +55,14 @@ const icon = [
   "tabler:star"
 ];
 
-const state = ["点赞了你的文章", "评论了你的文章", "收藏了你的文章"];
+const state = [
+  "点赞了你的文章",
+  "点赞了你的评论",
+  "评论了你的文章",
+  "回复了你的评论",
+  "收藏了你的文章",
+  "收藏了你的评论"
+];
 
 const onClickTab = active => {
   page.value = 1;
@@ -190,7 +197,8 @@ const onRefresh = () => {
             :key="index"
             :data="item"
             :icon="icon[0]"
-            :state="state[0]"
+            :state1="state[0]"
+            :state2="state[1]"
           />
         </van-list>
       </van-pull-refresh>
@@ -208,7 +216,8 @@ const onRefresh = () => {
             :key="index"
             :data="item"
             :icon="icon[1]"
-            :state="state[1]"
+            :state1="state[2]"
+            :state2="state[3]"
           />
         </van-list>
       </van-pull-refresh>
@@ -226,7 +235,8 @@ const onRefresh = () => {
             :key="index"
             :data="item"
             :icon="icon[2]"
-            :state="state[2]"
+            :state1="state[4]"
+            :state2="state[5]"
           />
         </van-list>
       </van-pull-refresh>
