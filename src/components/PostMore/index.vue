@@ -10,9 +10,20 @@ import {
   articleDeleteService
 } from "@/api/article";
 const props = defineProps({
-  data: Object,
+  data: {
+    type: Object,
+    required: true,
+    default: () => ({
+      article_tags: []
+    })
+  },
   articleId: Number
 });
+console.log(props.data.article_tags);
+
+const articleTags = ref([]);
+articleTags.value = props.data.article_tags;
+
 const router = useRouter();
 const route = useRoute();
 
@@ -140,7 +151,7 @@ const confirmDelete = async () => {
           />
           <div class="info">
             <div style="display: flex; justify-content: space-between">
-              <p class="name">{{ data.name }}</p>
+              <p class="name">11</p>
               <van-popover
                 v-model:show="showPopover"
                 theme="dark"
@@ -160,7 +171,9 @@ const confirmDelete = async () => {
         <div>
           <button class="btn">
             <i-icon icon="icon-park:message" />
-            <p class="btn-title">{{ data.tag_name }}</p>
+            <!-- <p class="btn-title">
+              {{ articleTags[0] }}
+            </p> -->
           </button>
         </div>
         <p class="time2">{{ data.post_time }}</p>
@@ -172,7 +185,7 @@ const confirmDelete = async () => {
             size="mini"
             icon="star-o"
             @click="collectBtn(ifCollect)"
-            >{{ data.article_collect_sum }}</van-button
+            >{{ data.collect_amount }}</van-button
           >
           <van-button
             v-else
@@ -180,10 +193,10 @@ const confirmDelete = async () => {
             icon="star-o"
             color="#3371d3"
             @click="collectBtn(ifCollect)"
-            >{{ data.article_collect_sum + 1 }}</van-button
+            >{{ data.collect_amount + 1 }}</van-button
           >
           <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
-            data.article_comment_sum
+            data.comment_amount
           }}</van-button>
           <van-action-sheet v-model:show="showCommentTable" title="发布评论">
             <div class="content">
@@ -211,7 +224,7 @@ const confirmDelete = async () => {
             size="mini"
             icon="good-job-o"
             @click="likeBtn(ifLike)"
-            >{{ data.article_like_sum }}</van-button
+            >{{ data.like_amount }}</van-button
           >
           <van-button
             v-else
@@ -219,7 +232,7 @@ const confirmDelete = async () => {
             icon="good-job-o"
             color="#3371d3"
             @click="likeBtn(ifLike)"
-            >{{ data.article_like_sum + 1 }}</van-button
+            >{{ data.like_amount + 1 }}</van-button
           >
         </div>
       </template>
@@ -253,7 +266,7 @@ const confirmDelete = async () => {
           <div>
             <button class="btn">
               <i-icon icon="icon-park:message" />
-              <p class="btn-title">{{ data.tag_name }}</p>
+              <!-- <p class="btn-title">{{ data.article_tags[0] }}</p> -->
             </button>
           </div>
           <p class="time1">{{ data.post_time }}</p>
@@ -265,7 +278,7 @@ const confirmDelete = async () => {
               size="mini"
               icon="star-o"
               @click="debouncedCollect(ifCollect)"
-              >{{ data.article_collect_sum }}</van-button
+              >{{ data.collect_amount }}</van-button
             >
             <van-button
               v-else
@@ -273,10 +286,10 @@ const confirmDelete = async () => {
               icon="star-o"
               color="#3371d3"
               @click="debouncedCollect(ifCollect)"
-              >{{ data.article_collect_sum + 1 }}</van-button
+              >{{ data.collect_amount + 1 }}</van-button
             >
             <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
-              data.article_comment_sum
+              data.comment_amount
             }}</van-button>
             <van-action-sheet v-model:show="showCommentTable" title="发布评论">
               <div class="content">
@@ -304,7 +317,7 @@ const confirmDelete = async () => {
               size="mini"
               icon="good-job-o"
               @click="debouncedLike(ifLike)"
-              >{{ data.article_like_sum }}</van-button
+              >{{ data.like_amount }}</van-button
             >
             <van-button
               v-else
@@ -312,7 +325,7 @@ const confirmDelete = async () => {
               icon="good-job-o"
               color="#3371d3"
               @click="debouncedLike(ifLike)"
-              >{{ data.article_like_sum + 1 }}</van-button
+              >{{ data.like_amount + 1 }}</van-button
             >
           </div>
         </template>

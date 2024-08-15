@@ -141,15 +141,15 @@ export function getVerifyImg(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/code",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 //登录
 export function userLogin(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/login",
+    url: "/user/qlogin",
     method: "post",
-    data
+    data: JSON.stringify(data)
   });
 }
 

@@ -9,7 +9,7 @@ const userStore = useUserStore();
 
 //评论总数
 const comment_total = ref(0);
-const articleId = route.params.id;
+const articleId = Number(route.params.id);
 //文章详情数据
 //初始化数据要写
 const articleData = ref({

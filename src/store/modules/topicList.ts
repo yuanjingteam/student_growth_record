@@ -8,11 +8,6 @@ export const useTopicStore = defineStore(
   () => {
     const topicList = ref([
       {
-        topic_id: "1",
-        topic_name: "全部",
-        topic_content: "hi复古式的回复i说大话覅u收到回复i是"
-      },
-      {
         topic_id: "2",
         topic_name: "学习成绩",
         topic_content: "hi复古式的回复i说大话覅u收到回复i是"
