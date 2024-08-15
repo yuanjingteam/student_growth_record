@@ -3,14 +3,22 @@ import { getUserFansList, changeAttentionState } from "@/api/user";
 import { useUserStore } from "@/store";
 import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
+import { showToast } from "vant";
+
 const router = useRouter();
 const userStore = useUserStore();
 const username = userStore.username;
 const buttonRefs = ref([]);
 const fansList = ref({});
 const getList = async () => {
-  const { data } = await getUserFansList();
-  fansList.value = data.userfans;
+  try {
+    const { data } = await getUserFansList();
+    fansList.value = data.userfans;
+  } catch (error) {
+    console.error("获取粉丝列表失败:", error);
+    showToast("获取粉丝列表失败");
+    // 你可以在这里添加错误提示等其他处理逻辑
+  }
 };
 
 const setSmallRef = el => {

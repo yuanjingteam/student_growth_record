@@ -3,13 +3,16 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
 import { getSelfCotnent, changeSelfCotnent } from "@/api/user";
-import { showConfirmDialog, showToast } from "vant";
+import { showConfirmDialog, showToast, showSuccessToast } from "vant";
 const userStore = useUserStore();
 const router = new useRouter();
 
 // 获取用户id
 const username = userStore.username;
 const formRef = ref();
+
+// loading效果
+const loading = ref(false);
 
 // 分享面板
 const showShare = ref(false);
@@ -63,31 +66,19 @@ const returnBack = () => {
 
 // 获取自述
 const getSelf = async () => {
-  const { data } = await getSelfCotnent({ username: username });
-  content.value = data.selfContent;
-  console.log(content, 111222);
+  try {
+    const { data } = await getSelfCotnent({ username: username });
+    content.value = data.selfContent;
+    console.log(content, 111222);
+  } catch (error) {
+    console.error("获取个人自述失败:", error);
+    showToast("获取个人自述失败");
+    // 你可以在这里添加错误提示等其他处理逻辑
+  }
 };
 
 // 初始化文章内容
 getSelf();
-
-// 发送修改文章请求
-const changeContent = async () => {
-  const { code, msg, data } = await changeSelfCotnent({
-    username: username,
-    self_content: content.value
-  });
-  if (code == 200) {
-    // 修改成功弹窗
-    console.log(msg, "Yes");
-    returnBack();
-  } else {
-    // 修改失败弹窗
-    console.log(msg, "No");
-  }
-  // 更新
-  content.value = data.result;
-};
 
 // 提交修改后的自述
 const onSubmit = async () => {
@@ -99,6 +90,7 @@ const onSubmit = async () => {
       message: "确认要更改个人介绍吗?"
     })
       .then(async () => {
+        loading.value = true;
         // 调用修改文章请求
         changeContent();
       })
@@ -110,9 +102,37 @@ const onSubmit = async () => {
     console.log("validate failed", error);
   }
 };
+
+// 发送修改文章请求
+const changeContent = async () => {
+  const { code, data } = await changeSelfCotnent({
+    username: username,
+    self_content: content.value
+  });
+  if (code == 200) {
+    // 修改成功弹窗
+    loading.value = false;
+    returnBack();
+  } else {
+    // 修改失败弹窗
+    loading.value = false;
+    showSuccessToast("修改失败");
+  }
+  // 更新
+  content.value = data.result;
+};
 </script>
 
 <template>
+  <van-overlay :show="loading" z-index="100">
+    <van-loading vertical>
+      <template #icon>
+        <van-icon name="star-o" size="30" />
+      </template>
+      加载中...
+    </van-loading>
+  </van-overlay>
+
   <!-- 更多分享面板 -->
   <van-share-sheet
     v-model:show="showShare"
@@ -191,8 +211,11 @@ const onSubmit = async () => {
 </template>
 
 <style scoped>
+.van-loading {
+  justify-content: center;
+  height: 100%;
+}
 .main {
-  /* background-color: #f0f1f5; */
   height: 100%;
 }
 .my-w {
@@ -206,7 +229,6 @@ const onSubmit = async () => {
 .sub {
   margin-top: 20px;
   padding: 10px;
-  /* background-color: #fff; */
 }
 .sub .van-button {
   border-radius: 20px;

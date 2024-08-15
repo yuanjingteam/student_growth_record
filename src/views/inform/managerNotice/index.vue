@@ -25,8 +25,16 @@ const page = ref(1);
 
 // 获取管理员消息
 const loadData = async () => {
-  const { data } = await getManagerNotification({ page: page.value++ });
-  list.value = [...list.value, ...data.manager_info];
+  try {
+    const { data } = await getManagerNotification({
+      page: page.value++,
+      limit: 10
+    });
+    list.value = [...list.value, ...data.manager_info];
+  } catch (error) {
+    console.error("获取管理员通知列表失败:", error);
+    finished.value = true;
+  }
 };
 
 const onLoad = async () => {
@@ -39,11 +47,6 @@ const onLoad = async () => {
   console.log(page.value, 31313);
 
   loading.value = false;
-
-  // 数据全部加载完成
-  if (list.value.length >= 20) {
-    finished.value = true;
-  }
 };
 
 // 刷新列表
