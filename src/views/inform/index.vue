@@ -45,7 +45,7 @@ const base = reactive([
   </div>
 
   <!-- 发布文章按钮 -->
-  <article-add />
+  <!-- <article-add /> -->
 </template>
 <style scoped>
 .main {

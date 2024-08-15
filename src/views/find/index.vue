@@ -77,13 +77,6 @@ function numberToEnglish(number) {
 </script>
 
 <template>
-  <!-- 发布文章按钮 -->
-  <van-floating-bubble
-    icon="plus"
-    axis="lock"
-    :style="{ top: '-700px', left: '-18px' }"
-    @click="router.push('/publish')"
-  />
   <div class="find-box">
     <van-cell-group inset>
       <van-cell>

@@ -93,6 +93,13 @@ const onRefresh = () => {
 };
 </script>
 <template>
+  <!-- 发布文章按钮 -->
+  <van-floating-bubble
+    icon="plus"
+    axis="lock"
+    :style="{ top: '-762px', left: '-12px' }"
+    @click="router.push('/publish')"
+  />
   <van-nav-bar left-arrow @click-left="router.go(-1)">
     <template #right>
       <van-icon name="ellipsis" />
