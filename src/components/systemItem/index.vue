@@ -19,10 +19,10 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
         />
       </template>
       <template #title>
-        {{ data.a_id }}
+        {{ data.ID }}
       </template>
       <template #label>
-        <van-text-ellipsis :content="data.not_time" />
+        <van-text-ellipsis :content="data.msg_time" />
       </template>
       <template #right-icon>
         <i-icon icon="ri:more-fill" />
@@ -32,7 +32,7 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
       <template #title>
         <van-text-ellipsis
           rows="2"
-          :content="data.a_content"
+          :content="data.msg_content"
           expand-text="展开"
           collapse-text="收起"
         />

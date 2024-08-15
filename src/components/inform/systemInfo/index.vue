@@ -16,9 +16,9 @@ const username = userStore.username;
 const data = ref({
   admin_info: [
     {
-      a_id: "",
-      a_content: "",
-      not_time: ""
+      ID: "",
+      msg_content: "",
+      msg_time: ""
     }
   ],
   unread_count: 0
@@ -42,11 +42,11 @@ const checkSystem = async () => {
       {{ base.userName }}
     </template>
     <template #label>
-      <van-text-ellipsis :content="data.admin_info[0].a_content" />
+      <van-text-ellipsis :content="data.admin_info[0].msg_content" />
     </template>
     <template #value>
       <div class="right-content">
-        <div class="va-time">{{ data.admin_info[0].not_time }}</div>
+        <div class="va-time">{{ data.admin_info[0].msg_time }}</div>
         <van-badge :content="data.unread_count" max="99" />
       </div>
     </template>

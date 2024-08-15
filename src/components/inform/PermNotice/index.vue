@@ -1,7 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { readEmailNotice } from "@/api/user";
 import { useUserStore } from "@/store";
 import { useInformation } from "@/store";
 const userInfo = useInformation();
@@ -27,14 +26,6 @@ const data = ref({
 
 // 获取举报邮箱
 data.value = userInfo.email;
-
-// 是否已读
-const checkEmaill = async () => {
-  const res = await readEmailNotice({ username: username });
-  if (res.code == 200) {
-    router.push("/permNotice");
-  }
-};
 </script>
 <template>
   <van-cell center @click="checkEmaill">

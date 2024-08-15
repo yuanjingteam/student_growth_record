@@ -67,7 +67,8 @@ const onClickTab = active => {
 const loadData1 = async () => {
   const { data } = await getUserThumNotification({
     page: page.value++,
-    username: username
+    username: username,
+    limit: 10
   });
   thumbList.value = [...thumbList.value, ...data.thumbsUp];
 };
@@ -75,7 +76,8 @@ const loadData1 = async () => {
 const loadData2 = async () => {
   const { data } = await getUserComNotification({
     page: page.value++,
-    username: username
+    username: username,
+    limit: 10
   });
   comList.value = [...comList.value, ...data.comments];
 };
@@ -84,7 +86,8 @@ const loadData2 = async () => {
 const loadData3 = async () => {
   const { data } = await getUserStarNotification({
     page: page.value++,
-    username: username
+    username: username,
+    limit: 10
   });
   starList.value = [...starList.value, ...data.star];
 };
@@ -126,7 +129,7 @@ const onLoad = async () => {
       break;
     case 1:
       // 有就不重复请求了
-      if (comList.value.length >= 20) {
+      if (comList.value.length >= 10) {
         return;
       }
       await loadData2();
