@@ -3,6 +3,8 @@ import { getUserClass } from "@/api/user";
 import { ref } from "vue";
 import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
+import { showToast } from "vant";
+
 const router = useRouter();
 const userStore = useUserStore();
 const username = userStore.username;
@@ -22,9 +24,15 @@ const userClass = ref({
     }
   ]
 });
+
 const getclass = async () => {
-  const { data } = await getUserClass({ username: username });
-  userClass.value = data;
+  try {
+    const { data } = await getUserClass({ username: username });
+    userClass.value = data;
+  } catch (error) {
+    console.error("获取班级列表失败:", error);
+    showToast("获取班级列表失败");
+  }
 };
 getclass();
 </script>

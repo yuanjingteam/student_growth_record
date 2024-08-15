@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref, computed } from "vue";
-import { showConfirmDialog } from "vant";
+import { showConfirmDialog, showDialog } from "vant";
 import { useDarkModeStore } from "@/store";
 
 const router = new useRouter();
@@ -27,6 +27,7 @@ const loginOut = () => {
     })
     .catch(() => {
       // on cancel
+      showDialog("退出异常,请稍后重试");
     });
 };
 </script>

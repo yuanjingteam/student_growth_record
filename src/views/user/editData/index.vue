@@ -1,25 +1,25 @@
 <script setup>
 import { ref } from "vue";
-import { getUserData } from "@/api/user";
+import { getUserData, changeUserHeadshot } from "@/api/user";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
 // 路由
 const router = useRouter();
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
 const userStore = useUserStore();
+const username = userStore.username;
 // 内容弹层高度
 const anchors = [Math.round(0.8 * window.innerHeight)];
 const height = ref(anchors[0]);
 // 初始化学号
 const userId = userStore.username;
-// const initialImage = ;
+
 const files = ref([{ url: userStore.userData.user_headshot }]);
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
-// 年月日格式化
-const columnsType = ["year", "month", "day"];
-const minDate = new Date(2000, 0, 1);
-const maxDate = new Date(2023, 5, 1);
+
+// Loading效果
+const loading = ref(false);
 // 初始化数据
 const data = ref({
   name: "",
@@ -32,37 +32,36 @@ const data = ref({
   user_email: "",
   user_year: currentDate.value.join("-")
 });
+
 // 初始化页面
-const baseUserData = async () => {
-  const res = await getUserData();
-  data.value = res.data;
-};
-// 调用
-baseUserData();
-// 初始化页面
+userStore.baseUserData();
 data.value = userStore.userData;
-// 年月日格式化代码
-const formatter = (type, option) => {
-  if (type === "year") {
-    option.text += "年";
-  }
-  if (type === "month") {
-    option.text += "月";
-  }
-  if (type === "day") {
-    option.text += "日";
-  }
-  return option;
-};
+
 // 更新头像
-const updataUserHeadshot = () => {
+const updataUserHeadshot = async () => {
   const formData = new FormData();
-  // 将当前最新的数据提交到后端
   formData.append("file", files.value[0].file);
-  userStore.submitHeadshot({ username: userId, user_headshot: formData });
+  const { code } = await changeUserHeadshot({
+    username: username,
+    user_headshot: formData
+  });
+  if (code == 200) {
+    console.log("yeah");
+    userStore.userData.user_headshot = formData;
+  }
 };
 </script>
 <template>
+  <van-overlay :show="loading">
+    <van-loading vertical>
+      <template #icon>
+        <van-icon name="star-o" size="30" />
+      </template>
+      加载中...
+    </van-loading>
+  </van-overlay>
+  <!-- 其他内容 -->
+
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
 
   <div class="main">
@@ -155,6 +154,10 @@ const updataUserHeadshot = () => {
 </template>
 
 <style scoped>
+.van-loading {
+  justify-content: center;
+  height: 100%;
+}
 .userImg {
   position: absolute;
   top: -45px;

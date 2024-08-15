@@ -1,28 +1,39 @@
 <script setup>
 import { useRouter } from "vue-router";
+import { getArticlePublish } from "@/api/user";
 import { ref } from "vue";
+import { useUserStore } from "@/store";
 const router = useRouter();
-
+const userStore = useUserStore();
+const username = userStore.username;
+const page = ref(0);
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-const onLoad = () => {
-  setTimeout(() => {
-    if (refreshing.value) {
-      list.value = [];
-      refreshing.value = false;
-    }
 
-    for (let i = 0; i < 10; i++) {
-      list.value.push(list.value.length + 1);
-    }
-    loading.value = false;
+// 获取我的文章
+const loadData = async () => {
+  const { data } = await getArticlePublish({
+    username: username,
+    page: page.value++,
+    limit: 10
+  });
+  list.value = [...list.value, ...data.content];
+};
+const onLoad = async () => {
+  if (refreshing.value) {
+    list.value = [];
+    page.value = 0;
+    refreshing.value = false;
+  }
+  await loadData();
 
-    if (list.value.length >= 40) {
-      finished.value = true;
-    }
-  }, 1000);
+  loading.value = false;
+
+  if (list.value.length >= 10) {
+    finished.value = true;
+  }
 };
 
 const onRefresh = () => {

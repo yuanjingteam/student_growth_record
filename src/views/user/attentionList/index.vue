@@ -3,14 +3,22 @@ import { getAttentionList, changeAttentionState } from "@/api/user";
 import { useUserStore } from "@/store";
 import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
+import { showToast } from "vant";
+
 const router = useRouter();
 const userStore = useUserStore();
 const username = userStore.username;
 const buttonRefs = ref([]);
 const attentionList = ref({});
 const getList = async () => {
-  const { data } = await getAttentionList();
-  attentionList.value = data.user_concern;
+  try {
+    const { data } = await getAttentionList();
+    attentionList.value = data.user_concern;
+  } catch (error) {
+    console.error("获取关注列表失败:", error);
+    showToast("获取关注列表失败");
+    // 你可以在这里添加错误提示等其他处理逻辑
+  }
 };
 
 const setSmallRef = el => {

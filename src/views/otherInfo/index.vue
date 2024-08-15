@@ -20,7 +20,7 @@ const articlePublish = async () => {
   list.value = [...list.value, ...data.content];
   console.log(list.value);
 };
-articlePublish();
+// articlePublish();
 const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];

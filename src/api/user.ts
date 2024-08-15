@@ -345,7 +345,7 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
 // 获取用户发布的文章
 export function getArticlePublish(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/other/article_publish",
+    url: "/user/article_publish",
     method: "get",
     data: JSON.stringify(data)
   });

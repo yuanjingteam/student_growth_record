@@ -23,7 +23,10 @@ list.value = [...list.value, ...result.value];
 const page = ref(1);
 // 获取系统消息
 const loadData = async () => {
-  const { data } = await getSystemNotification({ page: page.value++ });
+  const { data } = await getSystemNotification({
+    page: page.value++,
+    limit: 10
+  });
   list.value = [...list.value, ...data.admin_info];
 };
 const onLoad = async () => {
@@ -39,7 +42,7 @@ const onLoad = async () => {
   loading.value = false;
 
   // 数据全部加载完成
-  if (list.value.length >= 20) {
+  if (list.value.length >= 10) {
     finished.value = true;
   }
 };

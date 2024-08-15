@@ -1,15 +1,34 @@
 <script setup>
 import { useUserStore } from "@/store";
+import { changeUserPhone } from "@/api/user";
 import { useRouter } from "vue-router";
+import { showToast } from "vant";
 import { ref } from "vue";
 const userStore = useUserStore();
 const router = useRouter();
 const text = ref(0);
 text.value = userStore.userData.phone_number;
-const onClickRight = () => {
+
+// 更新用户电话
+const submitPhone = async () => {
+  const { code } = await changeUserPhone({
+    username: userStore.username,
+    phone_number: text
+  });
+  if (code == 200) {
+    console.log("yeah");
+    userStore.userData.phone_number = text;
+  }
+};
+const onClickRight = async () => {
   // 更新电话
-  userStore.submitPhone({ username: userStore.username, phone_number: text });
-  router.go(-1);
+  try {
+    await submitPhone();
+    router.go(-1);
+  } catch (error) {
+    console.error("提交手机号码失败:", error);
+    showToast("提交手机号码失败,请稍后重试");
+  }
 };
 </script>
 <template>

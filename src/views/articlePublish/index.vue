@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { showConfirmDialog, showSuccessToast, Search, showToast } from "vant";
+import { showConfirmDialog, showSuccessToast, showToast } from "vant";
 import { reactive, ref, nextTick, computed } from "vue";
 import {
   newArticlePublish,
@@ -20,6 +20,9 @@ const submit_show = ref(false);
 
 // 选项回显框
 const choose_show = ref(false);
+
+// loading效果
+const loading = ref(false);
 
 // 小话题选项
 const small_show = ref(false);
@@ -63,13 +66,31 @@ const contentLength = computed(() => content.value.length);
 // 文章校验
 const formRef = ref();
 
+// 校验函数返回 true 表示校验通过，false 表示不通过
+//  Form 组件提供的一个方法,不需要自己实现。
+const validator = val => {
+  // console.log(val);
+  if (val.trim() === "") {
+    return "内容不能为空";
+  }
+  if (contentLength.value < 10) {
+    return "内容不能少于一百字";
+  }
+  if (data.article_topic === "选择话题") {
+    return "必须选择标签类型";
+  }
+};
+// 校验规则
+const rules = [{ validator, message: "内容不能为空" }];
+
+// 渲染大标题
 let actions = [{ name: "文体活动", aa: 112 }, { name: "选项二" }];
 
 // 渲染话题/tag
 const childs = ref([
-  // { text: "杭州", id: 0 },
-  // { text: "温州", id: 1 },
-  // { text: "宁波", id: 2 }
+  { text: "杭州", id: 0 },
+  { text: "温州", id: 1 },
+  { text: "宁波", id: 2 }
 ]);
 
 // 发送的数据包
@@ -95,11 +116,6 @@ const getLittleTag = async () => {
   const serve = await getLittleTags({ topic_id: data.article_topic });
   childs.value = serve.data;
 };
-
-// 获取话题
-getArticleTag();
-// 获取小标签
-getLittleTag();
 
 // 选择文章类别
 const onSelect = item => {
@@ -132,7 +148,6 @@ const showLittleTag = () => {
   small_show.value = true;
 };
 
-// 添加小标签列表
 // 节流函数
 function throttle(func, delay) {
   let lastCall = 0;
@@ -146,19 +161,14 @@ function throttle(func, delay) {
 }
 
 // 添加/删除tag
-//  500 毫秒的节流延迟时间。这意味着在 500 毫秒内,toggleGridItemActive 函数只会被执行一次。
+// 500 毫秒的节流延迟时间。这意味着在 500 毫秒内,toggleGridItemActive 函数只会被执行一次。
 const toggleGridItemActive = throttle(function (item, id) {
-  // console.log(item.text, id);
-  // 获取所有
   // 检查当前项是否存在littleTag.value数组中
   const isItemInList = littleTag.value.some(tag => tag.id === item.id);
-
   // 获取当前盒子
   const targetRef = myRef.value[id].$el;
-
   // 改变当前选中状态
   targetRef.classList.toggle("active");
-
   //存在就去掉
   if (isItemInList) {
     // tag 是原数组的每一项，过滤出不等于 itme.text的项
@@ -199,23 +209,6 @@ const handleSubmit = async () => {
   });
 };
 
-// 校验函数返回 true 表示校验通过，false 表示不通过
-//  Form 组件提供的一个方法,不需要自己实现。
-const validator = val => {
-  // console.log(val);
-  if (val.trim() === "") {
-    return "内容不能为空";
-  }
-  if (contentLength.value < 10) {
-    return "内容不能少于一百字";
-  }
-  if (data.article_topic === "选择话题") {
-    return "必须选择标签类型";
-  }
-};
-// 校验规则
-const rules = [{ validator, message: "内容不能为空" }];
-
 // 点击发布文章
 const onSubmit = async () => {
   try {
@@ -226,15 +219,15 @@ const onSubmit = async () => {
       showToast("必须选择热点标签");
       return;
     }
-    // console.log(fileList.value);
+    console.log(fileList.value);
     // 文件上传
     handleSubmit();
     showConfirmDialog({
       title: "发布文章",
-      message:
-        "如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。"
+      message: "确认要发布文章吗?\n温馨提示:同种类型的文章一天只能发布两篇哦~"
     })
       .then(async () => {
+        loading.value = true; // 开启 loading 效果
         // 调用发布文章
         isPublished(data);
       })
@@ -249,21 +242,39 @@ const onSubmit = async () => {
 
 // 发布文章请求
 const isPublished = async baseData => {
-  // 校验完毕后,发送请求,根据状态码判断是否发布成功
-  const { code, data } = await newArticlePublish({ baseData });
-  console.log(data);
-  if (code === "200") {
-    // showSuccessToast("发布成功");
+  try {
+    const { data } = await newArticlePublish({ baseData });
+    loading.value = false; // 关闭 loading 效果
+    showSuccessToast("发布成功");
     setTimeout(() => {
       router.push("./demo");
-    }, 1500); // 2秒后跳转
-  } else if (code === "400") {
-    showSuccessToast("重复文章类型发布,请明天再来吧~");
+    }, 1500); // 1.5秒后跳转
+  } catch (error) {
+    loading.value = false; // 关闭 loading 效果
+    if (error.response && error.response.status === 400) {
+      showSuccessToast("重复文章类型发布,请明天再来吧~");
+    } else {
+      console.error("发布文章失败:", error);
+      showToast("发布文章失败,请稍后重试");
+    }
   }
 };
+
+// 获取话题
+getArticleTag();
+// 获取小标签
+getLittleTag();
 </script>
 
 <template>
+  <van-overlay :show="loading" z-index="100">
+    <van-loading vertical>
+      <template #icon>
+        <van-icon name="star-o" size="30" />
+      </template>
+      加载中...
+    </van-loading>
+  </van-overlay>
   <!-- 提交弹框 -->
   <van-dialog v-model:show="submit_show" show-cancel-button />
 
@@ -378,6 +389,10 @@ const isPublished = async baseData => {
 </template>
 
 <style scoped>
+.van-loading {
+  justify-content: center;
+  height: 100%;
+}
 .main {
   margin: 0 5px;
 }
