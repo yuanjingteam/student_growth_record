@@ -49,7 +49,7 @@ const base = reactive([
 </template>
 <style scoped>
 .main {
-  height: 82vh;
+  height: 88vh;
   overflow: hidden;
 }
 </style>

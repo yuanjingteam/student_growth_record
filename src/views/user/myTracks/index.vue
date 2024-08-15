@@ -74,38 +74,52 @@ const onRefresh = () => {
             <van-image round width="3rem" height="3rem" :src="headshot" />
           </template>
         </van-cell>
-        <div v-if="item.i_type == '评论'">{{ item.content }}</div>
-        <div
-          class="content"
-          @click="router.push(`/postDetail/${item.article_id}`)"
-        >
-          <van-text-ellipsis rows="3" :content="item.article_content" />
-          <p class="remark">
-            <span>{{ item.name }}</span>
-            <span><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span>
-            <span
-              ><i-icon icon="lets-icons:comment" />{{
-                item.comment_amount
-              }}</span
-            >
-          </p>
+        <div v-if="item.i_type == '评论'" class="comment">
+          <van-text-ellipsis
+            rows="2"
+            :content="item.content"
+            expand-text="展开"
+            collapse-text="收起"
+          />
         </div>
-        <van-divider :style="{ color: '#1989fa', borderColor: '#1989fa' }" />
+        <van-cell center>
+          <template #title>
+            <div
+              class="content"
+              @click="router.push(`/postDetail/${item.article_id}`)"
+            >
+              <van-text-ellipsis rows="2" :content="item.article_content" />
+              <p class="remark">
+                <span>{{ item.name }}</span>
+                <span><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span>
+                <span
+                  ><i-icon icon="lets-icons:comment" />{{
+                    item.comment_amount
+                  }}</span
+                >
+              </p>
+            </div>
+          </template>
+        </van-cell>
       </van-cell-group>
     </van-list>
   </van-pull-refresh>
 </template>
 <style scoped>
+.comment {
+  margin: 0 20px;
+}
 .van-cell-group {
+  border: 1px solid;
   margin-bottom: 10px;
 }
 .van-image {
   margin-right: 13px;
 }
+
 .content {
   background-color: pink;
   padding: 10px;
-  margin-bottom: 10px;
   border: 1px solid gray;
   border-radius: 5px;
 }

@@ -11,6 +11,12 @@ topicData.topicList = useTopic.topicList;
 </script>
 
 <template>
+  <van-floating-bubble
+    icon="plus"
+    axis="lock"
+    :style="{ top: '-150px' }"
+    @click="router.push('/publish')"
+  />
   <div class="topics">
     <topic-card
       :message="topicData.message"

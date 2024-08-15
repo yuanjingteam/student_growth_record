@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { readManagerNotice } from "@/api/user";
 import { useUserStore } from "@/store";
 import { useInformation } from "@/store";
+import { showDialog } from "vant";
 
 const userInfo = useInformation();
 // 父传子
@@ -29,10 +30,17 @@ data.value = userInfo.manager;
 
 // 是否已读
 const checkManager = async () => {
-  const res = await readManagerNotice({ username: username });
-  if (res.code == 200) {
-    console.log("bbb");
-    router.push("./managerNotice");
+  try {
+    const { code } = await readManagerNotice({ username: username });
+    if (code === 200) {
+      router.push("./managerNotice");
+    } else {
+      console.error("请求失败:", res);
+      showDialog("请求失败");
+    }
+  } catch (error) {
+    console.error("请求出错:", error);
+    showDialog("请求出错");
   }
 };
 </script>

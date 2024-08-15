@@ -24,12 +24,17 @@ list.value = [...list.value, ...result.value];
 const page = ref(1);
 // 获取系统消息
 const loadData = async () => {
-  const { data } = await getSystemNotification({
-    username: username,
-    page: page.value++,
-    limit: 10
-  });
-  list.value = [...list.value, ...data.admin_info];
+  try {
+    const { data } = await getSystemNotification({
+      username: username,
+      page: page.value++,
+      limit: 10
+    });
+    list.value = [...list.value, ...data.admin_info];
+  } catch {
+    console.error("获取系统通知列表失败", error);
+    finished.value = true;
+  }
 };
 const onLoad = async () => {
   if (refreshing.value) {
@@ -42,11 +47,6 @@ const onLoad = async () => {
   console.log(page.value, 31313);
 
   loading.value = false;
-
-  // 数据全部加载完成
-  if (list.value.length >= 10) {
-    finished.value = true;
-  }
 };
 
 // 刷新列表

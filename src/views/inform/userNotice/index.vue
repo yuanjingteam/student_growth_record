@@ -7,6 +7,7 @@ import {
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
+import { showDialog } from "vant";
 
 const userInfo = useInformation();
 
@@ -72,31 +73,69 @@ const onClickTab = active => {
 
 // 获取点赞列表
 const loadData1 = async () => {
-  const { data } = await getUserThumNotification({
-    page: page.value++,
-    username: username,
-    limit: 10
-  });
-  thumbList.value = [...thumbList.value, ...data.thumbsUp];
+  try {
+    const { data, msg, code } = await getUserThumNotification({
+      page: page.value++,
+      username: username,
+      limit: 10
+    });
+    if (code === 200) {
+      thumbList.value = [...thumbList.value, ...data.thumbsUp];
+    } else {
+      console.error("请求失败:", msg);
+      showDialog(msg);
+      finished.value = true;
+    }
+  } catch (error) {
+    console.error("请求出错:", error);
+    showDialog("加载数据时出错");
+    finished.value = true;
+  }
 };
 // 获取评论列表
 const loadData2 = async () => {
-  const { data } = await getUserComNotification({
-    page: page.value++,
-    username: username,
-    limit: 10
-  });
-  comList.value = [...comList.value, ...data.comments];
+  try {
+    const { data, msg, code } = await getUserComNotification({
+      page: page.value++,
+      username: username,
+      limit: 10
+    });
+
+    if (code === 200) {
+      comList.value = [...comList.value, ...data.comments];
+    } else {
+      console.error("获取评论列表失败:", msg);
+      showDialog(msg);
+      finished.value = true;
+    }
+  } catch (error) {
+    console.error("获取评论列表出错:", error);
+    showDialog("加载数据时出错");
+    finished.value = true;
+  }
 };
 
 // 获取收藏列表
 const loadData3 = async () => {
-  const { data } = await getUserStarNotification({
-    page: page.value++,
-    username: username,
-    limit: 10
-  });
-  starList.value = [...starList.value, ...data.star];
+  try {
+    const { data, msg, code } = await getUserStarNotification({
+      page: page.value++,
+      username: username,
+      limit: 10
+    });
+
+    if (code === 200) {
+      starList.value = [...starList.value, ...data.star];
+    } else {
+      console.error("获取收藏列表失败:", msg);
+      showDialog(msg);
+      finished.value = true;
+    }
+  } catch (error) {
+    console.error("获取收藏列表出错:", error);
+    showDialog("获取收藏列表时出错");
+    finished.value = true;
+  }
 };
 // 下拉
 // 点赞下拉刷新
@@ -120,51 +159,27 @@ const onLoad = async () => {
 
   switch (active.value) {
     case 0:
-      // 有就不重复请求了
-      if (thumbList.value.length >= 20) {
-        return;
-      }
       await loadData1();
       console.log(page.value, 31313);
       // 加载状态结束
       loading.value = false;
 
-      // 只显示最近的40条数据
-      if (thumbList.value.length >= 20) {
-        finished.value = true;
-      }
       break;
     case 1:
-      // 有就不重复请求了
-      if (comList.value.length >= 10) {
-        return;
-      }
       await loadData2();
       console.log(page.value, 31313);
 
       // 加载状态结束
       loading.value = false;
 
-      // 只显示最近的40条数据
-      if (comList.value.length >= 20) {
-        finished.value = true;
-      }
       break;
     case 2:
-      // 有就不重复请求了
-      if (starList.value.length >= 20) {
-        return;
-      }
       await loadData3();
       console.log(page.value, 31313);
 
       // 加载状态结束
       loading.value = false;
 
-      // 只显示最近的40条数据
-      if (starList.value.length >= 20) {
-        finished.value = true;
-      }
       break;
   }
 };

@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { readSystemNotice } from "@/api/user";
 import { useUserStore } from "@/store";
 import { useInformation } from "@/store";
+import { showDialog } from "vant";
 
 const useInfo = useInformation();
 // 父传子
@@ -29,10 +30,15 @@ data.value = useInfo.system;
 
 // 是否已读
 const checkSystem = async () => {
-  const res = await readSystemNotice({ username: username });
-  if (res.code == 200) {
-    console.log("aaa");
-    router.push("/systemNotice");
+  try {
+    const res = await readSystemNotice({ username: username });
+    if (res.code == 200) {
+      console.log("aaa");
+      router.push("/systemNotice");
+    }
+  } catch (error) {
+    console.error("请求出错", error);
+    showDialog("请求出错");
   }
 };
 </script>
