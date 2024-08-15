@@ -2,13 +2,19 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { getUserPoints } from "@/api/user";
+import { showToast } from "vant";
 const router = useRouter();
 const myPoints = ref([]);
 const sum = ref(0);
 const getPoints = async () => {
-  const { data } = await getUserPoints();
-  myPoints.value = data.score;
-  sum.value = data.sum;
+  try {
+    const { data } = await getUserPoints();
+    myPoints.value = data.score;
+    sum.value = data.sum;
+  } catch (error) {
+    console.error("获取用户积分失败:", error);
+    showToast("获取用户积分失败");
+  }
 };
 getPoints();
 const data = ref(["学习成绩", "获奖荣誉", "志愿公益", "文体活动", "生活日常"]);

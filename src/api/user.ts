@@ -147,7 +147,7 @@ export function getVerifyImg(data?: Object): Promise<ListResult> {
 //登录
 export function userLogin(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/login",
+    url: "/user/hlogin",
     method: "post",
     data
   });
@@ -345,7 +345,7 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
 // 获取用户发布的文章
 export function getArticlePublish(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/other/article_publish",
+    url: "/user/article_publish",
     method: "get",
     data: JSON.stringify(data)
   });
