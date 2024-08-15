@@ -33,7 +33,6 @@ const getCommentsList = async () => {
   commentList.value = data.comment_list;
   comment_total.value = data.comment_num;
 };
-getCommentsList();
 //获取帖子详情列表
 const getArticleDetailList = async () => {
   const { data } = await getArticlesService({
@@ -57,6 +56,40 @@ const refresh = async () => {
   commentList.value = data.comment_list;
   comment_total.value = data.comment_num;
 };
+
+//控制列表加载状态的显示和隐藏
+const loading = ref(false);
+//绑定了 finished 变量，用于标记是否加载完成
+const finished = ref(false);
+//控制刷新状态的显示和隐藏
+const refreshing = ref(false);
+
+//当用户滚动到底部时会触发加载更多数据的事件
+const onLoad = async () => {
+  if (refreshing.value) {
+    commentData.comment_page = 0;
+    commentList.value = [];
+    refreshing.value = false;
+  }
+  commentData.comment_page += 1;
+  const res = await getCommentsService(commentData);
+  if (res.code == 200) {
+    loading.value = false;
+    commentList.value = [...commentList.value, ...res.data.comment_list];
+  } else {
+    finished.value = true;
+  }
+};
+
+//监听了刷新事件
+const onRefresh = () => {
+  // 清空列表数据
+  finished.value = false;
+  // 重新加载数据
+  // 将 loading 设置为 true，表示处于加载状态
+  loading.value = true;
+  onLoad();
+};
 </script>
 <template>
   <div class="detail">
@@ -78,13 +111,21 @@ const refresh = async () => {
         <change-btn style="float: right" @get_type="getType" />
       </template>
     </van-cell>
-
-    <comment-detail
-      v-for="(item, index) in commentList"
-      :key="index"
-      :data="item"
-      @refresh="refresh"
-    />
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-list
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <comment-detail
+          v-for="(item, index) in commentList"
+          :key="index"
+          :data="item"
+          @refresh="refresh"
+        />
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 

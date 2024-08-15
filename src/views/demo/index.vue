@@ -167,6 +167,7 @@ const onRefresh = () => {
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
+  <van-back-top bottom="100px" />
 </template>
 
 <style scoped>

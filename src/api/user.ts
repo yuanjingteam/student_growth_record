@@ -201,7 +201,7 @@ export function changeUserEmail(data?: Object): Promise<ListResult> {
 // 获取系统消息列表
 export function getSystemNotification(data?: Object): Promise<adminList> {
   return http.request({
-    url: "/system/get_notification",
+    url: "/message/get_system",
     method: "get",
     data: JSON.stringify(data)
   });
@@ -210,7 +210,7 @@ export function getSystemNotification(data?: Object): Promise<adminList> {
 // 获取管理员消息列表
 export function getManagerNotification(data?: Object): Promise<managerList> {
   return http.request({
-    url: "/manager/get_notification",
+    url: "/message/get_manager",
     method: "get",
     data: JSON.stringify(data)
   });
@@ -219,7 +219,7 @@ export function getManagerNotification(data?: Object): Promise<managerList> {
 // 获取举报邮箱
 export function getreportEmail(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/rerport_box/getlist",
+    url: "/report_box/getlist",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -255,7 +255,7 @@ export function readUserNotice(data?: Object): Promise<ListResult> {
 // 已读邮箱消息
 export function readEmailNotice(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/rerport_box/getlist",
+    url: "/report_box/getlist",
     method: "post",
     data: JSON.stringify(data)
   });
