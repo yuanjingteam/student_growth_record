@@ -66,7 +66,7 @@ const refresh = async () => {
       </template>
     </van-nav-bar>
 
-    <post-more :data="articleData" :articleId="articleId" />
+    <post-more :post="articleData" :articleId="articleId" />
 
     <van-cell>
       <!-- 使用 title 插槽来自定义标题 -->
