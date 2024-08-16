@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { readEmailNotice } from "@/api/user";
+import { readEmailNotice, getreportEmail } from "@/api/user";
 import { useUserStore } from "@/store";
 // 父传子
 // 给一个默认值
@@ -22,6 +22,14 @@ const data = ref({
   ],
   unread_count: 0
 });
+
+// 获取举报邮箱
+const reportEmail = async () => {
+  const res = await getreportEmail({ page: 1, limit: 1 });
+  data.value = res.data;
+};
+reportEmail();
+
 const checkEmaill = async () => {
   try {
     const { code } = await readEmailNotice({ username: username });
@@ -48,6 +56,14 @@ const checkEmaill = async () => {
         <van-badge :content="data.unread_count" max="99" />
       </div>
     </template>
+    <template #label>
+      <div class="wid">
+        <div v-if="data.unread_count !== 0">有待处理的消息</div>
+        <div v-if="data.unread_count === 0">
+          没有待处理的消息,去别的地方逛逛吧~
+        </div>
+      </div>
+    </template>
     <template #icon>
       <van-image round width="3rem" height="3rem" :src="base.userImg" />
     </template>
@@ -55,7 +71,7 @@ const checkEmaill = async () => {
 </template>
 
 <style scoped>
-.van-text-ellipsis {
+.wid {
   color: black;
   width: 240px;
 }

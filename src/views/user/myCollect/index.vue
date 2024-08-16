@@ -13,11 +13,16 @@ const page = ref(0);
 
 const userStar = ref([]);
 const mystar = async () => {
-  const { data } = await getStar({
-    username: myname,
-    page: page.value++
-  });
-  userStar.value = [...userStar.value, ...data.star];
+  try {
+    const { data } = await getStar({
+      username: myname,
+      page: page.value++
+    });
+    userStar.value = [...userStar.value, ...data.star];
+  } catch {
+    console.error("获取我的收藏列表失败", error);
+    finished.value = true;
+  }
 };
 
 const onLoad = async () => {
@@ -30,11 +35,6 @@ const onLoad = async () => {
   console.log(page.value, 31313);
 
   loading.value = false;
-
-  // 数据全部加载完成
-  if (userStar.value.length >= 20) {
-    finished.value = true;
-  }
 };
 // 刷新列表
 const onRefresh = () => {

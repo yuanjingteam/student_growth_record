@@ -29,8 +29,8 @@ const userNotice = async () => {
 
     // 获取评论通知的未读消息数量
     const res2 = await getUserComNotification({
-      page: 1,
       username: username,
+      page: 1,
       limit: 1
     });
     const comUnreadCount = res2.data.unread_count;
@@ -62,7 +62,7 @@ userNotice();
       </div>
     </template>
     <template #label>
-      <div v-if="unread_count !== 0">您有新的消息通知</div>
+      <div v-if="unread_count !== 0" class="wid">您有新的消息通知</div>
     </template>
     <template #icon>
       <van-image round width="3rem" height="3rem" :src="base.userImg" />
@@ -71,7 +71,7 @@ userNotice();
 </template>
 
 <style scoped>
-.van-text-ellipsis {
+.wid {
   color: black;
   width: 240px;
 }

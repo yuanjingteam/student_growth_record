@@ -1,9 +1,10 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
-
+import { useUserStore } from "@/store";
 const router = useRouter();
-
+const userStore = useUserStore();
+const role = userStore.role;
 // 当前页面默认渲染的数据
 const base = reactive([
   {
@@ -36,7 +37,7 @@ const base = reactive([
     <inter-info :base="base[2]" />
 
     <!-- 举报邮箱 -->
-    <perm-notice :base="base[3]" />
+    <perm-notice v-if="role === 1" :base="base[3]" />
   </div>
 
   <!-- 发布文章按钮 -->
