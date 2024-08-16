@@ -23,7 +23,20 @@ const data = ref({
   ],
   unread_count: 0
 });
-
+const checkEmaill = async () => {
+  try {
+    const { code } = await readEmailNotice({ username: username });
+    if (code === 200) {
+      router.push("./permNotice");
+    } else {
+      console.error("请求失败:", res);
+      showDialog("请求失败");
+    }
+  } catch (error) {
+    console.error("请求出错:", error);
+    showDialog("请求出错");
+  }
+};
 // 获取举报邮箱
 data.value = userInfo.email;
 </script>

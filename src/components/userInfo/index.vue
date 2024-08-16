@@ -55,9 +55,7 @@ const onSelect = async action => {
   });
   if (code === 200) {
     showToast(`已将该用户封禁${action.ban_time}天`);
-    setTimeout(function () {
-      window.location.reload();
-    }, 500);
+    UerInfo();
   }
 };
 // 解封用户
@@ -67,9 +65,7 @@ const unBan = async () => {
   });
   if (code === 200) {
     showToast("解封成功");
-    setTimeout(function () {
-      window.location.reload();
-    }, 500);
+    UerInfo();
   }
 };
 
@@ -77,7 +73,7 @@ const data = ref({
   username: "",
   name: "",
   user_headshot: "",
-  ban: true,
+  ban: false,
   user_motto: "",
   userfans: 0,
   score: 0,

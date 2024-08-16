@@ -17,7 +17,7 @@ const articleBan = ref([]);
 
 //刷新举报数据
 const reportRefresh = () => {
-  getReportData();
+  getreportEmail();
 };
 //控制列表加载状态的显示和隐藏
 const loading = ref(false);

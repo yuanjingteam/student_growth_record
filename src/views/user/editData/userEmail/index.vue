@@ -1,6 +1,7 @@
 <script setup>
 import { useUserStore } from "@/store";
 import { changeUserEmail } from "@/api/user";
+import { showConfirmDialog } from "vant";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { showToast } from "vant";
@@ -19,16 +20,25 @@ const submitEmail = async () => {
     userStore.userData.user_email = text;
   }
 };
-const onClickRight = async () => {
-  try {
-    await submitEmail();
-    // 如果 submitEmail() 函数执行成功
-    router.go(-1);
-  } catch (error) {
-    // 如果 submitEmail() 函数执行过程中出现异常
-    console.error("提交邮箱信息失败:", error);
-    showToast("提交邮箱信息失败,请稍后重试");
-  }
+
+const onClickRight = () => {
+  showConfirmDialog({
+    title: "标题",
+    message:
+      "如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。"
+  })
+    .then(async () => {
+      try {
+        await submitEmail();
+        // 如果 submitEmail() 函数执行成功
+        router.go(-1);
+      } catch (error) {
+        // 如果 submitEmail() 函数执行过程中出现异常
+        console.error("提交邮箱信息失败:", error);
+        showToast("提交邮箱信息失败,请稍后重试");
+      }
+    })
+    .catch(() => {});
 };
 </script>
 <template>
