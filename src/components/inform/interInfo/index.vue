@@ -1,10 +1,12 @@
 <script setup>
-import { readUserNotice } from "@/api/user";
+import {
+  getUserThumNotification,
+  getUserComNotification,
+  getUserStarNotification
+} from "@/api/user";
 import { useUserStore } from "@/store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useInformation } from "@/store";
-const userInfo = useInformation();
 const router = useRouter();
 // 父传子
 const props = defineProps({
@@ -12,43 +14,55 @@ const props = defineProps({
 });
 const userStore = useUserStore();
 const username = userStore.username;
-const data = ref({
-  thumbsUp: [
-    {
-      not_time: ""
-    }
-  ],
-  unread_count: 0
-});
-
+const unread_count = ref(0);
 // 获取页面消息
-data.value = userInfo.thumbs;
-
-// 是否已读
-const checkUser = async () => {
+// 获取点赞列表
+const userNotice = async () => {
   try {
-    const { data, code, msg } = await readUserNotice({ username: username });
-    if (code === 200) {
-      console.log("ccc");
-      router.push("./userNotice");
-    } else {
-      console.error("获取用户通知失败:", msg);
-    }
+    // 获取缩略图通知的未读消息数量
+    const res1 = await getUserThumNotification({
+      page: 1,
+      username: username,
+      limit: 1
+    });
+    const thumUnreadCount = res1.data.unread_count;
+
+    // 获取评论通知的未读消息数量
+    const res2 = await getUserComNotification({
+      page: 1,
+      username: username,
+      limit: 1
+    });
+    const comUnreadCount = res2.data.unread_count;
+
+    // 获取关注通知的未读消息数量
+    const res3 = await getUserStarNotification({
+      page: 1,
+      username: username,
+      limit: 1
+    });
+    const starUnreadCount = res3.data.unread_count;
+
+    // 计算总的未读消息数量
+    unread_count.value = thumUnreadCount + comUnreadCount + starUnreadCount;
   } catch (error) {
-    console.error("获取用户通知出错:", error);
+    console.error("Error fetching notification counts:", error);
   }
 };
+userNotice();
 </script>
 <template>
-  <van-cell center @click="checkUser">
+  <van-cell center @click="router.push('/userNotice')">
     <template #title>
       {{ base.userName }}
     </template>
     <template #value>
       <div class="right-content">
-        <div class="va-time">{{ data.thumbsUp[0].not_time }}</div>
-        <van-badge :content="data.unread_count" />
+        <van-badge :content="unread_count" />
       </div>
+    </template>
+    <template #label>
+      <div v-if="unread_count !== 0">您有新的消息通知</div>
     </template>
     <template #icon>
       <van-image round width="3rem" height="3rem" :src="base.userImg" />
@@ -63,7 +77,7 @@ const checkUser = async () => {
 }
 
 .right-content .van-badge {
-  margin: 10px 18px 0px 0px;
+  margin: 23px 18px 0px 0px;
 }
 
 .van-image {

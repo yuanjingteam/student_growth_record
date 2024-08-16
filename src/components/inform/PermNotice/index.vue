@@ -2,8 +2,7 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { readEmailNotice } from "@/api/user";
-import { useUserStore, useInformation } from "@/store";
-const userInfo = useInformation();
+import { useUserStore } from "@/store";
 // 父传子
 // 给一个默认值
 const props = defineProps({
@@ -37,8 +36,6 @@ const checkEmaill = async () => {
     showDialog("请求出错");
   }
 };
-// 获取举报邮箱
-data.value = userInfo.email;
 </script>
 <template>
   <van-cell center @click="checkEmaill">

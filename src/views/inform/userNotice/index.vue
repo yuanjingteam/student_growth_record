@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useUserStore, useInformation } from "@/store";
+import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import {
   getUserThumNotification,
@@ -9,10 +9,6 @@ import {
 } from "@/api/user";
 import { showDialog } from "vant";
 
-const userInfo = useInformation();
-
-// 到这个页面就清空未读数据
-userInfo.thumbs.unread_count = null;
 // 路由
 const router = useRouter();
 
@@ -20,26 +16,21 @@ const router = useRouter();
 const userStore = useUserStore();
 const username = userStore.username;
 
-const page = ref(1);
+// 哪一栏
+const active = ref(0);
+
+const page1 = ref(0);
+const page2 = ref(0);
+const page3 = ref(0);
 // 获取到的列表
 // 点赞
 const thumbList = ref([]);
-// 初始化数据
-const res1 = userInfo.thumbs.thumbsUp;
-thumbList.value = [...thumbList.value, ...res1];
 
 // 评论
 const comList = ref([]);
-const res2 = userInfo.comments.comments;
-comList.value = [...comList.value, ...res2];
 
 // 收藏
 const starList = ref([]);
-const res3 = userInfo.star.star;
-starList.value = [...starList.value, ...res3];
-
-// 哪一栏
-const active = ref(0);
 
 // 加载动画
 const loading = ref(false);
@@ -65,17 +56,13 @@ const state = [
   "收藏了你的评论"
 ];
 
-const onClickTab = active => {
-  page.value = 1;
-  // 切换清空列表
-  onLoad();
-};
+const onClickTab = () => {};
 
 // 获取点赞列表
 const loadData1 = async () => {
   try {
     const { data, msg, code } = await getUserThumNotification({
-      page: page.value++,
+      page: page1.value++,
       username: username,
       limit: 10
     });
@@ -96,7 +83,7 @@ const loadData1 = async () => {
 const loadData2 = async () => {
   try {
     const { data, msg, code } = await getUserComNotification({
-      page: page.value++,
+      page: page2.value++,
       username: username,
       limit: 10
     });
@@ -119,7 +106,7 @@ const loadData2 = async () => {
 const loadData3 = async () => {
   try {
     const { data, msg, code } = await getUserStarNotification({
-      page: page.value++,
+      page: page3.value++,
       username: username,
       limit: 10
     });
@@ -145,13 +132,14 @@ const onLoad = async () => {
   if (refreshing.value) {
     if (active.value == 0) {
       thumbList.value = [];
+      page1.value = 0;
     } else if (active.value == 1) {
       comList.value = [];
+      page2.value = 0;
     } else if (active.value == 2) {
       starList.value = [];
+      page3.value = 0;
     }
-    page.value = 0;
-
     refreshing.value = false;
   }
   // 重置刷新的值
@@ -160,26 +148,22 @@ const onLoad = async () => {
   switch (active.value) {
     case 0:
       await loadData1();
-      console.log(page.value, 31313);
+      console.log(page1.value, 31313);
       // 加载状态结束
       loading.value = false;
-
       break;
     case 1:
       await loadData2();
-      console.log(page.value, 31313);
-
+      console.log(page2.value, 31313);
       // 加载状态结束
       loading.value = false;
 
       break;
     case 2:
       await loadData3();
-      console.log(page.value, 31313);
-
+      console.log(page3.value, 31313);
       // 加载状态结束
       loading.value = false;
-
       break;
   }
 };
@@ -188,7 +172,6 @@ const onLoad = async () => {
 const onRefresh = () => {
   // 清空列表数据
   finished.value = false;
-
   // 重新加载数据
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;

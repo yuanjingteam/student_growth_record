@@ -3,10 +3,9 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { readManagerNotice } from "@/api/user";
 import { useUserStore } from "@/store";
-import { useInformation } from "@/store";
 import { showDialog } from "vant";
+import { getManagerNotification } from "@/api/user";
 
-const userInfo = useInformation();
 // 父传子
 const props = defineProps({
   base: Object
@@ -26,8 +25,11 @@ const data = ref({
 });
 
 // 获取管理员消息
-data.value = userInfo.manager;
-
+const managerNotification = async () => {
+  const res = await getManagerNotification({ page: 1, limit: 1 });
+  data.value = res.data;
+};
+managerNotification();
 // 是否已读
 const checkManager = async () => {
   try {
