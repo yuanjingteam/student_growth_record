@@ -14,11 +14,16 @@ const page = ref(0);
 const inter_info = ref([]);
 
 const getTracks = async () => {
-  const { data } = await getUserTracks({
-    username: myname,
-    page: page.value++
-  });
-  inter_info.value = [...inter_info.value, ...data.inter_info];
+  try {
+    const { data } = await getUserTracks({
+      username: myname,
+      page: page.value++
+    });
+    inter_info.value = [...inter_info.value, ...data.inter_info];
+  } catch {
+    console.error("获取我的足迹失败");
+    finished.value = true;
+  }
 };
 
 const onLoad = async () => {
@@ -31,11 +36,6 @@ const onLoad = async () => {
   console.log(page.value, 31313);
 
   loading.value = false;
-
-  // 数据全部加载完成
-  if (inter_info.value.length >= 20) {
-    finished.value = true;
-  }
 };
 
 // 刷新列表

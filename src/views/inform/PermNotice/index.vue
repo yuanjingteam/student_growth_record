@@ -3,8 +3,6 @@ import { useRouter } from "vue-router";
 import { reactive, ref } from "vue";
 import { getreportEmail } from "@/api/user";
 const router = useRouter();
-// 清空未读消息数量
-userInfo.email.unread_count = null;
 //举报数据
 const reportData = reactive({
   page: 0,

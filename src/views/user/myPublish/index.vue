@@ -22,7 +22,8 @@ const loadData = async () => {
     });
     list.value = [...list.value, ...data.content];
   } catch (error) {
-    console.error();
+    console.error("获取我发布的文章失败");
+    finished.value = true;
   }
 };
 const onLoad = async () => {
@@ -34,10 +35,6 @@ const onLoad = async () => {
   await loadData();
 
   loading.value = false;
-
-  if (list.value.length >= 10) {
-    finished.value = true;
-  }
 };
 
 const onRefresh = () => {
