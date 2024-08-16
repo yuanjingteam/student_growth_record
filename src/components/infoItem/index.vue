@@ -1,8 +1,9 @@
 <script setup>
-import { ref } from "vue";
 import { useRouter } from "vue-router";
-
+import { useUserStore } from "@/store";
 const router = new useRouter();
+const userStore = useUserStore();
+const username = userStore.username;
 // 父传子
 const props = defineProps({
   data: Object,
@@ -12,20 +13,22 @@ const props = defineProps({
 });
 </script>
 <template>
-  <van-badge :dot="data.is_read">
+  <van-badge :dot="data.is_read" :offset="[-12, 20]">
     <van-cell center>
       <template #title>
         {{ data.name }}
       </template>
       <template #label>
-        <div v-if="data.type">
-          <span v-if="data.type === 0">{{ state1 }}</span>
-          <span v-else>{{ state2 }}</span>
+        <div @click="router.push(`/postDetail/${data.article_id}`)">
+          <div v-if="data.type">
+            <span v-if="data.type === 0">{{ state1 }}</span>
+            <span v-else>{{ state2 }}</span>
+          </div>
+          <div v-else>
+            <span>{{ state1 }}</span>
+          </div>
+          <van-text-ellipsis :content="data.content" />
         </div>
-        <div v-else>
-          <span>{{ state1 }}</span>
-        </div>
-        <van-text-ellipsis :content="data.content" />
       </template>
       <template #value>
         <div>

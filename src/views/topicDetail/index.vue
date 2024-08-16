@@ -93,19 +93,19 @@ const onRefresh = () => {
 };
 </script>
 <template>
-  <!-- 发布文章按钮 -->
-  <van-floating-bubble
-    icon="plus"
-    axis="lock"
-    :style="{ top: '-762px', left: '-12px' }"
-    @click="router.push('/publish')"
-  />
   <van-nav-bar left-arrow @click-left="router.go(-1)">
     <template #right>
       <van-icon name="ellipsis" />
     </template>
   </van-nav-bar>
   <div class="title-box">
+    <van-button
+      class="publish"
+      round
+      icon="plus"
+      type="primary"
+      @click="router.push('/publish')"
+    />
     <div class="title" style="display: flex">
       <i-icon icon="icon-park:message" />
       <p>{{ topic.topic_name }}专题</p>
@@ -145,6 +145,11 @@ const onRefresh = () => {
   <van-back-top bottom="100px" />
 </template>
 <style scoped>
+.publish {
+  position: absolute;
+  right: 18px;
+  height: 48px;
+}
 .van-nav-bar {
   padding: 5px 0;
   --van-nav-bar-arrow-size: 20px;

@@ -45,10 +45,22 @@ const isNav = ref(true);
 const isEditing = ref(false);
 
 // 表单校验规则
-const rules = ref([
-  { required: true, message: "请填写自我介绍" },
-  { max: 2000, message: "自我介绍不能超过2000个字" }
-]);
+const rules = [
+  {
+    validator: value => {
+      // 自述不能为空
+      if (!value.trim()) {
+        return "请填写自述内容";
+      }
+      // 自述长度限制
+      if (value.length > 2000) {
+        return "自述内容不能超过2000个字符";
+      }
+      return true;
+    },
+    message: error => error
+  }
+];
 // 可修改的状态
 const changeState = function () {
   inputMid = content.value;
