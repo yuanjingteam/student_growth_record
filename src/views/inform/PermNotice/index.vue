@@ -1,10 +1,8 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { reactive, ref } from "vue";
-import { useInformation } from "@/store";
 import { getreportEmail } from "@/api/user";
 const router = useRouter();
-const userInfo = useInformation();
 // 清空未读消息数量
 userInfo.email.unread_count = null;
 //举报数据
@@ -17,12 +15,13 @@ const articleBan = ref([]);
 
 //刷新举报数据
 const reportRefresh = () => {
-  getReportData();
+  getreportEmail();
 };
 //控制列表加载状态的显示和隐藏
 const loading = ref(false);
 //绑定了 finished 变量，用于标记是否加载完成
 const finished = ref(false);
+
 //控制刷新状态的显示和隐藏
 const refreshing = ref(false);
 

@@ -1,28 +1,19 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { useUserStore, useInformation } from "@/store";
+import { useUserStore } from "@/store";
 import { getManagerNotification } from "@/api/user";
 const router = useRouter();
-const userInfo = useInformation();
-
-// 到这个页面就清除未读消息数量
-userInfo.manager.unread_count = null;
 const userStore = useUserStore;
 const username = userStore.username;
-const list = ref([]);
+
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 
 // 初始化页面数据
-const result = ref([]);
-const res = userInfo.manager;
-result.value = res.manager_info;
-// 从全局状态管理中获取
-list.value = [...list.value, ...result.value];
-loading.value = false;
-const page = ref(1);
+const list = ref([]);
+const page = ref(0);
 
 // 获取管理员消息
 const loadData = async () => {
@@ -76,12 +67,7 @@ const onRefresh = () => {
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <manage-item
-        v-for="(item, index) in list"
-        :key="index"
-        :data="item"
-        @click="router.push(`/postDetail/${item.article_id}`)"
-      />
+      <manage-item v-for="(item, index) in list" :key="index" :data="item" />
     </van-list>
   </van-pull-refresh>
 </template>

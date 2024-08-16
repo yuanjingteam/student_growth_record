@@ -31,6 +31,10 @@ const selectShare = option => {
 
 // 获取自述内容
 const content = ref();
+
+// 存储自述内容
+let inputMid = "";
+
 // 获取文本框对象
 const fieldText = ref(null);
 
@@ -45,23 +49,23 @@ const rules = ref([
   { required: true, message: "请填写自我介绍" },
   { max: 2000, message: "自我介绍不能超过2000个字" }
 ]);
-
 // 可修改的状态
 const changeState = function () {
-  const inputElement = fieldText.value;
+  inputMid = content.value;
+
   isEditing.value = true;
   isNav.value = false;
   // 获得焦点
-  inputElement.focus();
+  fieldText.value.focus();
 };
 
 // 退出编辑
 const returnBack = () => {
+  content.value = inputMid;
   isEditing.value = false;
   isNav.value = true;
   // 失去焦点
   fieldText.value.blur();
-  getSelf();
 };
 
 // 获取自述

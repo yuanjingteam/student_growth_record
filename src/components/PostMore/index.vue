@@ -92,19 +92,20 @@ const commentBtn = () => {
   showCommentTable.value = !showCommentTable.value;
 };
 //评论校验
-const commentRef = ref();
+const commentRef = ref({});
 //举报理由校验
-const reportRef = ref();
+const reportRef = ref({});
 //提交评论
 const submitComment = async () => {
   await commentRef.value.validate();
-  showCommentTable.value = !showCommentTable.value;
   const res = await articleCommentService({
     comment_type: "0",
     id: props.articleId,
     comment_content: comment.value
   });
   console.log(res);
+  comment.value = "";
+  showCommentTable.value = !showCommentTable.value;
 };
 //提交举报理由
 const submitReport = async () => {
@@ -191,7 +192,7 @@ const confirmDelete = async () => {
           <van-action-sheet v-model:show="showCommentTable" title="发布评论">
             <div class="content">
               <van-cell-group inset>
-                <van-form>
+                <van-form ref="commentRef">
                   <van-field
                     v-model="comment"
                     rows="2"

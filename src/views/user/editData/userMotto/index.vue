@@ -2,7 +2,7 @@
 import { useUserStore } from "@/store";
 import { changeUserMotto } from "@/api/user";
 import { useRouter } from "vue-router";
-import { showToast } from "vant";
+import { showToast, showConfirmDialog } from "vant";
 import { ref } from "vue";
 const userStore = useUserStore();
 const router = useRouter();
@@ -19,15 +19,25 @@ const submitMotto = async () => {
     userStore.userData.user_motto = text;
   }
 };
-const onClickRight = async () => {
-  // 更新个签
-  try {
-    await submitMotto();
-    router.go(-1);
-  } catch (error) {
-    console.error("提交个签失败:", error);
-    showToast("提交个签失败,请稍后重试");
-  }
+const onClickRight = () => {
+  showConfirmDialog({
+    title: "标题",
+    message:
+      "如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。"
+  })
+    .then(async () => {
+      // 更新个签
+      try {
+        await submitMotto();
+        router.go(-1);
+      } catch (error) {
+        console.error("提交个签失败:", error);
+        showToast("提交个签失败,请稍后重试");
+      }
+    })
+    .catch(() => {
+      // on cancel
+    });
 };
 </script>
 <template>

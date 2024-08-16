@@ -14,12 +14,16 @@ const refreshing = ref(false);
 
 // 获取我的文章
 const loadData = async () => {
-  const { data } = await getArticlePublish({
-    username: username,
-    page: page.value++,
-    limit: 10
-  });
-  list.value = [...list.value, ...data.content];
+  try {
+    const { data } = await getArticlePublish({
+      username: username,
+      page: page.value++,
+      limit: 10
+    });
+    list.value = [...list.value, ...data.content];
+  } catch (error) {
+    console.error();
+  }
 };
 const onLoad = async () => {
   if (refreshing.value) {
@@ -55,18 +59,22 @@ const onRefresh = () => {
     />
     <div class="my-w">
       <user-info />
+      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+        <van-list
+          v-model:loading="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <cell-card
+            v-for="(item, index) in list"
+            :key="index"
+            :article="item"
+            @click="console.log(1)"
+          />
+        </van-list>
+      </van-pull-refresh>
     </div>
-
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <van-list
-        v-model:loading="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-      >
-        <cell-card v-for="item in list" :key="item" @click="console.log(1)" />
-      </van-list>
-    </van-pull-refresh>
   </div>
 </template>
 

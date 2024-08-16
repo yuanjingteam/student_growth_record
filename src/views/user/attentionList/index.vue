@@ -32,21 +32,34 @@ nextTick(() => {
 
 getList();
 
-const changeRole = index => {
-  const buttonElement = buttonRefs.value[index];
-  const currentText = buttonElement.textContent.trim();
-  buttonElement.textContent = currentText === "已关注" ? "关注" : "已关注";
-  changState();
-};
+// 节流函数
+function throttle(func, delay) {
+  let lastTime = 0;
+  return function (...args) {
+    const nowTime = new Date().getTime();
+    if (nowTime - lastTime > delay) {
+      lastTime = nowTime;
+      func.apply(this, args);
+    }
+  };
+}
 
-const changState = async () => {
-  const { code } = await changeAttentionState({
-    username: username,
-    othername: 1
-  });
-  if (code == 200) {
+const changeRole = throttle(async index => {
+  try {
+    const { code } = await changeAttentionState({
+      username: username,
+      othername: 1
+    });
+    if (code == 200) {
+      const buttonElement = buttonRefs.value[index];
+      const currentText = buttonElement.textContent.trim();
+      buttonElement.textContent = currentText === "已关注" ? "关注" : "已关注";
+    }
+  } catch {
+    console.error("Error in changeRole:", error);
+    showDialog("修改异常请稍后重试");
   }
-};
+}, 800);
 </script>
 <template>
   <van-nav-bar

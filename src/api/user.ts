@@ -243,15 +243,6 @@ export function readManagerNotice(data?: Object): Promise<ListResult> {
   });
 }
 
-// 已读互动消息
-export function readUserNotice(data?: Object): Promise<ListResult> {
-  return http.request({
-    url: "/user/read_notice",
-    method: "post",
-    data: JSON.stringify(data)
-  });
-}
-
 // 已读邮箱消息
 export function readEmailNotice(data?: Object): Promise<ListResult> {
   return http.request({
@@ -264,7 +255,7 @@ export function readEmailNotice(data?: Object): Promise<ListResult> {
 // 获取互动消息点赞列表
 export function getUserThumNotification(data?: Object): Promise<thumbsList> {
   return http.request({
-    url: "/user/get_thumbList",
+    url: "/message/get_thumbList",
     method: "get",
     data: JSON.stringify(data)
   });

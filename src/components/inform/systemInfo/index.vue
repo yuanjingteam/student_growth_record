@@ -1,12 +1,10 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { readSystemNotice } from "@/api/user";
+import { readSystemNotice, getSystemNotification } from "@/api/user";
 import { useUserStore } from "@/store";
-import { useInformation } from "@/store";
 import { showDialog } from "vant";
 
-const useInfo = useInformation();
 // 父传子
 const props = defineProps({
   base: Object
@@ -26,14 +24,17 @@ const data = ref({
 });
 
 // 获取系统消息
-data.value = useInfo.system;
+const systemNotification = async () => {
+  const res = await getSystemNotification({ page: 1, limit: 1 });
+  data.value = res.data;
+};
+systemNotification();
 
 // 是否已读
 const checkSystem = async () => {
   try {
     const res = await readSystemNotice({ username: username });
     if (res.code == 200) {
-      console.log("aaa");
       router.push("/systemNotice");
     }
   } catch (error) {
