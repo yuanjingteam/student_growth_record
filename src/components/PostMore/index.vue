@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { useUserStore } from "@/store";
 import {
   articleUpvoteService,
   articleCollectService,
@@ -16,6 +17,7 @@ const props = defineProps({
 
 const router = useRouter();
 const route = useRoute();
+const userStore = useUserStore();
 
 // 防抖函数
 function debounce(func, delay) {
@@ -34,7 +36,12 @@ const ifCollect = ref(false);
 //点击三个点是否展示选择框
 const showPopover = ref(false);
 //选择框内容
-const actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
+let actions = [];
+if (userStore.role == "0") {
+  actions = [{ text: "举报" }];
+} else {
+  actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
+}
 //是否打开举报框
 const showReport = ref(false);
 //是否封禁
@@ -413,16 +420,17 @@ const confirmDelete = async () => {
     .btn {
       float: left;
       display: flex;
-      width: 85px;
       height: 23px;
       background-color: rgba(0, 81, 255, 0.1);
       border-radius: 10px;
       justify-content: space-between;
       align-items: center;
       padding: 0 10px;
+      margin-right: 5px;
 
       .btn-title {
         color: rgba(0, 81, 255);
+        margin-left: 5px;
       }
     }
 

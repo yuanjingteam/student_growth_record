@@ -8,21 +8,21 @@ type ListResult = {
 //获取班级成长之星列表
 export function getClassStar(): Promise<ListResult> {
   return http.request({
-    url: "/get/class_star",
+    url: "/star/class_star",
     method: "get"
   });
 }
 //获取年级成长之星列表
 export function getGradeStar(): Promise<ListResult> {
   return http.request({
-    url: "/get/grade_star",
+    url: "/star/grade_star",
     method: "get"
   });
 }
 //获取校级成长之星列表
 export function getSchoolStar(): Promise<ListResult> {
   return http.request({
-    url: "/get/school_star",
+    url: "/star/college_star",
     method: "get"
   });
 }

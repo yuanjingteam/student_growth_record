@@ -84,7 +84,11 @@ const reloadCommentSec = async () => {
   commentSeList.value = comment_se_list;
 };
 //下拉选择框数据
-const actions = [{ text: "删除" }];
+let actions = [];
+if (userStore.role != "0") {
+  actions = [{ text: "删除" }];
+}
+
 const select = (action, index) => {
   if (action.text == "删除") {
     showDelete.value = !showDelete.value;
@@ -107,12 +111,7 @@ const confirmDelete = async () => {
     <van-card>
       <template #tags>
         <div class="info-box">
-          <van-image
-            width="3rem"
-            height="3rem"
-            round
-            :src="data.user_headshot"
-          />
+          <van-image round :src="data.user_headshot" />
           <div class="info">
             <div class="info-row">
               <p class="name">{{ data.name }}</p>
@@ -143,6 +142,7 @@ const confirmDelete = async () => {
               </div>
             </div>
             <van-collapse
+              v-if="data.comment_son_num != 0"
               v-model="activeNames"
               @change="debouncedchangeComment(commentFold)"
             >
@@ -201,7 +201,7 @@ const confirmDelete = async () => {
   <van-dialog
     v-model:show="showDelete"
     title="提示"
-    message="您确定要删除当前帖子吗？"
+    message="您确定要删除当前评论吗？"
     show-cancel-button
     showConfirmButton
     @confirm="confirmDelete"
@@ -209,15 +209,11 @@ const confirmDelete = async () => {
 </template>
 
 <style scoped>
-.content {
-  padding: 16px 16px 160px;
-}
 .cell {
   .van-card {
     background-color: #fff;
     margin-top: 1px;
     padding: 15px 15px;
-    overflow: hidden;
 
     .info-box {
       display: flex;
