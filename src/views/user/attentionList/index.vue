@@ -78,14 +78,20 @@ const changeRole = throttle(async index => {
         <van-text-ellipsis :content="item.user_motto" />
       </template>
       <template #icon>
-        <van-image round width="3rem" height="3rem" :src="item.user_headshot" />
+        <van-image
+          round
+          width="3rem"
+          height="3rem"
+          :src="item.user_headshot"
+          @click="router.push(`/otherInfo/${item.username}`)"
+        />
       </template>
     </van-cell>
   </van-cell-group>
 </template>
 <style scoped>
 button {
-  background-color: red;
+  background-color: #1989fa;
   border-radius: 5px;
   width: 68px;
   padding: 3px 0;
@@ -93,5 +99,11 @@ button {
   font-weight: 700;
   font-size: 13px;
   color: #fff;
+}
+.van-image {
+  margin-right: 5px;
+}
+.van-text-ellipsis {
+  width: 200px;
 }
 </style>

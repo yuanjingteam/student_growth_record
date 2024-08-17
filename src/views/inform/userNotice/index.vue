@@ -179,6 +179,14 @@ const onRefresh = () => {
 };
 </script>
 <template>
+  <van-empty v-if="thumbList.length === 0" style="width: 100%; height: 100%">
+    <template #image>
+      <video autoplay loop muted>
+        <source src="../../../icons/car.mp4" type="video/mp4" />
+      </video>
+    </template>
+    <template #description> 页面努力加载中... </template>
+  </van-empty>
   <van-nav-bar title="全部消息" left-arrow @click-left="router.go(-1)" />
   <van-tabs v-model:active="active" @click-tab="onClickTab">
     <van-tab title="点赞">

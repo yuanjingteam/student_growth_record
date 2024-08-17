@@ -48,6 +48,13 @@ const onRefresh = () => {
 </script>
 
 <template>
+  <van-empty
+    v-if="list.length === 0"
+    image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
+    :image-size="80"
+    description="页面努力加载中。。。"
+    style="width: 100%; height: 100%"
+  />
   <div class="main">
     <van-nav-bar
       left-text="返回"

@@ -57,7 +57,9 @@ const checkManager = async () => {
     <template #value>
       <div class="right-content">
         <div class="va-time">{{ data.manager_info[0].msg_time }}</div>
-        <van-badge :content="data.unread_count" max="99" />
+        <div v-if="data.unread_count !== 0">
+          <van-badge :content="data.unread_count" max="99" />
+        </div>
       </div>
     </template>
     <template #icon>

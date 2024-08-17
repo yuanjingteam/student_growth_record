@@ -131,7 +131,7 @@ export function newArticlePublish(formData?: FormData): Promise<ListResult> {
   });
 }
 
-// 获取文章话题
+// 获取文章话题（已弃用）
 export function getArticleTags(): Promise<ListResult> {
   return http.request({
     url: "/article/get_topic",

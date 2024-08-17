@@ -202,7 +202,7 @@ export function changeUserEmail(data?: Object): Promise<ListResult> {
 export function getSystemNotification(data?: Object): Promise<adminList> {
   return http.request({
     url: "/message/get_system",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -211,7 +211,7 @@ export function getSystemNotification(data?: Object): Promise<adminList> {
 export function getManagerNotification(data?: Object): Promise<managerList> {
   return http.request({
     url: "/message/get_manager",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -252,11 +252,20 @@ export function readEmailNotice(data?: Object): Promise<ListResult> {
   });
 }
 
+// 已读互动消息
+export function readUserNotice(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/read_notice",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
 // 获取互动消息点赞列表
 export function getUserThumNotification(data?: Object): Promise<thumbsList> {
   return http.request({
     url: "/message/get_thumbList",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -265,7 +274,7 @@ export function getUserThumNotification(data?: Object): Promise<thumbsList> {
 export function getUserStarNotification(data?: Object): Promise<starList> {
   return http.request({
     url: "/user/get_starList",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -274,7 +283,7 @@ export function getUserStarNotification(data?: Object): Promise<starList> {
 export function getUserComNotification(data?: Object): Promise<comList> {
   return http.request({
     url: "/user/get_comList",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
