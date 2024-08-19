@@ -8,7 +8,7 @@ export const useUserStore = defineStore(
   () => {
     const username = ref("passenger");
     const token = ref("");
-    const role = ref("1");
+    const role = ref("0");
     const router = useRouter();
 
     // 用户详细资料

@@ -262,6 +262,22 @@ const routes: Array<RouteRecordRaw> = [
       title: "成长之星专题"
     }
   },
+  {
+    path: "/useragree",
+    name: "Useragree",
+    component: () => import("@/views/userAgree/index.vue"),
+    meta: {
+      title: "用户协议"
+    }
+  },
+  {
+    path: "/privacyagree",
+    name: "Privacyagree",
+    component: () => import("@/views/privacyAgree/index.vue"),
+    meta: {
+      title: "用户协议"
+    }
+  },
   // 我说,这个是用户通知消息区
   {
     path: "/managerNotice",

@@ -123,7 +123,7 @@ export function getLoginTitle(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/title",
     method: "get",
-    data
+    data: JSON.stringify(data)
   });
 }
 

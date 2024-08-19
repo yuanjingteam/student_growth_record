@@ -33,6 +33,7 @@ const getCommentsList = async () => {
   commentList.value = data.comment_list;
   comment_total.value = data.comment_num;
 };
+getCommentsList();
 //获取帖子详情列表
 const getArticleDetailList = async () => {
   const { data } = await getArticlesService({
@@ -52,9 +53,7 @@ const getType = async state => {
 };
 //重新获取数据
 const refresh = async () => {
-  const { data } = await getCommentsService(commentData);
-  commentList.value = data.comment_list;
-  comment_total.value = data.comment_num;
+  getCommentsList();
 };
 
 //控制列表加载状态的显示和隐藏
@@ -107,11 +106,15 @@ const onRefresh = () => {
         <span class="custom-title">评论</span>
         <span class="comment_count">{{ comment_total }}</span>
       </template>
-      <template #value>
+      <template v-if="comment_total != 0" #value>
         <change-btn style="float: right" @get_type="getType" />
       </template>
     </van-cell>
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+    <van-pull-refresh
+      v-if="comment_total != 0"
+      v-model="refreshing"
+      @refresh="onRefresh"
+    >
       <van-list
         v-model:loading="loading"
         :finished="finished"
@@ -126,6 +129,7 @@ const onRefresh = () => {
         />
       </van-list>
     </van-pull-refresh>
+    <van-empty v-else description="还没有人评论，快来抢沙发吧~" />
   </div>
 </template>
 
