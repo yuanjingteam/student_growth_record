@@ -1,9 +1,12 @@
 <script setup>
 // 导入 Vue Router 的 useRouter 函数
+import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 
 // 创建 Vue Router 的实例,用于进行页面导航
 const router = useRouter();
+const userStore = useUserStore();
+const role = userStore.role;
 </script>
 
 <template>
@@ -41,6 +44,12 @@ const router = useRouter();
 
     <!-- 我的内容 -->
     <van-cell-group inset class="end">
+      <van-cell
+        v-if="role === '1'"
+        title="发布通知"
+        is-link
+        @click="router.push('./managerPublish')"
+      />
       <van-cell
         title="我发布的内容"
         is-link

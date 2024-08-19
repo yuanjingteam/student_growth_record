@@ -143,6 +143,14 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: "/managerPublish",
+    name: "managerPublish",
+    component: () => import("@/views/user/managerPublish/index.vue"),
+    meta: {
+      title: "管理员发布通知"
+    }
+  },
+  {
     path: "/myPublish",
     name: "myPublish",
     component: () => import("@/views/user/myPublish/index.vue"),

@@ -70,10 +70,11 @@ const onRefresh = () => {
           finished-text="没有更多了"
           @load="onLoad"
         >
-          <cell-card
+          <user-card
             v-for="(item, index) in list"
             :key="index"
             :article="item"
+            :state="item.article_state"
             @click="console.log(1)"
           />
         </van-list>

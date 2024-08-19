@@ -9,13 +9,14 @@ const username = userStore.username;
 const props = defineProps({
   data: Object,
   icon: String,
+  type: Number,
   state1: String,
   state2: String
 });
 
 const checkOne = async () => {
   try {
-    const { code } = await readUserNotice({ msg_id: data.msg_id });
+    const { code } = await readUserNotice({ msg_id: data.msg_id, type: type });
     if (code === 200) {
       // 请求成功
       router.push(`/postDetail/${data.article_id}`);

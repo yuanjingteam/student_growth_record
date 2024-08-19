@@ -202,6 +202,7 @@ const onRefresh = () => {
             v-for="(item, index) in thumbList"
             :key="index"
             :data="item"
+            :type="active"
             :icon="icon[0]"
             :state1="state[0]"
             :state2="state[1]"

@@ -5,6 +5,8 @@ import { useUserStore } from "@/store";
 const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
+console.log(role, 111111);
+
 // 当前页面默认渲染的数据
 const base = reactive([
   {
@@ -38,6 +40,9 @@ const base = reactive([
 
     <!-- 举报邮箱 -->
     <perm-notice v-if="role === '1'" :base="base[3]" />
+
+    <!-- 管理员发布通知入口 -->
+    <manager_publish v-if="role === '1'" />
     <div class="svg-bg-container">
       <div class="svg-bg">
         <img src="../../icons/svg/planet_3.svg" alt="SVG 背景图" />

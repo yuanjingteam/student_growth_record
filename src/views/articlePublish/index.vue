@@ -27,6 +27,9 @@ const loading = ref(false);
 // 小话题选项
 const small_show = ref(false);
 
+// 文章状态弹窗
+const article_show = ref(false);
+
 // 获取小话题
 // 存储dom数组
 const myRef = ref([]);
@@ -42,6 +45,10 @@ nextTick(() => {
 
 // 当前话题索引
 let defaultIndex = 0; // 默认选中"选项一"
+
+// 文章私密状态
+const checkState = ref("所有人可见");
+const article_state = ref(true);
 
 // 小标签项,动态添加
 const littleTag = ref([]);
@@ -86,6 +93,15 @@ const rules = [{ validator, message: error => error }];
 // 渲染大标题
 let actions = [{ name: "文体活动", aa: 112 }, { name: "选项二" }];
 
+// 渲染可见状态
+let state = [
+  {
+    name: "所有人可见"
+  },
+  {
+    name: "私密"
+  }
+];
 // 渲染话题/tag
 const childs = ref([
   { text: "杭州", id: 0 },
@@ -93,9 +109,24 @@ const childs = ref([
   { text: "宁波", id: 2 }
 ]);
 
+// 是否可见
+const toShow = item => {
+  if (item.name === "所有人可见") {
+    article_state.value = true;
+    console.log(111);
+  } else {
+    console.log(2222);
+
+    article_state.value = false;
+  }
+  checkState.value = item.name;
+  article_show.value = false;
+};
+
 // 发送的数据包
 const data = reactive({
   username: username,
+  article_status: article_state,
   article_content: content,
   word_count: contentLength,
   article_topic: actions[defaultIndex].name,
@@ -201,7 +232,7 @@ const onOversize = file => {
 
 // 存储图片/视频
 const handleSubmit = async () => {
-  console.log(fileList.value, "12312321");
+  // console.log(fileList.value, "12312321");
   fileList.value.forEach((file, index) => {
     // 判断文件类型
     if (file.file.type.startsWith("image/")) {
@@ -230,6 +261,8 @@ const onSubmit = async () => {
     }
     // 文件上传
     handleSubmit();
+    console.log(data);
+
     showConfirmDialog({
       title: "发布文章",
       message: "确认要发布文章吗?\n温馨提示:同种类型的文章一天只能发布两篇哦~"
@@ -395,6 +428,15 @@ getLittleTag();
           </van-button>
         </template>
       </van-cell>
+      <van-cell is-link @click="article_show = true">
+        <template #title> 谁可以看 </template>
+        <template #value>{{ checkState }}</template>
+      </van-cell>
+      <van-action-sheet
+        v-model:show="article_show"
+        :actions="state"
+        @select="toShow"
+      />
     </van-form>
   </div>
 </template>

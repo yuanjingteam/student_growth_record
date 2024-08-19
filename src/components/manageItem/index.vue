@@ -25,7 +25,9 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
         <van-text-ellipsis :content="data.msg_time" />
       </template>
       <template #right-icon>
-        <i-icon icon="ri:more-fill" />
+        <div v-if="true">
+          <i-icon icon="ri:more-fill" />
+        </div>
       </template>
     </van-cell>
     <van-cell>
