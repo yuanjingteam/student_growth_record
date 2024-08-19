@@ -8,9 +8,9 @@ import { useRoute, useRouter } from "vue-router";
 
 // const userStore = useUserStore();
 const router = useRouter();
-
+const userStore = useUserStore();
 // 判断是否为管理员
-const role = ref(1);
+const role = userStore.role;
 
 // 判断是否为本人
 const own = ref(true);
@@ -127,7 +127,7 @@ UerInfo();
           </div>
         </div>
 
-        <div v-if="!own && role == 1" name="ban" class="user_ban">
+        <div v-if="role === '1' && !own" name="ban" class="user_ban">
           <van-popover
             v-if="data.ban"
             v-model:show="showPopover"

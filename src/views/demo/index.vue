@@ -5,9 +5,12 @@ import { getRegisterDay } from "@/api/topic";
 
 import { searchArticleService } from "@/api/article";
 import { useTopicStore, useUserStore } from "@/store";
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
 const topicStore = useTopicStore();
+
+const router = useRouter();
 //分类标签tabber栏
 const topicList = ref([]);
 //更新仓库数据
@@ -110,6 +113,12 @@ const onRefresh = () => {
 };
 </script>
 <template>
+  <van-floating-bubble
+    icon="plus"
+    axis="lock"
+    :style="{ top: '-180px', left: '-5px' }"
+    @click="router.push('/publish')"
+  />
   <div class="topShow">
     <p class="title">我的大学生活</p>
     <span>

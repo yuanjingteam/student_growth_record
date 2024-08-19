@@ -113,6 +113,16 @@ export function articleDeleteService(data?: object): Promise<ListResult> {
     data: JSON.stringify(data)
   });
 }
+
+// 改变文章私密状态
+export function articleChangeState(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/article/state",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
 //获取热帖标题，一次10条
 export function getHotPostService(data?: object): Promise<ListResult> {
   return http.request({
@@ -131,7 +141,7 @@ export function newArticlePublish(formData?: FormData): Promise<ListResult> {
   });
 }
 
-// 获取文章话题
+// 获取文章话题（已弃用）
 export function getArticleTags(): Promise<ListResult> {
   return http.request({
     url: "/article/get_topic",

@@ -57,7 +57,7 @@ userNotice();
       {{ base.userName }}
     </template>
     <template #value>
-      <div class="right-content">
+      <div v-if="unread_count !== 0" class="right-content">
         <van-badge :content="unread_count" />
       </div>
     </template>

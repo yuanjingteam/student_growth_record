@@ -48,6 +48,13 @@ const onRefresh = () => {
 </script>
 
 <template>
+  <van-empty
+    v-if="list.length === 0"
+    image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
+    :image-size="80"
+    description="页面努力加载中。。。"
+    style="width: 100%; height: 100%"
+  />
   <div class="main">
     <van-nav-bar
       left-text="返回"
@@ -63,10 +70,11 @@ const onRefresh = () => {
           finished-text="没有更多了"
           @load="onLoad"
         >
-          <cell-card
+          <user-card
             v-for="(item, index) in list"
             :key="index"
             :article="item"
+            :state="item.article_state"
             @click="console.log(1)"
           />
         </van-list>

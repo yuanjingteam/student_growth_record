@@ -130,7 +130,7 @@ export function getLoginTitle(data?: Object): Promise<ListResult> {
 // 获取用户信息
 export function getUserInfo(data?: Object): Promise<userList> {
   return http.request({
-    url: "/user/profiles",
+    url: "/user/profiles_get",
     method: "get",
     data: JSON.stringify(data)
   });
@@ -156,7 +156,7 @@ export function userLogin(data?: Object): Promise<ListResult> {
 // 获取用户资料
 export function getUserData(data?: Object): Promise<UserData> {
   return http.request({
-    url: "/user/getUserData",
+    url: "/user/userData_get",
     method: "get",
     data: JSON.stringify(data)
   });
@@ -165,7 +165,7 @@ export function getUserData(data?: Object): Promise<UserData> {
 // 修改用户头像
 export function changeUserHeadshot(formdata?: FormData): Promise<ListResult> {
   return http.request({
-    url: "/user/updateUserHeadshot",
+    url: "/user/userHeadshot_update",
     method: "post",
     data: formdata
   });
@@ -174,7 +174,7 @@ export function changeUserHeadshot(formdata?: FormData): Promise<ListResult> {
 // 修改用户个性签名
 export function changeUserMotto(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/updateUserMotto",
+    url: "/user/userMotto_update",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -183,7 +183,7 @@ export function changeUserMotto(data?: Object): Promise<ListResult> {
 // 修改用户手机号
 export function changeUserPhone(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/updateUserPhone",
+    url: "/user/userPhone_update",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -192,7 +192,7 @@ export function changeUserPhone(data?: Object): Promise<ListResult> {
 // 修改用户邮箱
 export function changeUserEmail(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/updateUserEmail",
+    url: "/user/userEmail_update",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -202,7 +202,7 @@ export function changeUserEmail(data?: Object): Promise<ListResult> {
 export function getSystemNotification(data?: Object): Promise<adminList> {
   return http.request({
     url: "/message/get_system",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -211,7 +211,7 @@ export function getSystemNotification(data?: Object): Promise<adminList> {
 export function getManagerNotification(data?: Object): Promise<managerList> {
   return http.request({
     url: "/message/get_manager",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -228,7 +228,7 @@ export function getreportEmail(data?: Object): Promise<ListResult> {
 // 已读系统消息
 export function readSystemNotice(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/system/read_notice",
+    url: "/message/ack_systemMsg",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -237,7 +237,7 @@ export function readSystemNotice(data?: Object): Promise<ListResult> {
 // 已读管理员消息
 export function readManagerNotice(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/manager/read_notice",
+    url: "/message/ack_managerMsg",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -252,11 +252,20 @@ export function readEmailNotice(data?: Object): Promise<ListResult> {
   });
 }
 
+// 已读互动消息
+export function readUserNotice(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/message/ack_interactMsg",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
 // 获取互动消息点赞列表
 export function getUserThumNotification(data?: Object): Promise<thumbsList> {
   return http.request({
     url: "/message/get_thumbList",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -265,7 +274,7 @@ export function getUserThumNotification(data?: Object): Promise<thumbsList> {
 export function getUserStarNotification(data?: Object): Promise<starList> {
   return http.request({
     url: "/user/get_starList",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -274,7 +283,7 @@ export function getUserStarNotification(data?: Object): Promise<starList> {
 export function getUserComNotification(data?: Object): Promise<comList> {
   return http.request({
     url: "/user/get_comList",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -353,7 +362,7 @@ export function getStar(data?: Object): Promise<ListResult> {
 // 获取用户自述
 export function getSelfCotnent(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/getSelfCotnent",
+    url: "/user/selfCotnent_get",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -362,7 +371,7 @@ export function getSelfCotnent(data?: Object): Promise<ListResult> {
 // 修改用户自述
 export function changeSelfCotnent(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/updateSelfContent",
+    url: "/user/selfContent_update",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -390,6 +399,24 @@ export function userIsBan(data?: Object): Promise<ListResult> {
 export function userUnBan(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/Unban",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 发布系统通知
+export function publishSystemMsg(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/message/publish_systemMsg",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 发布管理员通知
+export function publishManagerMsg(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/message/publish_managerMsg",
     method: "post",
     data: JSON.stringify(data)
   });

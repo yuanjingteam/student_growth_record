@@ -7,6 +7,8 @@ import { ref } from "vue";
 const userStore = useUserStore();
 const router = useRouter();
 const text = ref(0);
+const formRef = ref();
+
 text.value = userStore.userData.phone_number;
 
 // 更新用户电话
@@ -19,11 +21,22 @@ const submitPhone = async () => {
     userStore.userData.phone_number = text;
   }
 };
-const onClickRight = () => {
+
+const rules = [
+  {
+    validator: value => {
+      // 手机号正则
+      const phoneRegex = /^1[3-9]\d{9}$/;
+      return phoneRegex.test(value);
+    },
+    message: "请输入正确的手机号"
+  }
+];
+const onClickRight = async () => {
+  await formRef.value.validate();
   showConfirmDialog({
-    title: "标题",
-    message:
-      "如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。"
+    title: "我的电话",
+    message: "确认修改手机号吗?"
   })
     .then(async () => {
       // 更新电话
@@ -49,18 +62,21 @@ const onClickRight = () => {
     @click-left="router.go(-1)"
     @click-right="onClickRight"
   />
-  <van-cell-group inset>
-    <van-cell>
-      <template #title>
-        <van-field
-          v-model="text"
-          label="我的电话"
-          placeholder="填写手机号"
-          label-align="top"
-          :clearable="true"
-        />
-      </template>
-      <template #label>个人联系方式</template>
-    </van-cell>
-  </van-cell-group>
+  <van-form ref="formRef">
+    <van-cell-group inset>
+      <van-cell>
+        <template #title>
+          <van-field
+            v-model="text"
+            label="我的电话"
+            placeholder="填写手机号"
+            label-align="top"
+            :clearable="true"
+            :rules="rules"
+          />
+        </template>
+        <template #label>个人联系方式</template>
+      </van-cell>
+    </van-cell-group>
+  </van-form>
 </template>

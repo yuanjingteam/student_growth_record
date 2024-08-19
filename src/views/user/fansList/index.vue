@@ -91,7 +91,7 @@ const changeRole = throttle(async index => {
 </template>
 <style scoped>
 button {
-  background-color: red;
+  background-color: #1989fa;
   border-radius: 5px;
   width: 68px;
   padding: 3px 0;
@@ -102,5 +102,8 @@ button {
 }
 .van-image {
   margin-right: 5px;
+}
+.van-text-ellipsis {
+  width: 200px;
 }
 </style>

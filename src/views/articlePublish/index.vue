@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { showConfirmDialog, showSuccessToast, showToast } from "vant";
-import { reactive, ref, nextTick, computed } from "vue";
+import { reactive, ref, nextTick, computed, onMounted } from "vue";
 import {
   newArticlePublish,
   getArticleTags,
@@ -27,6 +27,9 @@ const loading = ref(false);
 // 小话题选项
 const small_show = ref(false);
 
+// 文章状态弹窗
+const article_show = ref(false);
+
 // 获取小话题
 // 存储dom数组
 const myRef = ref([]);
@@ -42,6 +45,10 @@ nextTick(() => {
 
 // 当前话题索引
 let defaultIndex = 0; // 默认选中"选项一"
+
+// 文章私密状态
+const checkState = ref("所有人可见");
+const article_state = ref(true);
 
 // 小标签项,动态添加
 const littleTag = ref([]);
@@ -74,18 +81,27 @@ const validator = val => {
     return "内容不能为空";
   }
   if (contentLength.value < 10) {
-    return "内容不能少于一百字";
+    return "内容不能少于10个字";
   }
   if (data.article_topic === "选择话题") {
     return "必须选择标签类型";
   }
 };
 // 校验规则
-const rules = [{ validator, message: "内容不能为空" }];
+const rules = [{ validator, message: error => error }];
 
 // 渲染大标题
 let actions = [{ name: "文体活动", aa: 112 }, { name: "选项二" }];
 
+// 渲染可见状态
+let state = [
+  {
+    name: "所有人可见"
+  },
+  {
+    name: "私密"
+  }
+];
 // 渲染话题/tag
 const childs = ref([
   { text: "杭州", id: 0 },
@@ -93,9 +109,24 @@ const childs = ref([
   { text: "宁波", id: 2 }
 ]);
 
+// 是否可见
+const toShow = item => {
+  if (item.name === "所有人可见") {
+    article_state.value = true;
+    console.log(111);
+  } else {
+    console.log(2222);
+
+    article_state.value = false;
+  }
+  checkState.value = item.name;
+  article_show.value = false;
+};
+
 // 发送的数据包
 const data = reactive({
   username: username,
+  article_status: article_state,
   article_content: content,
   word_count: contentLength,
   article_topic: actions[defaultIndex].name,
@@ -188,15 +219,20 @@ const close = (item, id) => {
   targetRef.classList.toggle("active");
 };
 
-// 限制文件上传图片大小
+// 限制文件上传大小
+const maxFileSize = 50 * 1024 * 1024; // 50MB
+
 const onOversize = file => {
-  console.log(file);
-  showToast("文件大小不能超过 500kb");
+  if (file.size > maxFileSize) {
+    showToast(`文件大小不能超过 ${maxFileSize / (1024 * 1024)}MB`);
+    return false;
+  }
+  return true;
 };
 
 // 存储图片/视频
 const handleSubmit = async () => {
-  console.log(fileList.value, "12312321");
+  // console.log(fileList.value, "12312321");
   fileList.value.forEach((file, index) => {
     // 判断文件类型
     if (file.file.type.startsWith("image/")) {
@@ -215,13 +251,18 @@ const onSubmit = async () => {
     // 表单校验
     await formRef.value.validate();
     if (littleTag.value.length === 0) {
-      console.log(data.article_tags.length, 1111);
       showToast("必须选择热点标签");
       return;
     }
-    console.log(fileList.value);
+    if (littleTag.value.length > 3) {
+      console.log(data.article_tags.length, 1111);
+      showToast("最多选择三个热点标签");
+      return;
+    }
     // 文件上传
     handleSubmit();
+    console.log(data);
+
     showConfirmDialog({
       title: "发布文章",
       message: "确认要发布文章吗?\n温馨提示:同种类型的文章一天只能发布两篇哦~"
@@ -279,9 +320,12 @@ getLittleTag();
   <van-dialog v-model:show="submit_show" show-cancel-button />
 
   <!-- 选择小标签弹框 -->
-  <van-dialog v-model:show="small_show" :title="data.article_topic">
+  <van-dialog v-model:show="small_show">
+    <template #title>
+      <p>{{ data.article_topic }}</p>
+      <p class="limit">(最多选择三个小标签)</p>
+    </template>
     <!-- 小标签弹框内部 -->
-    <!-- <van-search v-model="value" placeholder="请输入搜索关键词" /> -->
     <van-grid :gutter="10">
       <van-grid-item
         v-for="item in childs"
@@ -384,6 +428,15 @@ getLittleTag();
           </van-button>
         </template>
       </van-cell>
+      <van-cell is-link @click="article_show = true">
+        <template #title> 谁可以看 </template>
+        <template #value>{{ checkState }}</template>
+      </van-cell>
+      <van-action-sheet
+        v-model:show="article_show"
+        :actions="state"
+        @select="toShow"
+      />
     </van-form>
   </div>
 </template>
@@ -392,6 +445,10 @@ getLittleTag();
 .van-loading {
   justify-content: center;
   height: 100%;
+}
+.limit {
+  margin-bottom: 15px;
+  font-size: 12px;
 }
 .main {
   margin: 0 5px;
