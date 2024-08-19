@@ -3,7 +3,7 @@ import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getVerifyImg, getLoginTitle, userLogin } from "@/api/user";
 import { useUserStore } from "@/store";
-// import { showToast } from "vant";
+import { showFailToast, showSuccessToast } from "vant";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -11,12 +11,12 @@ const router = useRouter();
 const checked = ref(false);
 //是否显示忘记密码弹窗
 const showDialog = ref(false);
-//是否显示用户协议弹窗
-const showUser = ref(false);
-//是否显示隐私协议弹窗
-const showPrivaty = ref(false);
 //是否显示协议提示框
 const showTip = ref(false);
+//加载验证码
+const loadingVerify = ref(false);
+//登录加载中
+const loginLoading = ref(false);
 //用户的登录信息
 const userForm = reactive({
   username: "",
@@ -40,18 +40,27 @@ const convertBase64ToBlob = base64 => {
 };
 //验证码换一换
 const changeVerify = async () => {
+  loadingVerify.value = true;
   const { data } = await getVerifyImg();
-  console.log(data.Hcode);
+  console.log(data);
   userForm.verifyId = data.Id;
   trueVerify.value = data.Hcode;
   const base_code = data.B64;
   const base64String = base_code.split(",")[1];
   const blob = convertBase64ToBlob(base64String);
   imageUrl.value = URL.createObjectURL(blob);
+  loadingVerify.value = false;
 };
 //提交时的表单校验
 const onsubmit = async () => {
-  await formRef.value.validate();
+  loginLoading.value = true;
+  try {
+    await formRef.value.validate();
+  } catch {
+    showFailToast("登录失败");
+    loginLoading.value = false;
+    return;
+  }
   if (checked.value) {
     const res = await userLogin(userForm);
     if (res.code == 200) {
@@ -59,10 +68,10 @@ const onsubmit = async () => {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
       userStore.setUserInfo(res.data);
-      // showSuccessToast("登录成功");
+      showSuccessToast("登录成功");
       router.push("/demo");
     } else {
-      // showFailToast("登录失败");
+      showFailToast(`${res.msg}`);
       userForm.username = "";
       userForm.password = "";
       userForm.verify = "";
@@ -71,6 +80,7 @@ const onsubmit = async () => {
   } else {
     showTip.value = true;
   }
+  loginLoading.value = false;
 };
 //图片地址
 const imageUrl = ref("");
@@ -83,7 +93,7 @@ const showTitle = async () => {
   } = await getLoginTitle();
   loginTitle.value = title;
 };
-// showTitle();
+showTitle();
 //展示验证码图片
 const showVerify = async () => {
   changeVerify();
@@ -99,11 +109,16 @@ const confirmTip = () => {
 const passengerLogin = () => {
   localStorage.setItem("username", "passenger");
   router.push("/demo");
+  showSuccessToast("登录成功");
 };
 </script>
 
 <template>
-  <div class="login-box">
+  <div v-if="!loginLoading" class="login-box">
+    <div class="circle1" />
+    <div class="circle2" />
+    <div class="circle3" />
+    <div class="circle4" />
     <h2>数学科学学院</h2>
     <h1>{{ loginTitle }}</h1>
     <van-form ref="formRef" inset>
@@ -140,6 +155,7 @@ const passengerLogin = () => {
             size="small"
             type="primary"
             :style="{ backgroundImage: 'url(' + imageUrl + ')' }"
+            :loadingVerify="loadingVerify"
             @click="changeVerify"
           />
         </template>
@@ -169,22 +185,24 @@ const passengerLogin = () => {
       checked-color="#000"
       shape="square"
       icon-size="20px"
-      >我已阅读并同意《<span @click="showUser = true">用户协议</span>》和《<span
-        @click="showPrivaty = true"
-        >隐私协议</span
+      >我已阅读并同意《<span @click="router.push('/userAgree')">用户协议</span
+      >》和《<span @click="router.push('/privacyAgree')">隐私协议</span
       >》</van-checkbox
     >
   </div>
+  <van-loading v-else vertical>
+    <template #icon>
+      <van-icon name="star-o" size="30" />
+    </template>
+    加载中...
+  </van-loading>
   <!-- 忘记密码弹出框组件 -->
   <van-dialog
     v-model:show="showDialog"
     title="温馨提示"
     message="请联系您所在班级的管理员重置密码"
   />
-  <!-- 用户协议弹出框组件 -->
-  <van-dialog v-model:show="showUser" title="用户协议" message="用户协议" />
-  <!-- 隐私协议弹出框组件 -->
-  <van-dialog v-model:show="showPrivaty" title="隐私协议" message="隐私协议" />
+
   <van-dialog
     v-model:show="showTip"
     title="提示"
@@ -197,6 +215,8 @@ const passengerLogin = () => {
 
 <style scoped>
 .login-box {
+  position: relative;
+  overflow: hidden;
   background-color: #fff;
   height: 100%;
   display: flex;
@@ -256,5 +276,52 @@ const passengerLogin = () => {
       background-image: url("../../assets/image/img.jpg");
     }
   }
+}
+
+.circle1 {
+  position: absolute;
+  border-radius: 50%;
+  left: 137px;
+  top: -126px;
+  width: 375px;
+  height: 375px;
+  opacity: 0.1;
+  background: rgba(255, 214, 64, 1);
+}
+.circle2 {
+  position: absolute;
+  border-radius: 50%;
+  left: -44px;
+  top: -72px;
+  width: 221px;
+  height: 221px;
+  opacity: 0.1;
+  background: rgba(189, 242, 252, 1);
+}
+.circle3 {
+  position: absolute;
+  border-radius: 50%;
+  left: 32px;
+  top: 169px;
+  width: 57px;
+  height: 57px;
+  opacity: 0.8;
+  background: rgba(189, 242, 252, 1);
+}
+.circle4 {
+  position: absolute;
+  border-radius: 50%;
+  left: 312px;
+  top: 273px;
+  width: 57px;
+  height: 57px;
+  opacity: 0.8;
+  background: rgba(252, 220, 104, 1);
+}
+.van-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

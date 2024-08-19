@@ -1,6 +1,5 @@
 <script setup lang="ts" name="Demo">
 import { onMounted, reactive, ref, watch } from "vue";
-import { showToast } from "vant";
 import CellCard from "@/components/CellCard/index.vue";
 import { getRegisterDay } from "@/api/topic";
 
@@ -151,7 +150,11 @@ const onRefresh = () => {
       :title="item.topic_name.slice(0, 2)"
       :name="item.topic_name"
     >
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-pull-refresh
+        v-if="articleList.length > 0"
+        v-model="refreshing"
+        @refresh="onRefresh"
+      >
         <van-list
           v-model:loading="loading"
           :finished="finished"
@@ -165,6 +168,8 @@ const onRefresh = () => {
           />
         </van-list>
       </van-pull-refresh>
+
+      <van-empty v-else image="search" description="没有符合该描述的帖子呢" />
     </van-tab>
   </van-tabs>
   <van-back-top bottom="100px" />

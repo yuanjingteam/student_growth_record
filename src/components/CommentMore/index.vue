@@ -1,7 +1,9 @@
 <script setup>
 import { ref, defineProps, reactive } from "vue";
 import { deleteCommentsService } from "@/api/article";
+import { useUserStore } from "@/store";
 
+const userStore = useUserStore();
 const props = defineProps({
   comment_com: Object,
   commentId: Number
@@ -9,7 +11,11 @@ const props = defineProps({
 const emit = defineEmits(["reload"]);
 
 const showPopover = ref(false);
-const actions = [{ text: "删除" }];
+let actions = [];
+if (userStore.role != "0") {
+  actions = [{ text: "删除" }];
+}
+
 const select = (action, index) => {
   if (action.text == "删除") {
     showDelete.value = !showDelete.value;

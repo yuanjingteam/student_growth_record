@@ -88,7 +88,6 @@ const gotoArticleDetail = () => {
     .btn {
       float: left;
       display: flex;
-      width: 85px;
       height: 23px;
       background-color: rgba(0, 81, 255, 0.1);
       border-radius: 10px;
@@ -98,6 +97,7 @@ const gotoArticleDetail = () => {
 
       .btn-title {
         color: rgba(0, 81, 255);
+        margin-left: 5px;
       }
     }
 

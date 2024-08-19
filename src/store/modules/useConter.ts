@@ -8,7 +8,7 @@ export const useUserStore = defineStore(
   () => {
     const username = ref("passenger");
     const token = ref("");
-    const role = ref(1);
+    const role = ref("0");
     const router = useRouter();
 
     // 用户详细资料
@@ -32,7 +32,7 @@ export const useUserStore = defineStore(
     const removeUserInfo = () => {
       username.value = "";
       token.value = "";
-      role.value = 0;
+      role.value = "0";
     };
 
     // 获取用户详细信息
