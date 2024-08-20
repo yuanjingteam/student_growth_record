@@ -42,7 +42,7 @@ const base = reactive([
     <perm-notice v-if="role === '1'" :base="base[3]" />
 
     <!-- 管理员发布通知入口 -->
-    <manager_publish v-if="role === '1'" />
+    <manager-publish v-if="role === '1'" />
     <div class="svg-bg-container">
       <div class="svg-bg">
         <img src="../../icons/svg/planet_3.svg" alt="SVG 背景图" />

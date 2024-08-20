@@ -13,7 +13,7 @@ const fansList = ref({});
 const getList = async () => {
   try {
     const { data } = await getUserFansList();
-    fansList.value = data.userfans;
+    fansList.value = data.user_fans;
   } catch (error) {
     console.error("获取粉丝列表失败:", error);
     showToast("获取粉丝列表失败");

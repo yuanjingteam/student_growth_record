@@ -121,21 +121,23 @@ const onSubmit = async () => {
 
 // 发送修改文章请求
 const changeContent = async () => {
-  const { code, data } = await changeSelfCotnent({
-    username: username,
-    self_content: content.value
-  });
-  if (code == 200) {
+  try {
+    const { data } = await changeSelfCotnent({
+      username: username,
+      self_content: content.value
+    });
+    // 更新
     // 修改成功弹窗
     loading.value = false;
-    returnBack();
-  } else {
+    content.value = data.result;
+    isEditing.value = false;
+    isNav.value = true;
+    fieldText.value.blur();
+  } catch {
     // 修改失败弹窗
     loading.value = false;
-    showSuccessToast("修改失败");
+    showToast("修改失败");
   }
-  // 更新
-  content.value = data.result;
 };
 </script>
 

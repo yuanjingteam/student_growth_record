@@ -84,7 +84,7 @@ const onRefresh = () => {
         <div v-if="item.i_type == '评论'" class="comment">
           <van-text-ellipsis
             rows="2"
-            :content="item.content"
+            :content="item.comment_content"
             expand-text="展开"
             collapse-text="收起"
           />
@@ -98,7 +98,7 @@ const onRefresh = () => {
               <van-text-ellipsis rows="2" :content="item.article_content" />
               <p class="remark">
                 <span>{{ item.name }}</span>
-                <span><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span>
+                <span><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span>
                 <span
                   ><i-icon icon="lets-icons:comment" />{{
                     item.comment_amount

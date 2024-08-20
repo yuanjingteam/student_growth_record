@@ -2,12 +2,9 @@
 import { useRouter } from "vue-router";
 import { publishSystemMsg, publishManagerMsg } from "@/api/user";
 import { ref } from "vue";
-import { useUserStore } from "@/store";
-import { showConfirmDialog, showDialog, showSuccessToast } from "vant";
+import { showConfirmDialog, showSuccessToast } from "vant";
 
 const router = useRouter();
-const userStore = useUserStore();
-const username = userStore.username;
 const active = ref(0);
 const content = ref("");
 const loading = ref(false);
@@ -17,24 +14,16 @@ const onClickTab = () => {
 };
 const isPublished = async () => {
   if (active.value === 0) {
-    try {
-      await publishSystemMsg({ msg_content: content });
+    const { code } = await publishSystemMsg({ msg_content: content.value });
+    if (code === 200) {
       loading.value = false; // 关闭 loading 效果
       showSuccessToast("发布成功");
-      content.value = "";
-    } catch {
-      loading.value = false; // 关闭 loading 效果
-      showDialog("发布失败,请稍后重试");
     }
   } else {
-    try {
-      await publishManagerMsg({ msg_content: content });
+    const { code } = await publishManagerMsg({ msg_content: content.value });
+    if (code === 200) {
       loading.value = false; // 关闭 loading 效果
       showSuccessToast("发布成功");
-      content.value = "";
-    } catch {
-      loading.value = false; // 关闭 loading 效果
-      showDialog("发布失败,请稍后重试");
     }
   }
 };
@@ -47,9 +36,7 @@ const onSubmit = () => {
       loading.value = true; // 开启 loading 效果
       isPublished();
     })
-    .catch(() => {
-      showDialog("发布失败,请稍后重试");
-    });
+    .catch(() => {});
 };
 </script>
 

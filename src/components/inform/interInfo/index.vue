@@ -4,7 +4,6 @@ import {
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
-import { useUserStore } from "@/store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -12,24 +11,19 @@ const router = useRouter();
 const props = defineProps({
   base: Object
 });
-const userStore = useUserStore();
-const username = userStore.username;
 const unread_count = ref(0);
 // 获取页面消息
-// 获取点赞列表
 const userNotice = async () => {
   try {
     // 获取缩略图通知的未读消息数量
     const res1 = await getUserThumNotification({
       page: 1,
-      username: username,
       limit: 1
     });
     const thumUnreadCount = res1.data.unread_count;
 
     // 获取评论通知的未读消息数量
     const res2 = await getUserComNotification({
-      username: username,
       page: 1,
       limit: 1
     });
@@ -38,7 +32,6 @@ const userNotice = async () => {
     // 获取关注通知的未读消息数量
     const res3 = await getUserStarNotification({
       page: 1,
-      username: username,
       limit: 1
     });
     const starUnreadCount = res3.data.unread_count;
@@ -73,7 +66,7 @@ userNotice();
 <style scoped>
 .wid {
   color: black;
-  width: 240px;
+  width: 210px;
 }
 
 .right-content .van-badge {

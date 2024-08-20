@@ -9,13 +9,6 @@ const router = useRouter();
 const userStore = useUserStore();
 const username = userStore.username;
 const userClass = ref({
-  teacher_total: [
-    {
-      username: 0,
-      user_headshot: "",
-      name: "小明"
-    }
-  ],
   student_total: [
     {
       username: 0,
@@ -28,7 +21,7 @@ const userClass = ref({
 const getclass = async () => {
   try {
     const { data } = await getUserClass({ username: username });
-    userClass.value = data;
+    userClass.value = data.student_total;
   } catch (error) {
     console.error("获取班级列表失败:", error);
     showToast("获取班级列表失败");
@@ -44,31 +37,11 @@ getclass();
     @click-left="router.go(-1)"
   />
   <div class="main">
-    <div v-if="userClass.teacher_total">
-      <p class="title">教师</p>
-      <van-cell-group>
-        <van-cell
-          v-for="(item, index) in userClass.teacher_total"
-          :key="index"
-          @click="userStore.otherSwitch(item.username)"
-        >
-          <template #title>{{ item.name }}</template>
-          <template #icon>
-            <van-image
-              round
-              width="3rem"
-              height="3rem"
-              :src="item.user_headshot"
-            />
-          </template>
-        </van-cell>
-      </van-cell-group>
-    </div>
-    <div v-if="userClass.student_total">
+    <div>
       <p class="title">学生</p>
       <van-cell-group>
         <van-cell
-          v-for="(item, index) in userClass.student_total"
+          v-for="(item, index) in userClass"
           :key="index"
           @click="userStore.otherSwitch(item.username)"
         >

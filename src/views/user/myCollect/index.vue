@@ -59,7 +59,7 @@ const onRefresh = () => {
     left-text="返回"
     title="我的收藏"
     left-arrow
-    @click-left="router.push('/user')"
+    @click-left="router.go(-1)"
   />
   <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
     <van-list
@@ -73,10 +73,7 @@ const onRefresh = () => {
           <template #title
             >{{ item.name }}
             <div class="content">
-              <van-text-ellipsis
-                rows="2"
-                :content="item.article_content.article_content"
-              />
+              <van-text-ellipsis rows="2" :content="item.article_content" />
               <p class="remark">
                 <span>{{ item.name }}</span>
                 <span><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span>
@@ -91,17 +88,17 @@ const onRefresh = () => {
           <template #icon>
             <van-image
               round
-              width="2rem"
-              height="2rem"
+              width="3rem"
+              height="3rem"
               :src="item.user_headshot"
             />
           </template>
           <template #right-icon>
             <van-image
-              v-if="item.user_headshot"
+              v-if="item.article_pic"
               width="8rem"
               height="6rem"
-              :src="item.user_headshot"
+              :src="item.article_pic"
               class="right"
             />
           </template>
@@ -112,15 +109,14 @@ const onRefresh = () => {
 </template>
 <style scoped>
 .content {
-  margin-top: 5px;
+  margin-top: 2px;
 }
 .van-image {
-  margin: 0 10px 0 5px;
+  margin: 2px 10px 0 5px;
 }
 .remark {
   margin: 5px 0 2px;
   font-size: 12px;
-  font-weight: 700;
   span {
     margin: 0 2px;
   }

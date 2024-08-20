@@ -4,8 +4,6 @@ import { getArticlePublish } from "@/api/user";
 import { ref } from "vue";
 import { useUserStore } from "@/store";
 const router = useRouter();
-const userStore = useUserStore();
-const username = userStore.username;
 const page = ref(0);
 const list = ref([]);
 const loading = ref(false);
@@ -16,7 +14,6 @@ const refreshing = ref(false);
 const loadData = async () => {
   try {
     const { data } = await getArticlePublish({
-      username: username,
       page: page.value++,
       limit: 10
     });

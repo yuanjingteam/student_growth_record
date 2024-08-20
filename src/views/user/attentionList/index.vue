@@ -17,7 +17,6 @@ const getList = async () => {
   } catch (error) {
     console.error("获取关注列表失败:", error);
     showToast("获取关注列表失败");
-    // 你可以在这里添加错误提示等其他处理逻辑
   }
 };
 

@@ -48,9 +48,9 @@ const actions = [
 ];
 
 // 封禁用户
-const onSelect = async action => {
+const ban = async action => {
   const { code } = await userIsBan({
-    username: username,
+    ban_username: username,
     ban_time: action.ban_time
   });
   if (code === 200) {
@@ -61,7 +61,7 @@ const onSelect = async action => {
 // 解封用户
 const unBan = async () => {
   const { code } = await userUnBan({
-    username: username
+    unban_username: username
   });
   if (code === 200) {
     showToast("解封成功");
@@ -75,17 +75,16 @@ const data = ref({
   user_headshot: "",
   ban: false,
   user_motto: "",
-  userfans: 0,
-  score: 0,
+  user_fans: 0,
+  user_point: 0,
   user_concern: 0,
   user_like: 0,
-  user_class: "",
-  user_Identity: ""
+  user_class: ""
 });
 
 // 获取用户基本信息
 const UerInfo = async () => {
-  const res = await getUserInfo({ username: username });
+  const res = await getUserInfo();
   data.value = res.data;
 };
 UerInfo();
@@ -132,7 +131,7 @@ UerInfo();
             v-if="data.ban"
             v-model:show="showPopover"
             :actions="actions"
-            @select="onSelect"
+            @select="ban"
           >
             <template #reference>
               <van-button type="primary" size="small">封禁用户</van-button>
@@ -151,18 +150,17 @@ UerInfo();
         <!-- 我的个人信息 -->
         <div class="user-info">
           <div @click="router.push('./userFans')">
-            粉丝：{{ data.userfans }}
+            粉丝：{{ data.user_fans }}
           </div>
           <div @click="router.push('./userAttention')">
             关注：{{ data.user_concern }}
           </div>
           <div>获赞：{{ data.user_like }}</div>
-          <div>积分：{{ data.score }}</div>
+          <div>积分：{{ data.user_point }}</div>
         </div>
         <!-- 职位 -->
         <div v-if="!own" name="office">
           <span class="other">{{ data.user_class }}</span>
-          <span class="other">{{ data.user_Identity }}</span>
         </div>
       </div>
     </van-cell-group>

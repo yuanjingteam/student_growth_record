@@ -133,11 +133,11 @@ export function getHotPostService(data?: object): Promise<ListResult> {
 }
 
 // 文章发布
-export function newArticlePublish(formData?: FormData): Promise<ListResult> {
+export function newArticlePublish(data: any = {}): Promise<ListResult> {
   return http.request({
     url: "/article/publish",
     method: "post",
-    data: formData
+    data
   });
 }
 
@@ -145,15 +145,15 @@ export function newArticlePublish(formData?: FormData): Promise<ListResult> {
 export function getArticleTags(): Promise<ListResult> {
   return http.request({
     url: "/article/get_topic",
-    method: "get"
+    method: "post"
   });
 }
 
 // 获取文章小标签
 export function getLittleTags(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/article/publish/get_tags",
-    method: "get",
+    url: "/publish/get_tags",
+    method: "post",
     data: JSON.stringify(data)
   });
 }

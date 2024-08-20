@@ -14,11 +14,10 @@ type Register = {
 };
 
 //获取分类详情列表
-export function getTopicListService(data?: object): Promise<ListResult> {
+export function getTopicListService(): Promise<ListResult> {
   return http.request({
-    url: "/topic/list",
-    method: "get",
-    data
+    url: "/publish/get_topic",
+    method: "post"
   });
 }
 
