@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useUserStore } from "@/store";
 import {
@@ -10,14 +10,32 @@ import {
   articleBanService,
   articleDeleteService
 } from "@/api/article";
+
+// import lottie from "lottie-web"; //引入动效库
+// import like_json from "@/assets/json/like.json"; //引入下载的动效json
+// import collect_json from "@/assets/json/collect.json"; //引入下载的动效json
 const props = defineProps({
   post: Object,
   articleId: Number
 });
+console.log(props.post, 11);
 
+//是否点赞
+const ifLike = ref(false);
+ifLike.value = props.post.is_like;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
+
+// const like = ref(null); //获取dom
+
+// lottie.loadAnimation({
+//   container: like.value, //选择渲染dom
+//   renderer: "svg", //渲染格式
+//   loop: true, //循环播放
+//   autoplay: true, //是否自动播放
+//   animationData: like_json //渲染动效json
+// });
 
 // 防抖函数
 function debounce(func, delay) {
@@ -29,8 +47,7 @@ function debounce(func, delay) {
 }
 //是否展示评论输入框
 const showCommentTable = ref(false);
-//是否点赞
-const ifLike = ref(false);
+
 //是否收藏
 const ifCollect = ref(false);
 //点击三个点是否展示选择框
@@ -87,7 +104,7 @@ const debouncedLike = debounce(likeBtn, 400);
 const collectBtn = async state => {
   ifCollect.value = !state;
   const res = await articleCollectService({
-    id: props.articleId
+    article_id: props.articleId
   });
   console.log(res);
 };
@@ -138,6 +155,8 @@ const confirmDelete = async () => {
 </script>
 
 <template>
+  <!-- <div ref="like" /> -->
+
   <div v-if="route.name == 'PostDetail'" class="cell">
     <van-card>
       <template #tags>
@@ -165,9 +184,13 @@ const confirmDelete = async () => {
             <p class="grade">{{ post.user_class }}</p>
           </div>
         </div>
-        <p class="post-content">{{ post.article_content.article_text }}</p>
-        <div v-for="(item, index) in post.article_tags" :key="index">
-          <button class="btn">
+        <p class="post-content">{{ post.article_content }}</p>
+        <div>
+          <button
+            v-for="(item, index) in post.article_tags"
+            :key="index"
+            class="btn"
+          >
             <i-icon icon="icon-park:message" />
             <p class="btn-title">
               {{ item }}
@@ -181,17 +204,16 @@ const confirmDelete = async () => {
           <van-button
             v-if="!ifCollect"
             size="mini"
-            icon="star-o"
-            @click="collectBtn(ifCollect)"
-            >{{ post.collect_amount }}</van-button
+            @click="debouncedCollect(ifCollect)"
+            ><van-icon name="star-o" /><span>{{
+              post.collect_amount
+            }}</span></van-button
           >
-          <van-button
-            v-else
-            size="mini"
-            icon="star-o"
-            color="#3371d3"
-            @click="collectBtn(ifCollect)"
-            >{{ post.collect_amount + 1 }}</van-button
+          <van-button v-else size="mini" @click="debouncedCollect(ifCollect)"
+            ><van-icon name="star" color="#3371d3" /><span
+              style="color: #3371d3"
+              >{{ post.collect_amount + 1 }}</span
+            ></van-button
           >
           <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
             post.comment_amount
@@ -217,20 +239,16 @@ const confirmDelete = async () => {
               </van-button>
             </div>
           </van-action-sheet>
-          <van-button
-            v-if="!ifLike"
-            size="mini"
-            icon="good-job-o"
-            @click="likeBtn(ifLike)"
-            >{{ post.like_amount }}</van-button
+          <van-button v-if="!ifLike" size="mini" @click="debouncedLike(ifLike)"
+            ><van-icon name="good-job-o" /><span>{{
+              post.like_amount
+            }}</span></van-button
           >
-          <van-button
-            v-else
-            size="mini"
-            icon="good-job-o"
-            color="#3371d3"
-            @click="likeBtn(ifLike)"
-            >{{ post.like_amount + 1 }}</van-button
+          <van-button v-else size="mini" @click="debouncedLike(ifLike)"
+            ><van-icon name="good-job" color="#3371d3" /><span
+              style="color: #3371d3"
+              >{{ post.like_amount + 1 }}</span
+            ></van-button
           >
         </div>
       </template>
@@ -411,6 +429,7 @@ const confirmDelete = async () => {
     }
 
     .post-content {
+      word-break: break-all;
       margin-bottom: 20px;
       font-weight: 500;
       font-size: 15px;
@@ -426,7 +445,7 @@ const confirmDelete = async () => {
       justify-content: space-between;
       align-items: center;
       padding: 0 10px;
-      margin-right: 5px;
+      margin-right: 2px;
 
       .btn-title {
         color: rgba(0, 81, 255);
@@ -437,12 +456,16 @@ const confirmDelete = async () => {
     .van-button {
       border: none;
       font-size: 18px;
+      .van-icon {
+        font-size: 22px;
+        margin-right: 6px;
+      }
     }
 
     .btn-box {
       display: flex;
       justify-content: space-between;
-      margin-top: 10px;
+      margin-top: 20px;
     }
 
     .time1 {

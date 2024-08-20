@@ -108,7 +108,7 @@ export function articleIgnoreService(data?: object): Promise<ListResult> {
 //删除文章
 export function articleDeleteService(data?: object): Promise<ListResult> {
   return http.request({
-    url: "/article/list/delete",
+    url: "/article/delete",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -126,8 +126,8 @@ export function articleChangeState(data?: Object): Promise<ListResult> {
 //获取热帖标题，一次10条
 export function getHotPostService(data?: object): Promise<ListResult> {
   return http.request({
-    url: "/hotpost/title",
-    method: "get",
+    url: "/article/hotpost/title",
+    method: "post",
     data: JSON.stringify(data)
   });
 }

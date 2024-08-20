@@ -29,10 +29,10 @@ const hotPost = reactive([]);
 const getHotPost = async articleCount => {
   const {
     data: { article_list }
-  } = await getHotPostService({ article_count: `${articleCount}` });
+  } = await getHotPostService({ article_count: articleCount });
   hotPost.value = article_list;
 };
-getHotPost("3");
+getHotPost(3);
 //处理按钮点击事件
 const btnDeal = async state => {
   console.log(state);
@@ -40,11 +40,11 @@ const btnDeal = async state => {
   if (state == true) {
     //此时写着是收起
     btnState.value = false;
-    getHotPost("3");
+    getHotPost(3);
   } else {
     //此时写的是展开
     btnState.value = true;
-    getHotPost("10");
+    getHotPost(8);
   }
 };
 
@@ -85,7 +85,10 @@ function numberToEnglish(number) {
           <ul>
             <li v-for="(item, index) in hotPost.value" :key="index">
               <i-icon :icon="`icon-park:${numberToEnglish(index + 1)}-key`" />
-              <p @click="router.push(`/postDetail/${item.article_id}`)">
+              <p
+                class="hotTitle"
+                @click="router.push(`/postDetail/${item.article_id}`)"
+              >
                 {{ item.article_title }}
               </p>
             </li>
@@ -96,10 +99,16 @@ function numberToEnglish(number) {
         v-if="btnState"
         icon="arrow-up"
         block
+        style="border-radius: 0"
         @click="btnDeal(btnState)"
         >收起</van-button
       >
-      <van-button v-else icon="arrow-down" block @click="btnDeal(btnState)"
+      <van-button
+        v-else
+        icon="arrow-down"
+        block
+        style="border-radius: 0"
+        @click="btnDeal(btnState)"
         >展开</van-button
       >
     </van-cell-group>
@@ -163,5 +172,11 @@ function numberToEnglish(number) {
     font-size: 20px;
     font-weight: 600;
   }
+}
+.hotTitle {
+  width: 250px; /* 设定宽度 */
+  white-space: nowrap; /* 防止文本换行 */
+  overflow: hidden; /* 隐藏溢出内容 */
+  text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
 }
 </style>
