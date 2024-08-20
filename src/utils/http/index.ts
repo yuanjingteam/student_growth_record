@@ -8,15 +8,18 @@ import { ContentTypeEnum, ResultEnum } from "@/enums/requestEnum";
 import NProgress from "../progress";
 import { showFailToast } from "vant";
 import "vant/es/toast/style";
+import { useUserStore } from "@/store";
 
+// ContentTypeEnum
 // 默认 axios 实例请求配置
+//  || ContentTypeEnum.FORM_URLENCODED
+// || "application/json"
 const configDefault = {
   headers: {
     "Content-Type": ContentTypeEnum.FORM_URLENCODED
   },
   timeout: 0,
-  baseURL: import.meta.env.VITE_BASE_API,
-  data: {}
+  baseURL: import.meta.env.VITE_BASE_API
 };
 
 class Http {
@@ -30,10 +33,12 @@ class Http {
     Http.axiosInstance.interceptors.request.use(
       config => {
         NProgress.start();
+        const userStore = useUserStore();
+        const token = userStore.token;
         // 发送请求前，可在此携带 token
-        // if (token) {
-        //   config.headers['token'] = token
-        // }
+        if (token) {
+          config.headers["token"] = token;
+        }
         return config;
       },
       (error: AxiosError) => {
@@ -49,18 +54,20 @@ class Http {
       (response: AxiosResponse) => {
         NProgress.done();
         // 与后端协定的返回字段
-        const { code, result } = response.data;
+        const { code, data } = response.data;
+        // const { msg } = response.data;
+
         // const { message } = response.data;
         // 判断请求是否成功
         const isSuccess =
-          result &&
+          data &&
           Reflect.has(response.data, "code") &&
           code === ResultEnum.SUCCESS;
         if (isSuccess) {
-          return result;
+          return response.data;
         } else {
           // 处理请求错误
-          // showFailToast(message);
+          // showFailToast(msg);
           return Promise.reject(response.data);
         }
       },
@@ -107,6 +114,8 @@ class Http {
           default:
             message = "网络连接故障";
         }
+
+        console.log(message);
 
         showFailToast(message);
         return Promise.reject(error);

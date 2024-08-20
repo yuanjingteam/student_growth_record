@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
   // 环境变量
   const env = loadEnv(mode, root, "");
   return {
-    base: env.VITE_PUBLIC_PATH || "/",
+    base: env.VITE_PUBLIC_PATH,
     plugins: [
       vue(),
       vueJsx(),
@@ -63,7 +63,20 @@ export default defineConfig(({ mode }) => {
       // doc: https://github.com/pengzhanbo/vite-plugin-mock-dev-server
       proxy: {
         "^/dev-api": {
-          target: "http://127.0.0.1:4523/m1/4869431-0-default"
+          // 作用: 指定代理请求要转发到的目标服务器 URL。在这个例子中,
+          //  是指向本地的 http://127.0.0.1:4523/m1/4869431-0-default 服务器。
+          // target: "http://192.168.10.7:8881",
+          target:
+            // "http://127.0.0.1:4523/m1/4869431-0-default" ||
+            "http://192.168.10.7:8881",
+          // 作用: 设置是否更改请求头中的 Origin 字段。
+          // 默认 false。设置为 true 可以解决跨域问题。
+          changeOrigin: true,
+
+          // 作用: 重写请求路径。
+          // 在这个例子中, 它会将 / dev - api 开头的路径替换为空字符串,
+          // 即去掉 / dev - api 前缀。这样可以让实际请求的路径与配置的路径匹配。
+          rewrite: path => path.replace(/^\/dev-api/, "")
         }
       }
     },

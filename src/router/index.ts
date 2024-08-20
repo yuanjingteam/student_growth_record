@@ -20,6 +20,7 @@ export interface toRouteType extends RouteLocationNormalized {
   };
 }
 
+// 路由全局前置守卫
 router.beforeEach((to: toRouteType, from, next) => {
   NProgress.start();
   // 路由缓存

@@ -13,7 +13,6 @@ const cachedViews = computed(() => {
 <template>
   <div class="app-wrapper">
     <van-config-provider :theme="useDarkMode() ? 'dark' : 'light'">
-      
       <router-view v-slot="{ Component }">
         <keep-alive :include="cachedViews">
           <component :is="Component" />
@@ -27,10 +26,20 @@ const cachedViews = computed(() => {
 <style lang="less" scoped>
 @import "@/styles/mixin.less";
 
+@font-family-medium: "思源宋体 Medium";
+
+@font-face {
+  font-family: @font-family-medium;
+  src: url("../icons/song_2/lw9kIwcGVUnH.woff2") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
 .app-wrapper {
   .clearfix();
   position: relative;
-  height: 100%;
   width: 100%;
+  height: 100%;
+  background-color: #f0f1f5;
+  font-family: @font-family-medium, sans-serif;
 }
 </style>
