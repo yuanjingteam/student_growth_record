@@ -42,6 +42,7 @@ const getArticleDetailList = async () => {
   });
   articleData.value = data;
 };
+
 getArticleDetailList();
 
 //切换状态获取类型信息
@@ -98,7 +99,11 @@ const onRefresh = () => {
       </template>
     </van-nav-bar>
 
-    <post-more :post="articleData" :articleId="articleId" />
+    <post-more
+      v-if="articleData.article_content.article_text != ''"
+      :post="articleData"
+      :articleId="articleId"
+    />
 
     <van-cell>
       <!-- 使用 title 插槽来自定义标题 -->
@@ -136,6 +141,7 @@ const onRefresh = () => {
 <style scoped>
 .detail {
   background-color: #f0f1f5;
+  height: 100%;
 
   .van-nav-bar {
     --van-nav-bar-background: #f0f1f5;

@@ -111,7 +111,12 @@ const confirmDelete = async () => {
     <van-card>
       <template #tags>
         <div class="info-box">
-          <van-image round :src="data.user_headshot" />
+          <van-image
+            round
+            :src="data.user_headshot"
+            width="3rem"
+            height="3rem"
+          />
           <div class="info">
             <div class="info-row">
               <p class="name">{{ data.name }}</p>
@@ -214,6 +219,7 @@ const confirmDelete = async () => {
     background-color: #fff;
     margin-top: 1px;
     padding: 15px 15px;
+    overflow: hidden;
 
     .info-box {
       display: flex;
@@ -222,6 +228,7 @@ const confirmDelete = async () => {
         display: flex;
         flex-direction: column;
         margin-left: 10px;
+        width: 100%;
 
         .info-row {
           display: flex;
@@ -241,7 +248,7 @@ const confirmDelete = async () => {
 
         .comment-comtent {
           margin-top: 10px;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
           font-weight: 500;
           font-size: 15px;
           color: #000;

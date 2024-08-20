@@ -118,15 +118,6 @@ type comList = {
   };
 };
 
-// 获取登录页标题
-export function getLoginTitle(data?: Object): Promise<ListResult> {
-  return http.request({
-    url: "/title",
-    method: "get",
-    data: JSON.stringify(data)
-  });
-}
-
 // 获取用户信息
 export function getUserInfo(): Promise<userList> {
   return http.request({

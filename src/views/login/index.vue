@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getVerifyImg, getLoginTitle, userLogin } from "@/api/user";
+import { getVerifyImg, userLogin } from "@/api/user";
 import { useUserStore } from "@/store";
 import { showFailToast, showSuccessToast } from "vant";
 
@@ -86,16 +86,6 @@ const onsubmit = async () => {
 };
 //图片地址
 const imageUrl = ref("");
-//登录页标题
-const loginTitle = ref("");
-//展示标题
-const showTitle = async () => {
-  const {
-    data: { title }
-  } = await getLoginTitle();
-  loginTitle.value = title;
-};
-showTitle();
 //展示验证码图片
 const showVerify = async () => {
   changeVerify();
@@ -122,7 +112,7 @@ const passengerLogin = () => {
     <div class="circle3" />
     <div class="circle4" />
     <h2>数学科学学院</h2>
-    <h1>{{ loginTitle }}</h1>
+    <h1>大学生成长档案</h1>
     <van-form ref="formRef" inset>
       <van-field
         v-model="userForm.username"

@@ -55,7 +55,7 @@ class Http {
         NProgress.done();
         // 与后端协定的返回字段
         const { code, data } = response.data;
-        const { msg } = response.data;
+        // const { msg } = response.data;
 
         // const { message } = response.data;
         // 判断请求是否成功
@@ -67,7 +67,7 @@ class Http {
           return response.data;
         } else {
           // 处理请求错误
-          showFailToast(msg);
+          // showFailToast(msg);
           return Promise.reject(response.data);
         }
       },

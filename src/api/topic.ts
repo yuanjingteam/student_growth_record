@@ -24,7 +24,7 @@ export function getTopicListService(): Promise<ListResult> {
 //获取当前用户的注册天数
 export function getRegisterDay(data?: Object): Promise<Register> {
   return http.request({
-    url: "/register/day",
+    url: "/user/register/day",
     method: "post",
     data
   });
