@@ -27,10 +27,10 @@ const classId = route.params.id;
 //声明当前话题
 const className = ref();
 const classList = classStore.classList;
+console.log(classList);
+
 const findClassName = classId => {
-  const classOne = classList.value.find(
-    classOne => classOne.class_id === classId
-  );
+  const classOne = classList.find(classOne => classOne.class_id == classId);
   return classOne ? classOne.class_name : null;
 };
 className.value = findClassName(classId);
@@ -81,11 +81,11 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   classData.article_page += 1;
-  const res = await searchArticleService(classData);
-  if (res.code == 200) {
+  try {
+    const res = await searchArticleService(classData);
     loading.value = false;
     articleList.value = [...articleList.value, ...res.data.content];
-  } else {
+  } catch {
     finished.value = true;
   }
 };

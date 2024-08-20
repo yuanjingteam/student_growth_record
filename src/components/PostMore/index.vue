@@ -65,11 +65,14 @@ const showReport = ref(false);
 const showBan = ref(false);
 //确认封禁
 const confirmBan = async () => {
-  const res = await articleBanService({
-    article_id: props.articleId,
-    article_ban: true
-  });
-  console.log(res);
+  try {
+    const res = await articleBanService({
+      article_id: props.articleId,
+      article_ban: true
+    });
+    console.log(res);
+  } catch {}
+
   router.push("/demo");
 };
 

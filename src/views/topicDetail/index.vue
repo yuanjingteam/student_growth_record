@@ -80,11 +80,11 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   articleData.article_page += 1;
-  const res = await searchArticleService(articleData);
-  if (res.code == 200) {
+  try {
+    const res = await searchArticleService(articleData);
     loading.value = false;
     articleList.value = [...articleList.value, ...res.data.content];
-  } else {
+  } catch {
     finished.value = true;
   }
 };

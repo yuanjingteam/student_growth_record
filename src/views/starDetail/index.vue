@@ -9,25 +9,37 @@ const activeName = ref("班级");
 
 //获取班级成长之星
 const getClassStarList = async () => {
-  const {
-    data: { starlist }
-  } = await getClassStar();
-  starList.value = starlist;
+  try {
+    const {
+      data: { starlist }
+    } = await getClassStar();
+    starList.value = starlist;
+  } catch {
+    starList.value = [];
+  }
 };
 
 //获取年级成长之星
 const getGradeStarList = async () => {
-  const {
-    data: { starlist }
-  } = await getGradeStar();
-  starList.value = starlist;
+  try {
+    const {
+      data: { starlist }
+    } = await getGradeStar();
+    starList.value = starlist;
+  } catch {
+    starList.value = [];
+  }
 };
 //获取校级成长之星
 const getSchoolStarList = async () => {
-  const {
-    data: { starlist }
-  } = await getSchoolStar();
-  starList.value = starlist;
+  try {
+    const {
+      data: { starlist }
+    } = await getSchoolStar();
+    starList.value = starlist;
+  } catch {
+    starList.value = [];
+  }
 };
 
 watch(activeName, (newValue, oldValue) => {
@@ -79,7 +91,7 @@ const list = reactive([
       :title="item.title"
       :name="item.name"
     >
-      <van-grid :gutter="10">
+      <van-grid v-if="starList.length > 0" :gutter="10">
         <van-grid-item
           v-for="item in starList"
           :key="item.username"
@@ -99,6 +111,7 @@ const list = reactive([
           </div>
         </van-grid-item>
       </van-grid>
+      <van-empty v-else description="暂时还没有符合的人选哦" />
     </van-tab>
   </van-tabs>
 </template>
