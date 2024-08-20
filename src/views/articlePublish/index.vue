@@ -1,12 +1,17 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { showConfirmDialog, showSuccessToast, showToast } from "vant";
-import { reactive, ref, nextTick, computed, onMounted } from "vue";
 import {
-  newArticlePublish,
-  getArticleTags,
-  getLittleTags
-} from "@/api/article";
+  reactive,
+  ref,
+  nextTick,
+  computed,
+  onMounted,
+  onUpdated,
+  onBeforeUpdate
+} from "vue";
+import { newArticlePublish, getLittleTags } from "@/api/article";
+import { getTopicListService } from "@/api/topic";
 import { useUserStore } from "@/store";
 const userStore = useUserStore();
 // 获取用户id
@@ -31,16 +36,23 @@ const small_show = ref(false);
 const article_show = ref(false);
 
 // 获取小话题
-// 存储dom数组
-const myRef = ref([]);
-// 存储所有ref
-const setSmallRef = el => {
+const refs = ref([]);
+const setRef = (id, el) => {
   if (el) {
-    myRef.value.push(el);
+    refs.value[id] = el;
+  } else {
+    delete refs.value[id];
   }
 };
 nextTick(() => {
-  console.dir(myRef.value);
+  console.dir(refs.value);
+});
+onMounted(() => {
+  console.log(refs.value);
+});
+onBeforeUpdate(() => {
+  // 在更新前清空 refs
+  refs.value = [];
 });
 
 // 当前话题索引
@@ -54,29 +66,22 @@ const article_state = ref(true);
 const littleTag = ref([]);
 
 // 存储图片/视频
-const imageFormData = new FormData();
-const videoFormData = new FormData();
+const assetsFormData = new FormData();
 
 // 文件列表
-const fileList = ref([
-  // { url: "https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg" }
-  // Uploader 根据文件后缀来判断是否为图片文件
-  // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
-  // { url: "https://cloud-image", isImage: true }
-]);
+const fileList = ref([]);
 
 // 文章内容
 const content = ref("");
+// 文章小标签
+const litTag = ref([]);
 // 文章字数
 const contentLength = computed(() => content.value.length);
 
 // 文章校验
 const formRef = ref();
 
-// 校验函数返回 true 表示校验通过，false 表示不通过
-//  Form 组件提供的一个方法,不需要自己实现。
 const validator = val => {
-  // console.log(val);
   if (val.trim() === "") {
     return "内容不能为空";
   }
@@ -91,7 +96,10 @@ const validator = val => {
 const rules = [{ validator, message: error => error }];
 
 // 渲染大标题
-let actions = [{ name: "文体活动", aa: 112 }, { name: "选项二" }];
+let actions = [
+  { name: "学习成绩", ID: 1 },
+  { name: "选项二", ID: 213 }
+];
 
 // 渲染可见状态
 let state = [
@@ -104,19 +112,16 @@ let state = [
 ];
 // 渲染话题/tag
 const childs = ref([
-  { text: "杭州", id: 0 },
-  { text: "温州", id: 1 },
-  { text: "宁波", id: 2 }
+  { name: "杭州", id: 0 },
+  { name: "温州", id: 1 },
+  { name: "宁波", id: 2 }
 ]);
 
 // 是否可见
 const toShow = item => {
   if (item.name === "所有人可见") {
     article_state.value = true;
-    console.log(111);
   } else {
-    console.log(2222);
-
     article_state.value = false;
   }
   checkState.value = item.name;
@@ -125,53 +130,47 @@ const toShow = item => {
 
 // 发送的数据包
 const data = reactive({
-  username: username,
   article_status: article_state,
   article_content: content,
   word_count: contentLength,
   article_topic: actions[defaultIndex].name,
-  article_tags: littleTag.value,
-  imageForm: imageFormData,
-  videoForm: videoFormData
+  article_tags: litTag
 });
 
 // 获取话题
 const getArticleTag = async () => {
-  const serve = await getArticleTags();
-  console.log(serve.data);
-  actions = serve.data;
+  const serve = await getTopicListService();
+  const res = serve.data.topic_list;
+  actions = res.map(item => {
+    return {
+      ID: item.ID,
+      name: item.topic_name
+    };
+  });
+  console.log(actions);
 };
 
 // 获取小标签
 const getLittleTag = async () => {
-  const serve = await getLittleTags({ topic_id: data.article_topic });
+  const serve = await getLittleTags({ topic_id: actions[defaultIndex].ID });
   childs.value = serve.data;
 };
 
 // 选择文章类别
 const onSelect = item => {
-  // 默认情况下点击选项时不会自动收起
-  // 可以通过 close-on-click-action 属性开启自动收起
   let selectedIndex = actions.findIndex(action => action.name === item.name);
-
   defaultIndex = selectedIndex;
   data.article_topic = actions[defaultIndex].name;
   littleTag.value = [];
+  setRef.value = [];
   data.article_content = "";
 
   // 移除所有带有 "active" 类的元素
-  myRef.value.forEach(ref => {
+  refs.value.forEach(ref => {
     ref.$el.classList.remove("active");
   });
   // 获取新的小标签
   getLittleTag(data.article_topic);
-
-  // 设置小标签元素的 ref(定义了一个方法,重新收集这些元素的引用(ref))
-  const setSmallRef = el => {
-    if (el) {
-      myRef.value.push(el);
-    }
-  };
 };
 
 // 小标签弹窗
@@ -192,30 +191,25 @@ function throttle(func, delay) {
 }
 
 // 添加/删除tag
-// 500 毫秒的节流延迟时间。这意味着在 500 毫秒内,toggleGridItemActive 函数只会被执行一次。
-const toggleGridItemActive = throttle(function (item, id) {
-  // 检查当前项是否存在littleTag.value数组中
+const toggleGridItemActive = throttle((item, id) => {
   const isItemInList = littleTag.value.some(tag => tag.id === item.id);
   // 获取当前盒子
-  const targetRef = myRef.value[id].$el;
+  const targetRef = refs.value[id].$el;
   // 改变当前选中状态
   targetRef.classList.toggle("active");
-  //存在就去掉
+
   if (isItemInList) {
-    // tag 是原数组的每一项，过滤出不等于 itme.text的项
     littleTag.value = littleTag.value.filter(tag => tag.id !== item.id);
   } else {
-    // 不存在就添加
     littleTag.value.unshift(item);
   }
 }, 300);
 
 // 关闭tag小标签
 const close = (item, id) => {
-  console.log(item);
   // 将当前项删除
   littleTag.value = littleTag.value.filter(tag => tag.id !== id);
-  const targetRef = myRef.value[id].$el;
+  const targetRef = refs.value[id].$el;
   targetRef.classList.toggle("active");
 };
 
@@ -232,14 +226,13 @@ const onOversize = file => {
 
 // 存储图片/视频
 const handleSubmit = async () => {
-  // console.log(fileList.value, "12312321");
-  fileList.value.forEach((file, index) => {
+  fileList.value.forEach(file => {
     // 判断文件类型
     if (file.file.type.startsWith("image/")) {
-      imageFormData.append(`image_files${index}`, file.file);
+      assetsFormData.append("pic", file.file);
       console.log(file, "图片");
     } else if (file.file.type.startsWith("video/")) {
-      videoFormData.append(`video_files${index}`, file.flie);
+      assetsFormData.append("video", file.flie);
       console.log(file, "视频");
     }
   });
@@ -261,6 +254,10 @@ const onSubmit = async () => {
     }
     // 文件上传
     handleSubmit();
+    litTag.value = littleTag.value.map(tag => tag.name);
+
+    console.log(litTag.value, 1380138190);
+
     console.log(data);
 
     showConfirmDialog({
@@ -270,12 +267,18 @@ const onSubmit = async () => {
       .then(async () => {
         loading.value = true; // 开启 loading 效果
         // 调用发布文章
-        isPublished(data);
+        // 20221544308
+        assetsFormData.append("username", username);
+        assetsFormData.append("article_content", data.article_content);
+        assetsFormData.append("word_count", data.word_count);
+        assetsFormData.append("article_topic", data.article_topic);
+        for (const tag of data.article_tags) {
+          assetsFormData.append("article_tags", tag);
+        }
+        assetsFormData.append("article_status", data.article_status);
+        isPublished(assetsFormData);
       })
-      .catch(() => {
-        // on cancel
-        // fileList.value = [];
-      });
+      .catch(() => {});
   } catch (error) {
     console.log("validate failed", error);
   }
@@ -283,21 +286,12 @@ const onSubmit = async () => {
 
 // 发布文章请求
 const isPublished = async baseData => {
-  try {
-    const { data } = await newArticlePublish({ baseData });
+  const { code } = await newArticlePublish(baseData);
+  if (code === 200) {
     loading.value = false; // 关闭 loading 效果
-    showSuccessToast("发布成功");
     setTimeout(() => {
       router.push("./demo");
     }, 1500); // 1.5秒后跳转
-  } catch (error) {
-    loading.value = false; // 关闭 loading 效果
-    if (error.response && error.response.status === 400) {
-      showSuccessToast("重复文章类型发布,请明天再来吧~");
-    } else {
-      console.error("发布文章失败:", error);
-      showToast("发布文章失败,请稍后重试");
-    }
   }
 };
 
@@ -330,13 +324,13 @@ getLittleTag();
       <van-grid-item
         v-for="item in childs"
         :key="item.id"
-        :ref="setSmallRef"
+        :ref="el => setRef(item.id, el)"
         icon="photo-o"
         clickable
         @click="toggleGridItemActive(item, item.id)"
       >
         <template #default>
-          {{ item.tag_name }}
+          {{ item.name }}
         </template>
       </van-grid-item>
     </van-grid>
@@ -386,11 +380,7 @@ getLittleTag();
         :autosize="{ minHeight: 100, maxHeight: 260 }"
         type="textarea"
         validate-trigger="onSubmit"
-      >
-        <!-- <template v-slot:label>
-        <div class="label-content">内容</div>
-      </template> -->
-      </van-field>
+      />
       <van-uploader
         ref="mediaUploader"
         v-model="fileList"
@@ -400,8 +390,6 @@ getLittleTag();
         max-count="6"
         @oversize="onOversize"
       />
-      <!-- <van-cell title="图片/视频" icon="location-o" class="select" /> -->
-
       <van-cell class="select">
         <template #title>
           <!-- 在这里添加多个标题元素 -->
@@ -413,7 +401,7 @@ getLittleTag();
             size="medium"
             @close="close(item, item.id)"
           >
-            <i-icon icon="mdi:tag-outline" />{{ item.tag_name }}
+            <i-icon icon="mdi:tag-outline" />{{ item.name }}
           </van-tag>
         </template>
       </van-cell>

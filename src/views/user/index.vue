@@ -7,6 +7,8 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
+console.log(role);
+// debugger;
 </script>
 
 <template>
@@ -45,7 +47,7 @@ const role = userStore.role;
     <!-- 我的内容 -->
     <van-cell-group inset class="end">
       <van-cell
-        v-if="role === '1'"
+        v-if="role === 'superman'"
         title="发布通知"
         is-link
         @click="router.push('./managerPublish')"

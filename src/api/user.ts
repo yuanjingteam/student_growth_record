@@ -128,11 +128,10 @@ export function getLoginTitle(data?: Object): Promise<ListResult> {
 }
 
 // 获取用户信息
-export function getUserInfo(data?: Object): Promise<userList> {
+export function getUserInfo(): Promise<userList> {
   return http.request({
     url: "/user/profiles_get",
-    method: "get",
-    data: JSON.stringify(data)
+    method: "get"
   });
 }
 
@@ -273,7 +272,7 @@ export function getUserThumNotification(data?: Object): Promise<thumbsList> {
 // 获取互动消息收藏列表
 export function getUserStarNotification(data?: Object): Promise<starList> {
   return http.request({
-    url: "/user/get_starList",
+    url: "/message/get_starList",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -282,7 +281,7 @@ export function getUserStarNotification(data?: Object): Promise<starList> {
 // 获取互动消息评论列表
 export function getUserComNotification(data?: Object): Promise<comList> {
   return http.request({
-    url: "/user/get_comList",
+    url: "/message/get_comList",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -291,7 +290,7 @@ export function getUserComNotification(data?: Object): Promise<comList> {
 // 获取班级成员
 export function getUserClass(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/get_class",
+    url: "/user/class_get",
     method: "get",
     data: JSON.stringify(data)
   });
@@ -309,7 +308,7 @@ export function getUserFansList(data?: Object): Promise<ListResult> {
 // 获取用户关注列表
 export function getAttentionList(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/atttention_get",
+    url: "/user/concern_get",
     method: "get",
     data: JSON.stringify(data)
   });
@@ -345,7 +344,7 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
 // 获取用户发布的文章
 export function getArticlePublish(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/article_publish",
+    url: "/user/article_get",
     method: "get",
     data: JSON.stringify(data)
   });

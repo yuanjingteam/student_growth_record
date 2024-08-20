@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { readManagerNotice } from "@/api/user";
-import { useUserStore } from "@/store";
 import { showDialog } from "vant";
 import { getManagerNotification } from "@/api/user";
 
@@ -11,8 +10,6 @@ const props = defineProps({
   base: Object
 });
 const router = useRouter();
-const userStore = useUserStore();
-const username = userStore.username;
 const data = ref({
   manager_info: [
     {
@@ -26,24 +23,17 @@ const data = ref({
 
 // 获取管理员消息
 const managerNotification = async () => {
-  const res = await getManagerNotification({ page: 1, limit: 1 });
+  const res = await getManagerNotification({
+    page: 1,
+    limit: 1
+  });
   data.value = res.data;
 };
 managerNotification();
 // 是否已读
 const checkManager = async () => {
-  try {
-    const { code } = await readManagerNotice({ username: username });
-    if (code === 200) {
-      router.push("./managerNotice");
-    } else {
-      console.error("请求失败:", res);
-      showDialog("请求失败");
-    }
-  } catch (error) {
-    console.error("请求出错:", error);
-    showDialog("请求出错");
-  }
+  router.push("./managerNotice");
+  const { code } = await readManagerNotice();
 };
 </script>
 <template>
@@ -71,7 +61,7 @@ const checkManager = async () => {
 <style scoped>
 .van-text-ellipsis {
   color: black;
-  width: 240px;
+  width: 210px;
 }
 
 .right-content .van-badge {

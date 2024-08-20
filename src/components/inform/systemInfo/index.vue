@@ -2,7 +2,6 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { readSystemNotice, getSystemNotification } from "@/api/user";
-import { useUserStore } from "@/store";
 import { showDialog } from "vant";
 
 // 父传子
@@ -10,8 +9,6 @@ const props = defineProps({
   base: Object
 });
 const router = useRouter();
-const userStore = useUserStore();
-const username = userStore.username;
 const data = ref({
   admin_info: [
     {
@@ -25,22 +22,18 @@ const data = ref({
 
 // 获取系统消息
 const systemNotification = async () => {
-  const res = await getSystemNotification({ page: 1, limit: 1 });
+  const res = await getSystemNotification({
+    page: 1,
+    limit: 1
+  });
   data.value = res.data;
 };
 systemNotification();
 
 // 是否已读
 const checkSystem = async () => {
-  try {
-    const res = await readSystemNotice({ username: username });
-    if (res.code == 200) {
-      router.push("/systemNotice");
-    }
-  } catch (error) {
-    console.error("请求出错", error);
-    showDialog("请求出错");
-  }
+  router.push("/systemNotice");
+  await readSystemNotice();
 };
 </script>
 <template>
@@ -68,7 +61,7 @@ const checkSystem = async () => {
 <style scoped>
 .van-text-ellipsis {
   color: black;
-  width: 240px;
+  width: 210px;
 }
 
 .right-content .van-badge {

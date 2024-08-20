@@ -1,11 +1,8 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import { useUserStore } from "@/store";
 import { getSystemNotification } from "@/api/user";
 const router = useRouter();
-const userStore = useUserStore();
-const username = userStore.username;
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
@@ -18,13 +15,12 @@ const list = ref([]);
 const loadData = async () => {
   try {
     const { data } = await getSystemNotification({
-      username: username,
       page: page.value++,
       limit: 10
     });
     list.value = [...list.value, ...data.admin_info];
-  } catch {
-    console.error("获取系统通知列表失败", error);
+  } catch (error) {
+    // console.error("获取系统通知列表失败", error);
     finished.value = true;
   }
 };

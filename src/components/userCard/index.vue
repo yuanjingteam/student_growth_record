@@ -24,7 +24,6 @@ const gotoArticleDetail = () => {
 const midState = ref();
 const midContent = ref();
 midState.value = props.state;
-console.log(midState, 111);
 midContent.value = midState.value === true ? "私密" : "公开";
 
 const showPopover = ref(false);
@@ -148,7 +147,6 @@ const onSelect = async item => {
           />
           <div class="info">
             <p class="name">{{ article.name }}</p>
-            <p class="grade">{{ article.user_class }}</p>
           </div>
         </div>
         <van-text-ellipsis

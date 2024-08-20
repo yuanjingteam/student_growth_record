@@ -1,11 +1,8 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { useUserStore } from "@/store";
 import { getManagerNotification } from "@/api/user";
 const router = useRouter();
-const userStore = useUserStore;
-const username = userStore.username;
 
 const loading = ref(false);
 const finished = ref(false);
@@ -19,13 +16,12 @@ const page = ref(0);
 const loadData = async () => {
   try {
     const { data } = await getManagerNotification({
-      username: username,
       page: page.value++,
       limit: 10
     });
     list.value = [...list.value, ...data.manager_info];
   } catch (error) {
-    console.error("获取管理员通知列表失败:", error);
+    // console.error("获取管理员通知列表失败:", error);
     finished.value = true;
   }
 };

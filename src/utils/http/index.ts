@@ -115,6 +115,8 @@ class Http {
             message = "网络连接故障";
         }
 
+        console.log(message);
+
         showFailToast(message);
         return Promise.reject(error);
       }

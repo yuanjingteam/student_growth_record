@@ -73,13 +73,10 @@ const onRefresh = () => {
           <template #title
             >{{ item.name }}
             <div class="content">
-              <van-text-ellipsis
-                rows="2"
-                :content="item.article_content.article_content"
-              />
+              <van-text-ellipsis rows="2" :content="item.article_content" />
               <p class="remark">
                 <!-- <span>{{ item.name }}</span> -->
-                <span><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span>
+                <span><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span>
                 <span
                   ><i-icon icon="lets-icons:comment" />{{
                     item.comment_amount
@@ -98,10 +95,10 @@ const onRefresh = () => {
           </template>
           <template #right-icon>
             <van-image
-              v-if="item.user_headshot"
+              v-if="item.article_pic"
               width="8rem"
               height="6rem"
-              :src="item.user_headshot"
+              :src="item.article_pic"
               class="right"
             />
           </template>

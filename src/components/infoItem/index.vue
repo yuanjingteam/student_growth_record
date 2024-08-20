@@ -1,10 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { useUserStore } from "@/store";
 import { readUserNotice } from "@/api/user";
 const router = new useRouter();
-const userStore = useUserStore();
-const username = userStore.username;
 // 父传子
 const props = defineProps({
   data: Object,
@@ -15,22 +12,17 @@ const props = defineProps({
 });
 
 const checkOne = async () => {
-  try {
-    const { code } = await readUserNotice({ msg_id: data.msg_id, type: type });
-    if (code === 200) {
-      // 请求成功
-      router.push(`/postDetail/${data.article_id}`);
-    } else {
-      // 请求失败
-      console.error("读取用户通知失败:", code);
-    }
-  } catch (error) {
-    console.error("读取用户通知出错:", error);
-  }
+  router.push(`/postDetail/${props.data.article_id}`);
+  console.log(props.type, 34280452834);
+  debugger;
+  await readUserNotice({
+    msg_id: props.data.msg_id,
+    type: props.type
+  });
 };
 </script>
 <template>
-  <van-badge :dot="data.is_read" :offset="[-12, 20]">
+  <van-badge :dot="data.is_read == false" :offset="[-12, 20]">
     <van-cell center>
       <template #title>
         {{ data.name }}

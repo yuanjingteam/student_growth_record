@@ -1,20 +1,16 @@
 <script setup>
 import { ref } from "vue";
-import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import {
   getUserThumNotification,
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
-import { showDialog } from "vant";
 
 // 路由
 const router = useRouter();
 
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
-const userStore = useUserStore();
-const username = userStore.username;
 
 // 哪一栏
 const active = ref(0);
@@ -56,26 +52,19 @@ const state = [
   "收藏了你的评论"
 ];
 
-const onClickTab = () => {};
+const onClickTab = () => {
+  finished.value = false;
+};
 
 // 获取点赞列表
 const loadData1 = async () => {
   try {
     const { data, msg, code } = await getUserThumNotification({
       page: page1.value++,
-      username: username,
       limit: 10
     });
-    if (code === 200) {
-      thumbList.value = [...thumbList.value, ...data.thumbsUp];
-    } else {
-      console.error("请求失败:", msg);
-      showDialog(msg);
-      finished.value = true;
-    }
-  } catch (error) {
-    console.error("请求出错:", error);
-    showDialog("加载数据时出错");
+    thumbList.value = [...thumbList.value, ...data.thumbsUp];
+  } catch {
     finished.value = true;
   }
 };
@@ -84,20 +73,10 @@ const loadData2 = async () => {
   try {
     const { data, msg, code } = await getUserComNotification({
       page: page2.value++,
-      username: username,
       limit: 10
     });
-
-    if (code === 200) {
-      comList.value = [...comList.value, ...data.comments];
-    } else {
-      console.error("获取评论列表失败:", msg);
-      showDialog(msg);
-      finished.value = true;
-    }
-  } catch (error) {
-    console.error("获取评论列表出错:", error);
-    showDialog("加载数据时出错");
+    comList.value = [...comList.value, ...data.comments];
+  } catch {
     finished.value = true;
   }
 };
@@ -107,20 +86,10 @@ const loadData3 = async () => {
   try {
     const { data, msg, code } = await getUserStarNotification({
       page: page3.value++,
-      username: username,
       limit: 10
     });
-
-    if (code === 200) {
-      starList.value = [...starList.value, ...data.star];
-    } else {
-      console.error("获取收藏列表失败:", msg);
-      showDialog(msg);
-      finished.value = true;
-    }
-  } catch (error) {
-    console.error("获取收藏列表出错:", error);
-    showDialog("获取收藏列表时出错");
+    starList.value = [...starList.value, ...data.star];
+  } catch {
     finished.value = true;
   }
 };
@@ -144,10 +113,10 @@ const onLoad = async () => {
   }
   // 重置刷新的值
   finished.value = false;
-
   switch (active.value) {
     case 0:
       await loadData1();
+
       console.log(page1.value, 31313);
       // 加载状态结束
       loading.value = false;
@@ -190,7 +159,6 @@ const onRefresh = () => {
   <van-nav-bar title="全部消息" left-arrow @click-left="router.go(-1)" />
   <van-tabs v-model:active="active" @click-tab="onClickTab">
     <van-tab title="点赞">
-      <!-- 刷新,获取到最新数据 -->
       <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
         <van-list
           v-model:loading="loading"
@@ -222,6 +190,7 @@ const onRefresh = () => {
             v-for="(item, index) in comList"
             :key="index"
             :data="item"
+            :type="active"
             :icon="icon[1]"
             :state1="state[2]"
             :state2="state[3]"
@@ -241,6 +210,7 @@ const onRefresh = () => {
             v-for="(item, index) in starList"
             :key="index"
             :data="item"
+            :type="active"
             :icon="icon[2]"
             :state1="state[4]"
             :state2="state[5]"

@@ -31,18 +31,8 @@ const reportEmail = async () => {
 reportEmail();
 
 const checkEmaill = async () => {
-  try {
-    const { code } = await readEmailNotice({ username: username });
-    if (code === 200) {
-      router.push("./permNotice");
-    } else {
-      console.error("请求失败:", res);
-      showDialog("请求失败");
-    }
-  } catch (error) {
-    console.error("请求出错:", error);
-    showDialog("请求出错");
-  }
+  router.push("./permNotice");
+  const { code } = await readEmailNotice();
 };
 </script>
 <template>
