@@ -46,7 +46,7 @@ const articleList = ref([]);
 
 //获取注册天数
 const registerDay = async () => {
-  const { data } = await getRegisterDay({ username: searchData.username });
+  const { data } = await getRegisterDay();
   registerTime.value = data.plus_time;
 };
 registerDay();
@@ -56,10 +56,14 @@ const onSearch = async () => {
   searchData.article_page = 1;
   searchData.key_word = inputValue.value;
   searchData.topic_name = activeName.value;
-  const {
-    data: { content }
-  } = await searchArticleService(searchData);
-  articleList.value = content;
+  try {
+    const {
+      data: { content }
+    } = await searchArticleService(searchData);
+    articleList.value = content;
+  } catch {
+    articleList.value = [];
+  }
 };
 
 // 创建防抖后的搜索函数
@@ -70,10 +74,14 @@ watch(activeName, async (newValue, oldValue) => {
   searchData.article_page = 1;
   searchData.key_word = inputValue.value;
   searchData.topic_name = newValue;
-  const {
-    data: { content }
-  } = await searchArticleService(searchData);
-  articleList.value = content;
+  try {
+    const {
+      data: { content }
+    } = await searchArticleService(searchData);
+    articleList.value = content;
+  } catch {
+    articleList.value = [];
+  }
 });
 
 //控制列表加载状态的显示和隐藏
@@ -93,11 +101,11 @@ const onLoad = async () => {
   searchData.key_word = inputValue.value;
   searchData.topic_name = activeName.value;
   searchData.article_page += 1;
-  const res = await searchArticleService(searchData);
-  if (res.code == 200) {
+  try {
+    const res = await searchArticleService(searchData);
     loading.value = false;
     articleList.value = [...articleList.value, ...res.data.content];
-  } else {
+  } catch {
     finished.value = true;
   }
 };

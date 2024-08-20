@@ -75,7 +75,7 @@ const onRefresh = () => {
 </template>
 <style scoped>
 .van-list {
-  background-color: #575757;
+  background-color: #f0f1f5;
   overflow: hidden;
 }
 </style>

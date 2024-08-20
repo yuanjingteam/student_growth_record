@@ -118,15 +118,6 @@ type comList = {
   };
 };
 
-// 获取登录页标题
-export function getLoginTitle(data?: Object): Promise<ListResult> {
-  return http.request({
-    url: "/title",
-    method: "get",
-    data: JSON.stringify(data)
-  });
-}
-
 // 获取用户信息
 export function getUserInfo(data?: Object): Promise<userList> {
   return http.request({
@@ -273,7 +264,7 @@ export function getUserThumNotification(data?: Object): Promise<thumbsList> {
 // 获取互动消息收藏列表
 export function getUserStarNotification(data?: Object): Promise<starList> {
   return http.request({
-    url: "/user/get_starList",
+    url: "/message/get_starList",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -282,7 +273,7 @@ export function getUserStarNotification(data?: Object): Promise<starList> {
 // 获取互动消息评论列表
 export function getUserComNotification(data?: Object): Promise<comList> {
   return http.request({
-    url: "/user/get_comList",
+    url: "/report_box/getlist",
     method: "post",
     data: JSON.stringify(data)
   });
