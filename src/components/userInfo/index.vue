@@ -19,7 +19,7 @@ const own = ref(true);
 const route = useRoute();
 
 // 获取当前用户id
-let username = useUserStore.username;
+let username = userStore.username;
 
 // 解析路由获取是否为本人
 let routerName = route.params.username;
@@ -30,7 +30,7 @@ if (routerName) {
   username = routerName;
 }
 
-// 修改头像
+// 展示头像
 const show = ref(false);
 const handleImagePreview = src => {
   showImagePreview({
@@ -84,7 +84,9 @@ const data = ref({
 
 // 获取用户基本信息
 const UerInfo = async () => {
-  const res = await getUserInfo();
+  const res = await getUserInfo({ username: username });
+  console.log(res);
+
   data.value = res.data;
 };
 UerInfo();
@@ -126,7 +128,11 @@ UerInfo();
           </div>
         </div>
 
-        <div v-if="role === '1' && !own" name="ban" class="user_ban">
+        <div
+          v-if="(role === '1' || role === 'class') && !own"
+          name="ban"
+          class="user_ban"
+        >
           <van-popover
             v-if="data.ban"
             v-model:show="showPopover"
@@ -149,10 +155,10 @@ UerInfo();
         </div>
         <!-- 我的个人信息 -->
         <div class="user-info">
-          <div @click="router.push('./userFans')">
+          <div @click="router.push(`./userFans/${username}`)">
             粉丝：{{ data.user_fans }}
           </div>
-          <div @click="router.push('./userAttention')">
+          <div @click="router.push(`./userAttention/${username}`)">
             关注：{{ data.user_concern }}
           </div>
           <div>获赞：{{ data.user_like }}</div>

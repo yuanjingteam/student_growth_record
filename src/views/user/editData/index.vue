@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { changeUserHeadshot } from "@/api/user";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
+import { showDialog } from "vant";
 // 路由
 const router = useRouter();
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
@@ -41,12 +42,8 @@ data.value = userStore.userData;
 const updataUserHeadshot = async () => {
   const formData = new FormData();
   formData.append("file", files.value[0].file);
-  const { code } = await changeUserHeadshot({
-    username: username,
-    user_headshot: formData
-  });
+  const { code } = await changeUserHeadshot(formData);
   if (code == 200) {
-    console.log("yeah");
     userStore.userData.user_headshot = formData;
   }
 };
@@ -114,7 +111,7 @@ const updataUserHeadshot = async () => {
           </van-cell>
           <van-cell is-link @click="router.push('/editData/motto')">
             <template #title>
-              <span class="custom-title">个性签名</span>
+              <span class="custom-title both over">个性签名</span>
             </template>
             <template #value>
               <div class="both over">{{ data.user_motto }}</div>
@@ -122,7 +119,7 @@ const updataUserHeadshot = async () => {
           </van-cell>
           <van-cell is-link @click="router.push('/editData/phone')">
             <template #title>
-              <span class="custom-title">电话</span>
+              <span class="custom-title both">电话</span>
             </template>
             <template #value>
               <div class="both">{{ data.phone_number }}</div>
@@ -130,7 +127,7 @@ const updataUserHeadshot = async () => {
           </van-cell>
           <van-cell is-link @click="router.push('/editData/email')">
             <template #title>
-              <span class="custom-title">电子邮箱</span>
+              <span class="custom-title both">电子邮箱</span>
             </template>
             <template #value>
               <div class="both over">{{ data.user_email }}</div>
@@ -141,7 +138,6 @@ const updataUserHeadshot = async () => {
               <span class="custom-title">入学年份</span>
             </template>
             <template #value>
-              <div class="both">{{ data.user_year }}</div>
               <div class="both">{{ data.user_year }}</div>
             </template>
           </van-cell>
@@ -180,7 +176,7 @@ const updataUserHeadshot = async () => {
   width: 10px;
 }
 .both {
-  float: left;
+  text-align: start;
 }
 .over {
   width: 100%;

@@ -51,9 +51,9 @@ const isDelete = async () => {
     await articleDeleteService();
     loading.value = false; // 关闭 loading 效果
     showSuccessToast("删除成功");
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500); // 1.5秒后刷新页面
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1500); // 1.5秒后刷新页面
   } catch (error) {
     loading.value = false; // 关闭 loading 效果
     console.error("删除文章失败:", error);
@@ -138,28 +138,28 @@ const onSelect = async item => {
             </template>
           </van-popover>
         </div>
-        <div class="info-box">
-          <van-image
-            round
-            width="3rem"
-            height="3rem"
-            :src="article.user_headshot"
-          />
-          <div class="info">
-            <p class="name">{{ article.name }}</p>
-          </div>
-        </div>
+        <div class="article_title">#{{ article.article_topic }}</div>
         <van-text-ellipsis
-          rows="3"
+          rows="4"
           :content="article.article_content"
           @click="gotoArticleDetail()"
         />
+        <div class="info-box">
+          <div>{{ article.post_time }}发布</div>
+        </div>
       </template>
       <template #footer>
-        <button class="btn">
-          <i-icon icon="icon-park:message" />
-          <p class="btn-title">{{ article.article_tags[0] }}</p>
-        </button>
+        <div class="litle_tag">
+          <span>文章话题：</span>
+          <button
+            v-for="(item, index) in article.article_tags"
+            :key="index"
+            class="btn"
+          >
+            <i-icon icon="icon-park:message" />
+            <span class="btn-title">#{{ item }}</span>
+          </button>
+        </div>
         <van-button size="mini" icon="good-job-o">{{
           article.like_amount
         }}</van-button>
@@ -175,6 +175,12 @@ const onSelect = async item => {
 </template>
 
 <style lang="less" scoped>
+.article_title {
+  background-color: rgb(234, 239, 246);
+  width: 80px;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
 .shows {
   position: absolute;
   right: 10px;
@@ -203,40 +209,34 @@ const onSelect = async item => {
 
     .info-box {
       display: flex;
-      margin-bottom: 10px;
-
-      .van-image {
-        margin-right: 15px;
-      }
-
-      .name {
-        font-size: 16px;
-      }
-
-      .grade {
-        font-size: 12px;
-        color: rgba(203, 202, 204, 1);
-      }
+      margin-bottom: 13px;
     }
 
     .van-text-ellipsis {
-      margin-bottom: 20px;
+      margin-bottom: 12px;
+      font-size: 14px;
       font-weight: 500;
     }
-
-    .btn {
-      float: left;
+    .litle_tag {
       display: flex;
-      width: 85px;
-      height: 23px;
-      background-color: rgba(0, 81, 255, 0.1);
-      border-radius: 10px;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10px;
+      justify-content: flex-start;
+      margin-bottom: 8px;
+      span {
+        text-align: start;
+        width: 60px;
+      }
 
-      .btn-title {
-        color: rgba(0, 81, 255);
+      .btn {
+        background-color: rgba(0, 81, 255, 0.1);
+        border-radius: 10px;
+        padding: 0 10px;
+        margin: 0 5px;
+        .btn-title {
+          color: rgba(0, 81, 255);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
 

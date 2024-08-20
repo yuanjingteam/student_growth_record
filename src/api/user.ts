@@ -7,21 +7,21 @@ type ListResult = {
 };
 
 // 用户信息
-type userList = {
-  code: number;
-  data: {
-    username: string;
-    user_headshot: string;
-    user_motto: string;
-    userfans: number;
-    user_concern: number;
-    user_like: number;
-    score: 0;
-    user_class: string;
-    user_Identity: string;
-  };
-  msg: string;
-};
+// type userList = {
+//   code: number;
+//   data: {
+//     username: string;
+//     user_headshot: string;
+//     user_motto: string;
+//     userfans: number;
+//     user_concern: number;
+//     user_like: number;
+//     score: 0;
+//     user_class: string;
+//     user_Identity: string;
+//   };
+//   msg: string;
+// };
 
 // 用户详细资料
 type UserData = {
@@ -119,10 +119,11 @@ type comList = {
 };
 
 // 获取用户信息
-export function getUserInfo(): Promise<userList> {
+export function getUserInfo(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/profiles_get",
-    method: "get"
+    method: "post",
+    data: JSON.stringify(data)
   });
 }
 
@@ -147,7 +148,7 @@ export function userLogin(data?: Object): Promise<ListResult> {
 export function getUserData(data?: Object): Promise<UserData> {
   return http.request({
     url: "/user/userData_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -282,7 +283,7 @@ export function getUserComNotification(data?: Object): Promise<comList> {
 export function getUserClass(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/class_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -291,7 +292,7 @@ export function getUserClass(data?: Object): Promise<ListResult> {
 export function getUserFansList(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/fans_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -300,7 +301,7 @@ export function getUserFansList(data?: Object): Promise<ListResult> {
 export function getAttentionList(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/concern_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -308,7 +309,7 @@ export function getAttentionList(data?: Object): Promise<ListResult> {
 // 改变关注状态
 export function changeAttentionState(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/attention_change",
+    url: "/user/concern_change",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -318,7 +319,7 @@ export function changeAttentionState(data?: Object): Promise<ListResult> {
 export function getUserHistory(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/history_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -327,7 +328,7 @@ export function getUserHistory(data?: Object): Promise<ListResult> {
 export function getUserTracks(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/tracks_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -336,7 +337,7 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
 export function getArticlePublish(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/article_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -344,7 +345,7 @@ export function getArticlePublish(data?: Object): Promise<ListResult> {
 export function getStar(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/star_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }
@@ -371,7 +372,7 @@ export function changeSelfCotnent(data?: Object): Promise<ListResult> {
 export function getUserPoints(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/points_get",
-    method: "get",
+    method: "post",
     data: JSON.stringify(data)
   });
 }

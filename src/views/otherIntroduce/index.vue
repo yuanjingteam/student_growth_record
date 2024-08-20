@@ -1,11 +1,17 @@
 <script setup>
 import { getSelfCotnent } from "@/api/user";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 const other = ref({});
 const router = useRouter();
+
+// 解析路由参数
+const route = useRoute();
+
+// 解析路由获取他人参数
+let username = route.params.username;
 const getOther = async () => {
-  const { data } = await getSelfCotnent();
+  const { data } = await getSelfCotnent({ username: username });
   other.value = data;
 };
 getOther();

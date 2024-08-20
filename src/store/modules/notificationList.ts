@@ -12,6 +12,7 @@ export const useInformation = defineStore(
 
     // 互动通知
     // 点赞,评论,收藏
+    const activeTab = ref(0);
     const thumbs = ref({});
     const star = ref({});
     const comments = ref({});
@@ -19,6 +20,7 @@ export const useInformation = defineStore(
     return {
       system,
       manager,
+      activeTab,
       thumbs,
       star,
       comments
