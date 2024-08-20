@@ -14,7 +14,6 @@ const props = defineProps({
 const checkOne = async () => {
   router.push(`/postDetail/${props.data.article_id}`);
   console.log(props.type, 34280452834);
-  debugger;
   await readUserNotice({
     msg_id: props.data.msg_id,
     type: props.type

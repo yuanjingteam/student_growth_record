@@ -20,7 +20,6 @@ const mystar = async () => {
     });
     userStar.value = [...userStar.value, ...data.star];
   } catch {
-    console.error("获取我的收藏列表失败", error);
     finished.value = true;
   }
 };
