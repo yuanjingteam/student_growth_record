@@ -26,7 +26,15 @@ const activeName = ref("最热");
 const classId = route.params.id;
 //声明当前话题
 const className = ref();
-className.value = classStore.findClassName(classId);
+const classList = classStore.classList;
+const findClassName = classId => {
+  const classOne = classList.value.find(
+    classOne => classOne.class_id === classId
+  );
+  return classOne ? classOne.class_name : null;
+};
+className.value = findClassName(classId);
+console.log(className.value);
 
 //获取文章列表的数据
 const classData = reactive({

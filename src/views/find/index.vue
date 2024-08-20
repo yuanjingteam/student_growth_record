@@ -3,6 +3,7 @@ import { getHotPostService } from "@/api/article";
 import { useClassStore, useTopicStore } from "@/store";
 import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import { getClassListService } from "@/api/class";
 
 const router = useRouter();
 const useClass = useClassStore();
@@ -20,7 +21,20 @@ const classData = reactive({
 });
 
 topicData.topicList = useTopic.topicList;
-classData.classList = useClass.classList;
+
+//获取班级列表
+const getClassList = async () => {
+  const {
+    data: { class_list }
+  } = await getClassListService();
+  console.log(class_list);
+
+  classData.classList = class_list;
+  console.log("班级已更新");
+};
+getClassList();
+console.log(classData.classList);
+console.log(11);
 
 //监听按钮状态  false意为展开  true意为收起
 const btnState = ref(false);
@@ -35,8 +49,6 @@ const getHotPost = async articleCount => {
 getHotPost(3);
 //处理按钮点击事件
 const btnDeal = async state => {
-  console.log(state);
-
   if (state == true) {
     //此时写着是收起
     btnState.value = false;
@@ -114,6 +126,7 @@ function numberToEnglish(number) {
     </van-cell-group>
 
     <topic-card
+      v-if="topicData.topicList"
       :message="topicData.message"
       :list="topicData.topicList.slice(0, 2)"
     />
@@ -137,6 +150,7 @@ function numberToEnglish(number) {
 <style scoped>
 .find-box {
   overflow: hidden;
+  background-color: #f0f1f5;
 
   .van-cell-group {
     margin-top: 10px;

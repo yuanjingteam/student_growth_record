@@ -24,9 +24,16 @@ const activeName = ref("最热");
 
 //获取动态路由的参数
 const topicId = route.params.id;
+
 //声明当前话题
 const topic = ref();
-topic.value = useTopic.findTopic(topicId);
+const topicList = useTopic.topicList;
+
+const findTopic = topicId => {
+  const topic = topicList.find(topic => topic.ID == topicId);
+  return topic ? topic : null;
+};
+topic.value = findTopic(topicId);
 
 //获取文章列表的数据
 const articleData = reactive({

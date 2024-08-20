@@ -294,17 +294,16 @@ const confirmDelete = async () => {
             <van-button
               v-if="!ifCollect"
               size="mini"
-              icon="star-o"
               @click="debouncedCollect(ifCollect)"
-              >{{ post.collect_amount }}</van-button
+              ><van-icon name="star-o" /><span>{{
+                post.collect_amount
+              }}</span></van-button
             >
-            <van-button
-              v-else
-              size="mini"
-              icon="star-o"
-              color="#3371d3"
-              @click="debouncedCollect(ifCollect)"
-              >{{ post.collect_amount + 1 }}</van-button
+            <van-button v-else size="mini" @click="debouncedCollect(ifCollect)"
+              ><van-icon name="star" color="#3371d3" /><span
+                style="color: #3371d3"
+                >{{ post.collect_amount + 1 }}</span
+              ></van-button
             >
             <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
               post.comment_amount
@@ -333,17 +332,16 @@ const confirmDelete = async () => {
             <van-button
               v-if="!ifLike"
               size="mini"
-              icon="good-job-o"
               @click="debouncedLike(ifLike)"
-              >{{ post.like_amount }}</van-button
+              ><van-icon name="good-job-o" /><span>{{
+                post.like_amount
+              }}</span></van-button
             >
-            <van-button
-              v-else
-              size="mini"
-              icon="good-job-o"
-              color="#3371d3"
-              @click="debouncedLike(ifLike)"
-              >{{ post.like_amount + 1 }}</van-button
+            <van-button v-else size="mini" @click="debouncedLike(ifLike)"
+              ><van-icon name="good-job" color="#3371d3" /><span
+                style="color: #3371d3"
+                >{{ post.like_amount + 1 }}</span
+              ></van-button
             >
           </div>
         </template>

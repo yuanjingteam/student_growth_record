@@ -84,7 +84,7 @@ const data = ref({
 
 // 获取用户基本信息
 const UerInfo = async () => {
-  const res = await getUserInfo();
+  const res = await getUserInfo({ username: username });
   data.value = res.data;
 };
 UerInfo();
