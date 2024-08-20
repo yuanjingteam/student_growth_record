@@ -102,7 +102,7 @@ const onSubmit = async () => {
     // 表单校验
     await formRef.value.validate();
     showConfirmDialog({
-      title: "发布文章",
+      title: "修改自述",
       message: "确认要更改个人介绍吗?"
     })
       .then(async () => {
@@ -129,7 +129,7 @@ const changeContent = async () => {
     // 更新
     // 修改成功弹窗
     loading.value = false;
-    content.value = data.result;
+    // content.value = data.result;
     isEditing.value = false;
     isNav.value = true;
     fieldText.value.blur();

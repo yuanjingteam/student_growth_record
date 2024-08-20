@@ -1,15 +1,15 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useInformation } from "@/store";
 import {
   getUserThumNotification,
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
-
 // 路由
 const router = useRouter();
-
+const useInfor = useInformation();
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
 
 // 哪一栏
@@ -51,9 +51,21 @@ const state = [
   "收藏了你的文章",
   "收藏了你的评论"
 ];
+onMounted(() => {
+  // 在组件挂载时,设置 active 为 activeTab
+  active.value = useInfor.activeTab;
+});
 
 const onClickTab = () => {
-  finished.value = false;
+  if (active.value === 0 && thumbList.value.length === 0) {
+    finished.value = false;
+  } else if (active.value === 1 && comList.value.length === 0) {
+    finished.value = false;
+    // 更新 activeTab 的值
+  } else if (active.value === 2 && starList.value.length === 0) {
+    finished.value = false;
+  }
+  useInfor.activeTab = active;
 };
 
 // 获取点赞列表
@@ -112,11 +124,9 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   // 重置刷新的值
-  finished.value = false;
   switch (active.value) {
     case 0:
       await loadData1();
-
       console.log(page1.value, 31313);
       // 加载状态结束
       loading.value = false;
@@ -126,7 +136,6 @@ const onLoad = async () => {
       console.log(page2.value, 31313);
       // 加载状态结束
       loading.value = false;
-
       break;
     case 2:
       await loadData3();
@@ -148,7 +157,10 @@ const onRefresh = () => {
 };
 </script>
 <template>
-  <van-empty v-if="thumbList.length === 0" style="width: 100%; height: 100%">
+  <van-empty
+    v-if="thumbList.length === 0 && comList.length === 0 && starList === 0"
+    style="width: 100%; height: 100%"
+  >
     <template #image>
       <video autoplay loop muted>
         <source src="../../../icons/car.mp4" type="video/mp4" />

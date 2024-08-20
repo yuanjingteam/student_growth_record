@@ -29,34 +29,37 @@ const base = reactive([
 </script>
 
 <template>
-  <van-nav-bar title="通知" @click-left="router.push('/home')" />
-  <div class="main">
-    <!-- 系统通知 -->
-    <system-info :base="base[0]" />
-    <!-- 管理员通知 -->
-    <manager-info :base="base[1]" />
-    <!-- 用户通知 -->
-    <inter-info :base="base[2]" />
+  <to-login v-if="role" />
+  <div v-else>
+    <van-nav-bar title="通知" @click-left="router.push('/home')" />
+    <div class="main">
+      <!-- 系统通知 -->
+      <system-info :base="base[0]" />
+      <!-- 管理员通知 -->
+      <manager-info :base="base[1]" />
+      <!-- 用户通知 -->
+      <inter-info :base="base[2]" />
 
-    <!-- 举报邮箱 -->
-    <perm-notice :base="base[3]" />
+      <!-- 举报邮箱 -->
+      <perm-notice v-if="role === '1'" :base="base[3]" />
 
-    <!-- 管理员发布通知入口 -->
-    <manager-publish v-if="role === '1'" />
-    <div class="svg-bg-container">
-      <div class="svg-bg">
-        <img src="../../icons/svg/planet_3.svg" alt="SVG 背景图" />
+      <!-- 管理员发布通知入口 -->
+      <manager-publish v-if="role === '1'" />
+      <div class="svg-bg-container">
+        <div class="svg-bg">
+          <img src="../../icons/svg/planet_3.svg" alt="SVG 背景图" />
+        </div>
+      </div>
+      <div class="svg-bg-container">
+        <div class="svg-bg">
+          <img src="../../icons/svg/person_2.svg" alt="SVG 背景图" />
+        </div>
       </div>
     </div>
-    <div class="svg-bg-container">
-      <div class="svg-bg">
-        <img src="../../icons/svg/person_2.svg" alt="SVG 背景图" />
-      </div>
-    </div>
+
+    <!-- 发布文章按钮 -->
+    <!-- <article-add /> -->
   </div>
-
-  <!-- 发布文章按钮 -->
-  <!-- <article-add /> -->
 </template>
 <style scoped>
 .main {
