@@ -100,7 +100,7 @@ const onRefresh = () => {
       </template>
     </van-nav-bar>
 
-    <post-more
+    <postdetail-more
       v-if="articleData.article_content.article_text != ''"
       :post="articleData"
       :articleId="articleId"
