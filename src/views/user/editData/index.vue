@@ -68,9 +68,10 @@ baseUserData();
 
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
   <div class="bg">
-    <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
-  </div>
-  <div class="main">
+    <div class="bg">
+      <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+    </div>
+    <div class="main" />
     <van-floating-panel v-model:height="height" :anchors="anchors">
       <div class="camera">
         <i-icon icon="icon-park:camera" />
@@ -175,6 +176,9 @@ baseUserData();
   width: 20px;
   height: 20px;
 }
+/* .van-floating-panel {
+  position: relative;
+} */
 .userImg {
   position: absolute;
   top: -45px;

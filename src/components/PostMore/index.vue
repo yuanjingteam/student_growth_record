@@ -270,7 +270,7 @@ const confirmDelete = async () => {
               </div>
             </div>
             <p class="post-content">{{ post.article_content }}</p>
-            <div v-if="images.length > 0" class="video-box">
+            <div class="video-box">
               <ul class="video">
                 <li
                   v-for="(item, index) in images"

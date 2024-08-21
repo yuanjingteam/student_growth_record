@@ -91,12 +91,7 @@ function numberToEnglish(number) {
       <van-cell>
         <template #title>
           <h1>今日热帖</h1>
-          <van-skeleton
-            v-if="hotPost.length > 0"
-            title
-            :row="3"
-            :loading="loadingTitle"
-          >
+          <van-skeleton title :row="3" :loading="loadingTitle">
             <ul>
               <li v-for="(item, index) in hotPost.value" :key="index">
                 <i-icon :icon="`icon-park:${numberToEnglish(index + 1)}-key`" />
@@ -109,11 +104,7 @@ function numberToEnglish(number) {
               </li>
             </ul>
           </van-skeleton>
-          <van-empty
-            v-else
-            image-size="100"
-            description="今天还没有人发帖子哦"
-          />
+          <van-empty image-size="100" description="今天还没有人发帖子哦" />
         </template>
       </van-cell>
 

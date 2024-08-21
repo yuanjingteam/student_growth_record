@@ -128,12 +128,28 @@ const onLoad = async () => {
     case 0:
       await loadData1();
       console.log(page1.value, 31313);
+      if (thumbList.value.length >= 20) {
+        return;
+      }
+      const data1 = await getUserThumNotification({
+        username: userId
+      });
+
+      thumbList.value = [...thumbList.value, ...data1.data.thumbsUp];
+
       // 加载状态结束
       loading.value = false;
       break;
     case 1:
-      await loadData2();
-      console.log(page2.value, 31313);
+      // 有就不重复请求了
+      if (comList.value.length >= 20) {
+        return;
+      }
+      const data2 = await getUserComNotification({
+        username: userId
+      });
+      comList.value = [...comList.value, ...data2.data.comments];
+
       // 加载状态结束
       loading.value = false;
       break;
