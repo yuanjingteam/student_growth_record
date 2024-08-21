@@ -21,7 +21,6 @@ watch(files, async (newValue, oldValue) => {
   console.log(newValue, oldValue);
   const formData = new FormData();
   formData.append("file", files.value[0].file);
-  formData.append("username", username);
   const { code } = await changeUserHeadshot(formData);
   if (code == 200) {
     userStore.userData.user_headshot = formData;
