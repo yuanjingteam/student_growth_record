@@ -8,6 +8,7 @@ import { useTopicStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
+const token = userStore.token;
 const topicStore = useTopicStore();
 
 const router = useRouter();
@@ -49,7 +50,7 @@ const registerDay = async () => {
   const { data } = await getRegisterDay();
   registerTime.value = data.plus_time;
 };
-registerDay();
+if (token != "") registerDay();
 
 //搜索框事件
 const onSearch = async () => {
@@ -129,7 +130,7 @@ const onRefresh = () => {
   />
   <div class="topShow">
     <p class="title">我的大学生活</p>
-    <span>
+    <span v-if="token != ''">
       <p>与你相遇の第{{ registerTime }}天</p>
       <i-icon icon="icon-park:read-book" class="text-xl" />
     </span>
@@ -179,8 +180,8 @@ const onRefresh = () => {
           @load="onLoad"
         >
           <cell-card
-            v-for="(item, index) in articleList"
-            :key="index"
+            v-for="item in articleList"
+            :key="item.article_id"
             :article="item"
           />
         </van-list>

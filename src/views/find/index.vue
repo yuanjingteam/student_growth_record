@@ -31,10 +31,14 @@ const btnState = ref(false);
 const hotPost = reactive([]);
 const getHotPost = async articleCount => {
   loadingTitle.value = true;
-  const {
-    data: { article_list }
-  } = await getHotPostService({ article_count: articleCount });
-  hotPost.value = article_list;
+  try {
+    const {
+      data: { article_list }
+    } = await getHotPostService({ article_count: articleCount });
+    hotPost.value = article_list;
+  } catch {
+    hotPost.value = [];
+  }
   loadingTitle.value = false;
 };
 getHotPost(3);
@@ -87,7 +91,12 @@ function numberToEnglish(number) {
       <van-cell>
         <template #title>
           <h1>今日热帖</h1>
-          <van-skeleton title :row="3" :loading="loadingTitle">
+          <van-skeleton
+            v-if="hotPost.length > 0"
+            title
+            :row="3"
+            :loading="loadingTitle"
+          >
             <ul>
               <li v-for="(item, index) in hotPost.value" :key="index">
                 <i-icon :icon="`icon-park:${numberToEnglish(index + 1)}-key`" />
@@ -100,6 +109,11 @@ function numberToEnglish(number) {
               </li>
             </ul>
           </van-skeleton>
+          <van-empty
+            v-else
+            image-size="100"
+            description="今天还没有人发帖子哦"
+          />
         </template>
       </van-cell>
 
@@ -153,7 +167,7 @@ function numberToEnglish(number) {
 
     .van-cell {
       padding: 15px 15px;
-      margin-top: 10px;
+      /* margin-top: 10px; */
 
       h1 {
         font-size: 20px;
@@ -188,5 +202,9 @@ function numberToEnglish(number) {
   white-space: nowrap; /* 防止文本换行 */
   overflow: hidden; /* 隐藏溢出内容 */
   text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+}
+
+.van-empty {
+  height: 150px;
 }
 </style>

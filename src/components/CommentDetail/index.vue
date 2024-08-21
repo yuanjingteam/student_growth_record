@@ -3,14 +3,47 @@ import { ref, defineProps, reactive } from "vue";
 import {
   getCommentsSecondService,
   articleCommentService,
-  deleteCommentsService
+  deleteCommentsService,
+  articleUpvoteService
 } from "@/api/article";
 import { useUserStore } from "@/store";
 
 const userStore = useUserStore();
+//获取token
+const token = userStore.token;
 const props = defineProps({
   data: Object
 });
+console.log(props.data);
+
+//是否点赞
+const ifLike = ref(false);
+ifLike.value = props.data.is_like;
+//点赞数量
+const likeAmount = ref();
+likeAmount.value = props.data.comment_like_num;
+
+//点赞文章
+const likeBtn = async state => {
+  if (token != "") {
+    ifLike.value = !state;
+    if (ifLike.value) {
+      likeAmount.value++;
+    } else {
+      likeAmount.value--;
+    }
+    const res = await articleUpvoteService({
+      id: props.data.id,
+      like_type: 1
+    });
+    console.log(res);
+  } else {
+    showToLogin.value = !showToLogin.value;
+  }
+};
+// 创建防抖后的点赞
+const debouncedLike = debounce(likeBtn, 400);
+
 const emit = defineEmits(["refresh"]);
 // 防抖函数
 function debounce(func, delay) {
@@ -26,10 +59,10 @@ const commentSeList = ref();
 const showPopover = ref(false);
 
 //二级评论数据
-const commentSeData = ref({
+const commentSeData = reactive({
   username: userStore.username,
   comment_id: props.data.id,
-  page: 0,
+  page: 1,
   limit: 3
 });
 //控制当前哪个下拉框展开
@@ -141,9 +174,20 @@ const confirmDelete = async () => {
                   icon="comment-o"
                   @click="commentClick"
                 />
-                <van-button size="mini" icon="good-job-o">{{
-                  data.comment_like_num
-                }}</van-button>
+                <van-button
+                  v-if="!ifLike"
+                  size="mini"
+                  @click="debouncedLike(ifLike)"
+                  ><van-icon name="good-job-o" /><span>{{
+                    likeAmount
+                  }}</span></van-button
+                >
+                <van-button v-else size="mini" @click="debouncedLike(ifLike)"
+                  ><van-icon name="good-job" color="#3371d3" /><span
+                    style="color: #3371d3"
+                    >{{ likeAmount }}</span
+                  ></van-button
+                >
               </div>
             </div>
             <van-collapse

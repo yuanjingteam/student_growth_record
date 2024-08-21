@@ -140,8 +140,8 @@ const onRefresh = () => {
           @load="onLoad"
         >
           <post-more
-            v-for="(item, index) in articleList"
-            :key="index"
+            v-for="item in articleList"
+            :key="item.article_id"
             :post="item"
             :articleId="item.article_id"
           />

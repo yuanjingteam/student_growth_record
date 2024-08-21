@@ -31,11 +31,11 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   reportData.page += 1;
-  const res = await getreportEmail(reportData);
-  if (res.code == 200) {
+  try {
+    const res = await getreportEmail(reportData);
     loading.value = false;
     articleBan.value = [...articleBan.value, ...res.data.article_ban];
-  } else {
+  } catch {
     finished.value = true;
   }
 };
