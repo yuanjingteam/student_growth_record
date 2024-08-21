@@ -95,7 +95,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/userFans",
+    path: "/userFans/:username",
     name: "userFans",
     component: () => import("@/views/user/fansList/index.vue"),
     meta: {
@@ -103,7 +103,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/userAttention",
+    path: "/userAttention/:username",
     name: "userAttention",
     component: () => import("@/views/user/attentionList/index.vue"),
     meta: {
@@ -167,7 +167,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/otherInfo/otherIntroduce",
+    path: "/otherInfo/otherIntroduce/:username",
     name: "otherIntroduce",
     component: () => import("@/views/otherIntroduce/index.vue"),
     meta: {

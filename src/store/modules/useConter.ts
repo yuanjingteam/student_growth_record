@@ -45,11 +45,11 @@ export const useUserStore = defineStore(
     // 区分身份信息
     const otherSwitch = user => {
       // 如果是自己的主页就跳自己
-      if (user === username) {
-        router.push(`./user/name=${user.value}`);
+      if (user === username.value) {
+        router.push(`/user`);
       } else {
         // 否则跳他人主页
-        router.push(`./otherInfo/name=${username.value}`);
+        router.push(`./otherInfo/${user}`);
       }
     };
 

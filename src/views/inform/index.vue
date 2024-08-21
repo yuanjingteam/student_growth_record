@@ -10,19 +10,19 @@ console.log(role, 111111);
 // 当前页面默认渲染的数据
 const base = reactive([
   {
-    userImg: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
+    userImg: "src/assets/image/system.png",
     userName: "系统通知"
   },
   {
-    userImg: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
+    userImg: "src/assets/image/manager.png",
     userName: "管理员消息"
   },
   {
-    userImg: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
+    userImg: "src/assets/image/user_1.png",
     userName: "互动消息"
   },
   {
-    userImg: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
+    userImg: "src/assets/image/emaill.png",
     userName: "举报邮箱"
   }
 ]);

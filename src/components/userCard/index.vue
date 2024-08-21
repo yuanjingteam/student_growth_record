@@ -2,7 +2,7 @@
 import { useRouter } from "vue-router";
 import { defineProps, ref } from "vue";
 import { articleDeleteService, articleChangeState } from "@/api/article";
-import { showConfirmDialog, showSuccessToast } from "vant";
+import { showConfirmDialog, showSuccessToast, showToast } from "vant";
 const props = defineProps({
   article: Object,
   state: {
@@ -14,6 +14,7 @@ const props = defineProps({
 const router = useRouter();
 //获取传过来的帖子id
 const articleId = props.article.article_id;
+
 const loading = ref(false); // 关闭 loading 效果
 
 //跳转到帖子详情页
@@ -48,9 +49,9 @@ const isPublic = async () => {
 // 删除
 const isDelete = async () => {
   try {
-    await articleDeleteService();
+    await articleDeleteService({ article_id: 16 });
     loading.value = false; // 关闭 loading 效果
-    showSuccessToast("删除成功");
+    showToast("删除成功");
     // setTimeout(() => {
     //   window.location.reload();
     // }, 1500); // 1.5秒后刷新页面
@@ -122,7 +123,7 @@ const onSelect = async item => {
     <van-card>
       <template #tags>
         <!-- 如果有状态属性,说明可以设置文章状态 -->
-        <div v-if="typeof state !== 'undefined'" class="shows">
+        <div v-if="state !== 'other'" class="shows">
           <van-popover
             v-model:show="showPopover"
             :actions="actions"

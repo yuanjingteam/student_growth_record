@@ -15,7 +15,7 @@ text.value = userStore.userData.phone_number;
 const submitPhone = async () => {
   const { code } = await changeUserPhone({
     username: userStore.username,
-    phone_number: text
+    phone_number: text.value
   });
   if (code == 200) {
     userStore.userData.phone_number = text;

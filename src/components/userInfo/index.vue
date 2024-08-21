@@ -1,33 +1,44 @@
 <script setup>
 import { showImagePreview } from "vant";
 import { ref } from "vue";
-import { getUserInfo, userIsBan, userUnBan } from "@/api/user";
+import {
+  getUserInfo,
+  userIsBan,
+  userUnBan,
+  getConcernOther,
+  changeAttentionState
+} from "@/api/user";
 import { useUserStore } from "@/store";
 import { showToast } from "vant";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 // const userStore = useUserStore();
 const router = useRouter();
 const userStore = useUserStore();
+
+const route = useRoute();
+
 // 判断是否为管理员
 const role = userStore.role;
 
 // 判断是否为本人
 const own = ref(true);
-
-// 解析路由参数
-const route = useRoute();
+const is_concern = ref(true);
 
 // 获取当前用户id
 let username = userStore.username;
+let myname = userStore.username;
+
+let othername = route.params.username;
 
 // 解析路由获取是否为本人
-let routerName = route.params.username;
-if (routerName) {
-  if (routerName !== username) {
+let routername = route.params.username;
+if (routername) {
+  if (routername !== username) {
     own.value = false;
   }
-  username = routerName;
+  username = routername;
 }
 
 // 展示头像
@@ -82,12 +93,29 @@ const data = ref({
   user_class: ""
 });
 
+// 获取关注状态
+const concernGet = async () => {
+  const { data } = await getConcernOther({
+    other_username: othername
+  });
+  is_concern.value = data.is_concern;
+};
+const concernChange = async () => {
+  const { data } = await changeAttentionState({
+    othername: othername
+  });
+  is_concern.value = !is_concern.value;
+};
+
 // 获取用户基本信息
 const UerInfo = async () => {
   const res = await getUserInfo({ username: username });
   data.value = res.data;
 };
 UerInfo();
+if (routername) {
+  concernGet();
+}
 </script>
 
 <template>
@@ -113,8 +141,15 @@ UerInfo();
     <van-cell-group inset>
       <div class="user-header">
         <div v-if="!own" name="other">
+          <div class="my-attention" @click="concernChange">
+            <span v-if="is_concern">已关注</span>
+            <span v-else>关注</span>
+          </div>
           <div class="my-inside" />
-          <div class="change-info" @click="router.push('./otherIntroduce')">
+          <div
+            class="change-info"
+            @click="router.push(`./otherIntroduce/${othername}`)"
+          >
             <button>个人简介</button>
           </div>
         </div>
@@ -132,7 +167,7 @@ UerInfo();
           class="user_ban"
         >
           <van-popover
-            v-if="data.ban"
+            v-if="!data.ban"
             v-model:show="showPopover"
             :actions="actions"
             @select="ban"
@@ -153,10 +188,10 @@ UerInfo();
         </div>
         <!-- 我的个人信息 -->
         <div class="user-info">
-          <div @click="router.push(`./userFans/${username}`)">
+          <div @click="router.push(`/userFans/${username}`)">
             粉丝：{{ data.user_fans }}
           </div>
-          <div @click="router.push(`./userAttention/${username}`)">
+          <div @click="router.push(`/userAttention/${username}`)">
             关注：{{ data.user_concern }}
           </div>
           <div>获赞：{{ data.user_like }}</div>
@@ -187,12 +222,25 @@ UerInfo();
   border-radius: 7px;
   overflow: hidden;
 }
-
+.my-motto {
+  width: 240px;
+}
 .my-motto .i-icon {
   margin-top: 3px;
   float: left;
 }
 
+.my-attention {
+  position: absolute;
+  top: 5px;
+  left: 85px;
+  background-color: #004ae9;
+  border-radius: 5px;
+  padding: 2px 4px;
+  font-size: 12px;
+  color: #ffffff;
+  z-index: 20;
+}
 .my-inside {
   position: absolute;
   top: -4.4vmin;

@@ -20,7 +20,6 @@ const loadData = async () => {
     });
     list.value = [...list.value, ...data.admin_info];
   } catch (error) {
-    // console.error("获取系统通知列表失败", error);
     finished.value = true;
   }
 };

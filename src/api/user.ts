@@ -127,6 +127,15 @@ export function getUserInfo(data?: Object): Promise<ListResult> {
   });
 }
 
+// 用户之间是否相互关注
+export function getConcernOther(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/user/isConcern_get",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
 //获取图形验证码
 export function getVerifyImg(data?: Object): Promise<ListResult> {
   return http.request({
