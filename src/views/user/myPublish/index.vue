@@ -70,7 +70,7 @@ const onRefresh = () => {
             v-for="(item, index) in list"
             :key="index"
             :article="item"
-            :state="item.article_state"
+            :state="item.article_status"
             @click="console.log(1)"
           />
         </van-list>

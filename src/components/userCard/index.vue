@@ -21,10 +21,10 @@ const gotoArticleDetail = () => {
   router.push(`/postDetail/${articleId}`);
 };
 
-const midState = ref();
+const midState = ref(false);
 const midContent = ref();
 midState.value = props.state;
-midContent.value = midState.value === true ? "私密" : "公开";
+midContent.value = midState.value === true ? "公开" : "私密";
 
 const showPopover = ref(false);
 const actions = [{ text: "公开" }, { text: "私密" }, { text: "删除" }];
@@ -32,12 +32,13 @@ const actions = [{ text: "公开" }, { text: "私密" }, { text: "删除" }];
 // 公开
 const isPublic = async () => {
   try {
-    await articleChangeState();
+    await articleChangeState({
+      article_id: articleId,
+      article_status: !midState.value
+    });
     loading.value = false; // 关闭 loading 效果
     showSuccessToast("修改成功!");
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500); // 1.5秒后刷新页面
+    midState.value = !midState.value;
   } catch (error) {
     loading.value = false; // 关闭 loading 效果
     console.error("修改文章状态失败:", error);
@@ -48,7 +49,7 @@ const isPublic = async () => {
 // 删除
 const isDelete = async () => {
   try {
-    await articleDeleteService({ article_id: 16 });
+    await articleDeleteService({ article_id: articleId });
     loading.value = false; // 关闭 loading 效果
     showToast("删除成功");
     // setTimeout(() => {
@@ -72,7 +73,7 @@ const onSelect = async item => {
     })
       .then(async () => {
         loading.value = true; // 开启 loading 效果
-        await isDelete({ articleId: articleId });
+        await isDelete();
       })
       .catch(() => {
         // on cancel
@@ -83,10 +84,7 @@ const onSelect = async item => {
     })
       .then(async () => {
         loading.value = true; // 开启 loading 效果
-        await isPublic({
-          articleId: articleId,
-          article_status: midState
-        });
+        await isPublic();
       })
       .catch(() => {
         // on cancel
@@ -97,10 +95,7 @@ const onSelect = async item => {
     })
       .then(async () => {
         loading.value = true; // 开启 loading 效果
-        await isPublic({
-          articleId: articleId,
-          article_status: midState
-        });
+        await isPublic();
       })
       .catch(() => {
         // on cancel
@@ -223,7 +218,7 @@ const onSelect = async item => {
       margin-bottom: 8px;
       span {
         text-align: start;
-        width: 60px;
+        width: 70px;
       }
 
       .btn {
