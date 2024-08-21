@@ -29,10 +29,21 @@ const loginOut = () => {
       useStore.token = "";
       useStore.username = "";
       useStore.role = 0;
+      userInfo.activeTab = 0;
+      userInfo.userData = ref({});
 
       // 清空本地存储
       localStorage.clear();
       sessionStorage.clear();
+
+      // 删除 Cookie
+      document.cookie.split(";").forEach(function (c) {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+
+      // 重定向到login
       router.push("./login");
     })
     .catch(() => {

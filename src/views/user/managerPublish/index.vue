@@ -44,7 +44,7 @@ const onSubmit = () => {
 
 <template>
   <van-overlay :show="loading" z-index="100">
-    <van-loading vertical>
+    <van-loading vertical style="justify-content: center; height: 100%">
       <template #icon>
         <van-icon name="star-o" size="30" />
       </template>

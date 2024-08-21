@@ -111,6 +111,7 @@ const concernChange = async () => {
 const UerInfo = async () => {
   const res = await getUserInfo({ username: username });
   data.value = res.data;
+  userStore.userData.user_headshot = res.data.user_headshot;
 };
 UerInfo();
 if (routername) {

@@ -7,13 +7,16 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
+const username = userStore.username;
 console.log(role);
 // debugger;
 </script>
 
 <template>
-  <br />
-  <div class="main">
+  <to-login v-if="username === 'passenger'" />
+  <div v-else class="main">
+    <br />
+
     <!-- 个人信息 -->
     <user-info />
 
