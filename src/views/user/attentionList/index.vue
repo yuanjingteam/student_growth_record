@@ -17,6 +17,7 @@ const route = useRoute();
 
 // 获取当前用户id
 let username = userStore.username;
+let myname = userStore.username;
 
 // 解析路由获取是否为本人
 let routerName = route.params.username;
@@ -62,7 +63,6 @@ function throttle(func, delay) {
 
 const changeRole = throttle(async (othername, index) => {
   const { code } = await changeAttentionState({
-    username: username,
     othername: othername
   });
   if (code == 200) {
@@ -74,7 +74,7 @@ const changeRole = throttle(async (othername, index) => {
 </script>
 <template>
   <van-nav-bar
-    title="我的关注"
+    title="关注列表"
     left-text="返回"
     left-arrow
     @click-left="router.go(-1)"
@@ -82,9 +82,9 @@ const changeRole = throttle(async (othername, index) => {
   <van-cell-group>
     <van-cell v-for="(item, index) in attentionList" :key="index">
       <template #title>{{ item.name }}</template>
-      <template #value>
+      <template v-if="item.username !== myname" #value>
         <button :ref="setSmallRef" @click="changeRole(item.username, index)">
-          已关注
+          {{ item.is_concern }}
         </button>
       </template>
       <template #label>

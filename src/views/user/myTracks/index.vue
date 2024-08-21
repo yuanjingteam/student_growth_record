@@ -5,27 +5,28 @@ import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 const userStore = useUserStore();
 const router = useRouter();
-const myname = userStore.userData.name;
+const myname = userStore.username;
 const headshot = userStore.userData.user_headshot;
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-const page = ref(0);
+const page = ref(1);
 const inter_info = ref([]);
 
 const getTracks = async () => {
   try {
     const { data } = await getUserTracks({
       username: myname,
-      page: page.value++
+      page: page.value++,
+      limit: 10
     });
     inter_info.value = [...inter_info.value, ...data.inter_info];
   } catch {
-    console.error("获取我的足迹失败");
     finished.value = true;
+    inter_info.value = [];
   }
 };
-
+getTracks();
 const onLoad = async () => {
   if (refreshing.value) {
     inter_info.value = [];
@@ -50,69 +51,77 @@ const onRefresh = () => {
 };
 </script>
 <template>
-  <van-empty
-    v-if="inter_info.length === 0"
-    image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
-    :image-size="80"
-    description="页面努力加载中。。。"
-    style="width: 100%; height: 100%"
-  />
-  <van-nav-bar
-    title="我的足迹"
-    left-text="返回"
-    left-arrow
-    @click-left="router.go(-1)"
-  />
-  <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-    <van-list
-      v-model:loading="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
+  <van-nav-bar left-text="返回" left-arrow @click-left="router.push('/user')" />
+  <div class="main">
+    <van-pull-refresh
+      v-if="inter_info.length > 0"
+      v-model="refreshing"
+      @refresh="onRefresh"
     >
-      <van-cell-group v-for="item in inter_info" :key="item.article_id" inset>
-        <van-cell center>
-          <template #title>
-            <div v-if="item.i_type == '点赞'">{{ myname }} 赞了文章</div>
-            <div v-else>{{ myname }} 发表了评论</div>
-          </template>
-          <template #label>{{ item.i_time }}</template>
-          <template #icon>
-            <van-image round width="3rem" height="3rem" :src="headshot" />
-          </template>
-        </van-cell>
-        <div v-if="item.i_type == '评论'" class="comment">
-          <van-text-ellipsis
-            rows="2"
-            :content="item.comment_content"
-            expand-text="展开"
-            collapse-text="收起"
-          />
-        </div>
-        <van-cell center>
-          <template #title>
-            <div
-              class="content"
-              @click="router.push(`/postDetail/${item.article_id}`)"
-            >
-              <van-text-ellipsis rows="2" :content="item.article_content" />
-              <p class="remark">
-                <span>{{ item.name }}</span>
-                <span><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span>
-                <span
-                  ><i-icon icon="lets-icons:comment" />{{
-                    item.comment_amount
-                  }}</span
-                >
-              </p>
-            </div>
-          </template>
-        </van-cell>
-      </van-cell-group>
-    </van-list>
-  </van-pull-refresh>
+      <van-list
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <van-cell-group v-for="item in inter_info" :key="item.article_id" inset>
+          <van-cell center>
+            <template #title>
+              <div v-if="item.i_type == '点赞'">{{ myname }} 赞了文章</div>
+              <div v-else>{{ myname }} 发表了评论</div>
+            </template>
+            <template #label>{{ item.i_time }}</template>
+            <template #icon>
+              <van-image round width="3rem" height="3rem" :src="headshot" />
+            </template>
+          </van-cell>
+          <div v-if="item.i_type == '评论'" class="comment">
+            <van-text-ellipsis
+              rows="2"
+              :content="item.comment_content"
+              expand-text="展开"
+              collapse-text="收起"
+            />
+          </div>
+          <van-cell center>
+            <template #title>
+              <div
+                class="content"
+                @click="router.push(`/postDetail/${item.article_id}`)"
+              >
+                <van-text-ellipsis rows="2" :content="item.article_content" />
+                <p class="remark">
+                  <span>{{ item.name }}</span>
+                  <span
+                    ><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span
+                  >
+                  <span
+                    ><i-icon icon="lets-icons:comment" />{{
+                      item.comment_amount
+                    }}</span
+                  >
+                </p>
+              </div>
+            </template>
+          </van-cell>
+        </van-cell-group>
+      </van-list>
+    </van-pull-refresh>
+    <van-empty
+      v-else
+      image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
+      :image-size="80"
+      description="暂无更多"
+      style="width: 100%; height: 100%"
+    />
+  </div>
 </template>
 <style scoped>
+.main {
+  background-color: #f0f1f5;
+  height: 100%;
+}
+
 .comment {
   margin: 0 20px;
 }

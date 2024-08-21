@@ -14,7 +14,7 @@ text.value = userStore.userData.user_email;
 const submitEmail = async () => {
   const { code } = await changeUserEmail({
     username: userStore.username,
-    user_email: text
+    user_email: text.value
   });
   if (code == 200) {
     console.log("yeah");

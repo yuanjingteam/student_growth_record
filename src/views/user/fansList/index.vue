@@ -1,23 +1,21 @@
 <script setup>
 import { getUserFansList, changeAttentionState } from "@/api/user";
 import { useUserStore } from "@/store";
-import { ref, nextTick } from "vue";
+import { ref, nextTick, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { showToast } from "vant";
 
 const router = useRouter();
+const route = useRoute();
 const userStore = useUserStore();
 let username = userStore.username;
+let myname = userStore.username;
 // 解析路由获取是否为本人
-let routerName = route.params.username;
-const own = ref(true);
-// 解析路由参数
-const route = useRoute();
-// 判断是否有路由
-if (routerName) {
-  username = routerName;
-  console.log(username, "他人用户信息");
+let routername = route.params.username;
+if (routername) {
+  username = routername;
 }
+
 const buttonRefs = ref([]);
 const fansList = ref({});
 const getList = async () => {
@@ -55,7 +53,6 @@ function throttle(func, delay) {
 const changeRole = throttle(async (othername, index) => {
   try {
     const { code } = await changeAttentionState({
-      username: username,
       othername: othername
     });
     if (code == 200) {
@@ -70,7 +67,7 @@ const changeRole = throttle(async (othername, index) => {
 </script>
 <template>
   <van-nav-bar
-    title="我的粉丝"
+    title="粉丝列表"
     left-text="返回"
     left-arrow
     @click-left="router.go(-1)"
@@ -78,9 +75,9 @@ const changeRole = throttle(async (othername, index) => {
   <van-cell-group>
     <van-cell v-for="(item, index) in fansList" :key="index" center>
       <template #title>{{ item.name }}</template>
-      <template #value>
+      <template v-if="item.username !== myname" #value>
         <button :ref="setSmallRef" @click="changeRole(item.username, index)">
-          关注
+          {{ item.is_concern }}
         </button>
       </template>
       <template #label>

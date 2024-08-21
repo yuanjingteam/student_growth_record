@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { changeUserHeadshot } from "@/api/user";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
@@ -16,6 +16,17 @@ const height = ref(anchors[0]);
 const userId = userStore.username;
 
 const files = ref([{ url: userStore.userData.user_headshot }]);
+
+watch(files, async (newValue, oldValue) => {
+  console.log(newValue, oldValue);
+  const formData = new FormData();
+  formData.append("file", files.value[0].file);
+  formData.append("username", username);
+  const { code } = await changeUserHeadshot(formData);
+  if (code == 200) {
+    userStore.userData.user_headshot = formData;
+  }
+});
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
 
@@ -37,16 +48,6 @@ const data = ref({
 // 初始化页面
 userStore.baseUserData();
 data.value = userStore.userData;
-
-// 更新头像
-const updataUserHeadshot = async () => {
-  const formData = new FormData();
-  formData.append("file", files.value[0].file);
-  const { code } = await changeUserHeadshot(formData);
-  if (code == 200) {
-    userStore.userData.user_headshot = formData;
-  }
-};
 </script>
 <template>
   <van-overlay :show="loading">
@@ -65,13 +66,15 @@ const updataUserHeadshot = async () => {
   </div>
   <div class="main">
     <van-floating-panel v-model:height="height" :anchors="anchors">
+      <div class="camera">
+        <i-icon icon="icon-park:camera" />
+      </div>
       <div class="userImg">
         <van-uploader
           v-model="files"
           reupload
           max-count="1"
           :deletable="false"
-          @click-reupload="updataUserHeadshot"
         />
       </div>
       <div>
@@ -153,22 +156,25 @@ const updataUserHeadshot = async () => {
   justify-content: center;
   height: 100%;
 }
+.camera {
+  position: absolute;
+  top: 0;
+  left: 200px;
+  z-index: 5;
+  background: rgba(216, 214, 214, 0.9);
+  padding: 5px 5px;
+  border-radius: 20px;
+}
+.camera .i-icon {
+  width: 20px;
+  height: 20px;
+}
 .userImg {
   position: absolute;
   top: -45px;
   left: 146px;
-  z-index: 10;
+  z-index: 4;
 }
-/* .userImg::before {
-  position: absolute;
-  left: 0px;
-  top: 0;
-  width: 80px;
-  height: 80px;
-  content: "";
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 40px;
-} */
 .van-uploader >>> .van-uploader__preview-image {
   border-radius: 50px;
 }
