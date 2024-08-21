@@ -3,7 +3,8 @@ import { ref, watch } from "vue";
 import { changeUserHeadshot, getUserData } from "@/api/user";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
-import { showDialog } from "vant";
+import { showToast } from "vant";
+
 // 路由
 const router = useRouter();
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
@@ -18,15 +19,41 @@ const userId = userStore.username;
 // 取出初始化的数据
 const files = ref([{ url: userStore.userData.user_headshot }]);
 
-watch(files, async (newValue, oldValue) => {
-  console.log(newValue, oldValue);
-  const formData = new FormData();
-  formData.append("file", files.value[0].file);
-  const { code } = await changeUserHeadshot(formData);
-  if (code == 200) {
-    userStore.userData.user_headshot = formData;
+// watch(files, async (newValue, oldValue) => {
+//   try {
+//     console.log(newValue, oldValue);
+//     const formData = new FormData();
+//     formData.append("file", files.value[0].file);
+//     const { code } = await changeUserHeadshot(formData);
+//     userStore.userData.user_headshot = newValue;
+//   } catch {
+//     userStore.userData.user_headshot = oldValue;
+//     files.value[0].file = oldValue.url;
+//     debugger;
+//   }
+// });
+
+const beforeRead = async file => {
+  // 检查文件类型是否为图片
+  // 检查文件大小是否超过 2MB
+  if (file.size > 2 * 1024 * 1024) {
+    showToast("图片大小不能超过 2MB");
+    return false;
   }
-});
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    await changeUserHeadshot(formData);
+    debugger;
+    // userStore.userData.user_headshot =
+    return true;
+  } catch (error) {
+    showToast("修改失败");
+    files = ref([{ url: userStore.userData.user_headshot }]);
+    return false;
+  }
+};
+
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
 
@@ -79,9 +106,11 @@ baseUserData();
       <div class="userImg">
         <van-uploader
           v-model="files"
+          :before-read="beforeRead"
           reupload
           max-count="1"
           :deletable="false"
+          accept="image/*"
         />
       </div>
       <div>

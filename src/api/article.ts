@@ -117,7 +117,7 @@ export function articleDeleteService(data?: object): Promise<ListResult> {
 // 改变文章私密状态
 export function articleChangeState(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/article/state",
+    url: "/article/status",
     method: "post",
     data: JSON.stringify(data)
   });
