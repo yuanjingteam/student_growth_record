@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
-import { changeUserHeadshot } from "@/api/user";
+import { changeUserHeadshot, getUserData } from "@/api/user";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
 import { showDialog } from "vant";
@@ -15,6 +15,7 @@ const height = ref(anchors[0]);
 // 初始化学号
 const userId = userStore.username;
 
+// 取出初始化的数据
 const files = ref([{ url: userStore.userData.user_headshot }]);
 
 watch(files, async (newValue, oldValue) => {
@@ -34,7 +35,7 @@ const loading = ref(false);
 // 初始化数据
 const data = ref({
   name: "",
-  user_headshot: userStore.userData.user_headshot,
+  user_headshot: "",
   user_class: "",
   user_gender: "",
   user_Identity: "",
@@ -45,8 +46,14 @@ const data = ref({
 });
 
 // 初始化页面
-userStore.baseUserData();
-data.value = userStore.userData;
+// 获取用户详细信息
+const baseUserData = async () => {
+  const res = await getUserData({ username: username });
+  // 存储更新用户信息
+  userStore.userData = res.data;
+  data.value = res.data;
+};
+baseUserData();
 </script>
 <template>
   <van-overlay :show="loading">

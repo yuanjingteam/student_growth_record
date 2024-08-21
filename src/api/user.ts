@@ -398,7 +398,7 @@ export function userIsBan(data?: Object): Promise<ListResult> {
 // 解封用户
 export function userUnBan(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/user/Unban",
+    url: "/user/unban",
     method: "post",
     data: JSON.stringify(data)
   });

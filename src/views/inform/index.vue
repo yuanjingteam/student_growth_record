@@ -5,6 +5,7 @@ import { useUserStore } from "@/store";
 const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
+const username = userStore.username;
 console.log(role, 111111);
 
 // 当前页面默认渲染的数据
@@ -29,8 +30,8 @@ const base = reactive([
 </script>
 
 <template>
-  <!-- <to-login v-if="role" /> -->
-  <div>
+  <to-login v-if="username === 'passenger'" />
+  <div v-else>
     <van-nav-bar title="通知" @click-left="router.push('/home')" />
     <div class="main">
       <!-- 系统通知 -->

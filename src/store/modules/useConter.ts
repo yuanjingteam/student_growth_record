@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { getUserData } from "@/api/user";
 import { useRouter } from "vue-router";
 //用户信息管理
 export const useUserStore = defineStore(
@@ -10,11 +9,11 @@ export const useUserStore = defineStore(
     const token = ref("");
     const role = ref("0");
     const router = useRouter();
-
+    // https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg
     // 用户详细资料
     const userData = ref({
       name: "",
-      user_headshot: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
+      user_headshot: "",
       user_class: "",
       user_Identity: "",
       user_gender: "",
@@ -35,13 +34,6 @@ export const useUserStore = defineStore(
       role.value = "0";
     };
 
-    // 获取用户详细信息
-    const baseUserData = async () => {
-      const res = await getUserData({ username: username });
-      userData.value = res.data;
-      console.log(userData);
-    };
-
     // 区分身份信息
     const otherSwitch = user => {
       // 如果是自己的主页就跳自己
@@ -59,7 +51,6 @@ export const useUserStore = defineStore(
       role,
       userData,
       setUserInfo,
-      baseUserData,
       removeUserInfo,
       otherSwitch
     };

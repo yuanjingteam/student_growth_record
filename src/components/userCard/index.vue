@@ -6,7 +6,6 @@ import { showConfirmDialog, showSuccessToast, showToast } from "vant";
 const props = defineProps({
   article: Object,
   state: {
-    type: Boolean,
     // 非必传
     required: false
   }
