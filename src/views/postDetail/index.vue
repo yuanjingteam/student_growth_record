@@ -20,7 +20,7 @@ const articleData = ref({
 //评论详情数据
 const commentData = {
   article_id: articleId,
-  comment_sort: "hot",
+  comment_sort: "new",
   comment_count: 5,
   comment_page: 0,
   username: userStore.username
@@ -34,6 +34,7 @@ const getCommentsList = async () => {
   comment_total.value = data.comment_num;
 };
 getCommentsList();
+
 //获取帖子详情列表
 const getArticleDetailList = async () => {
   const { data } = await getArticlesService({
@@ -67,16 +68,16 @@ const refreshing = ref(false);
 //当用户滚动到底部时会触发加载更多数据的事件
 const onLoad = async () => {
   if (refreshing.value) {
-    commentData.comment_page = 0;
+    commentData.comment_page = 1;
     commentList.value = [];
     refreshing.value = false;
   }
   commentData.comment_page += 1;
-  const res = await getCommentsService(commentData);
-  if (res.code == 200) {
+  try {
+    const res = await getCommentsService(commentData);
     loading.value = false;
     commentList.value = [...commentList.value, ...res.data.comment_list];
-  } else {
+  } catch {
     finished.value = true;
   }
 };

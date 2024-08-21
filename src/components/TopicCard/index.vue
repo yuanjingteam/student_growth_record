@@ -43,7 +43,7 @@ const gotoDetail = id => {
     </van-cell>
     <van-cell v-for="item in list" :key="item">
       <template #title>
-        <div style="display: flex" @click="gotoDetail(item.topic_id)">
+        <div style="display: flex" @click="gotoDetail(item.ID)">
           <i-icon icon="icon-park:message" />
           <div class="content">
             <p class="topic-top">{{ item.topic_name }}</p>

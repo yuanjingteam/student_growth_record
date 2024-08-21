@@ -10,6 +10,7 @@ import {
   articleBanService,
   articleDeleteService
 } from "@/api/article";
+import { showFailToast, showSuccessToast } from "vant";
 
 // import lottie from "lottie-web"; //引入动效库
 // import like_json from "@/assets/json/like.json"; //引入下载的动效json
@@ -18,14 +19,31 @@ const props = defineProps({
   post: Object,
   articleId: Number
 });
-console.log(props.post, 11);
 
 //是否点赞
 const ifLike = ref(false);
 ifLike.value = props.post.is_like;
+//是否收藏
+const ifCollect = ref(false);
+ifCollect.value = props.post.is_collect;
+//点赞数量
+const likeAmount = ref();
+likeAmount.value = props.post.like_amount;
+//收藏数量
+const collectAmount = ref();
+collectAmount.value = props.post.collect_amount;
+
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
+//获取当前token
+let token = userStore.token;
+console.log(token);
+
+//未登录去登录弹窗
+const showToLogin = ref(false);
+
+const loadingArticleDetail = ref(false);
 
 // const like = ref(null); //获取dom
 
@@ -48,8 +66,6 @@ function debounce(func, delay) {
 //是否展示评论输入框
 const showCommentTable = ref(false);
 
-//是否收藏
-const ifCollect = ref(false);
 //点击三个点是否展示选择框
 const showPopover = ref(false);
 //选择框内容
@@ -70,13 +86,18 @@ const confirmBan = async () => {
     article_ban: true
   });
   console.log(res);
+  showSuccessToast("已成功封禁该文章");
   router.push("/demo");
 };
 
 //选中选择框后
 const select = (action, index) => {
   if (action.text == "举报") {
-    showReport.value = !showReport.value;
+    if (token != "") {
+      showReport.value = !showReport.value;
+    } else {
+      showToLogin.value = !showToLogin.value;
+    }
   } else if (action.text == "封禁") {
     showBan.value = !showBan.value;
   } else if (action.text == "删除") {
@@ -90,30 +111,52 @@ const report = ref();
 
 //点赞文章
 const likeBtn = async state => {
-  ifLike.value = !state;
-  const res = await articleUpvoteService({
-    id: props.articleId,
-    like_type: 0
-  });
-  console.log(res);
+  if (token != "") {
+    ifLike.value = !state;
+    if (ifLike.value) {
+      likeAmount.value++;
+    } else {
+      likeAmount.value--;
+    }
+    const res = await articleUpvoteService({
+      id: props.articleId,
+      like_type: 0
+    });
+    console.log(res);
+  } else {
+    showToLogin.value = !showToLogin.value;
+  }
 };
 // 创建防抖后的点赞
 const debouncedLike = debounce(likeBtn, 400);
 
 //收藏文章
 const collectBtn = async state => {
-  ifCollect.value = !state;
-  const res = await articleCollectService({
-    article_id: props.articleId
-  });
-  console.log(res);
+  if (token != "") {
+    ifCollect.value = !state;
+    if (ifCollect.value) {
+      collectAmount.value++;
+    } else {
+      collectAmount.value--;
+    }
+    const res = await articleCollectService({
+      article_id: props.articleId
+    });
+    console.log(res);
+  } else {
+    showToLogin.value = !showToLogin.value;
+  }
 };
 // 创建防抖后的收藏
 const debouncedCollect = debounce(collectBtn, 400);
 //评论文章
 const commentBtn = () => {
-  comment.value = "";
-  showCommentTable.value = !showCommentTable.value;
+  if (token != "") {
+    comment.value = "";
+    showCommentTable.value = !showCommentTable.value;
+  } else {
+    showToLogin.value = !showToLogin.value;
+  }
 };
 //评论校验
 const commentRef = ref({});
@@ -128,17 +171,24 @@ const submitComment = async () => {
     comment_content: comment.value
   });
   console.log(res);
+  showSuccessToast("发布评论成功");
   comment.value = "";
   showCommentTable.value = !showCommentTable.value;
 };
 //提交举报理由
 const submitReport = async () => {
   await reportRef.value.validate();
-  const res = await articleReportService({
-    article_id: props.articleId,
-    report_msg: report.value
-  });
-  console.log(res);
+  try {
+    const res = await articleReportService({
+      article_id: props.articleId,
+      report_msg: report.value
+    });
+    showSuccessToast("举报信息提交成功");
+    console.log(res);
+  } catch {
+    showFailToast("已经举报过该文章");
+  }
+
   report.value = "";
   showReport.value = !showReport.value;
 };
@@ -150,6 +200,8 @@ const confirmDelete = async () => {
     article_id: props.articleId
   });
   console.log(res);
+  showSuccessToast("已成功删除该文章");
+
   router.push("/demo");
 };
 </script>
@@ -206,13 +258,13 @@ const confirmDelete = async () => {
             size="mini"
             @click="debouncedCollect(ifCollect)"
             ><van-icon name="star-o" /><span>{{
-              post.collect_amount
+              collectAmount
             }}</span></van-button
           >
           <van-button v-else size="mini" @click="debouncedCollect(ifCollect)"
             ><van-icon name="star" color="#3371d3" /><span
               style="color: #3371d3"
-              >{{ post.collect_amount + 1 }}</span
+              >{{ collectAmount }}</span
             ></van-button
           >
           <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
@@ -241,13 +293,13 @@ const confirmDelete = async () => {
           </van-action-sheet>
           <van-button v-if="!ifLike" size="mini" @click="debouncedLike(ifLike)"
             ><van-icon name="good-job-o" /><span>{{
-              post.like_amount
+              likeAmount
             }}</span></van-button
           >
           <van-button v-else size="mini" @click="debouncedLike(ifLike)"
             ><van-icon name="good-job" color="#3371d3" /><span
               style="color: #3371d3"
-              >{{ post.like_amount + 1 }}</span
+              >{{ likeAmount }}</span
             ></van-button
           >
         </div>
@@ -294,17 +346,16 @@ const confirmDelete = async () => {
             <van-button
               v-if="!ifCollect"
               size="mini"
-              icon="star-o"
               @click="debouncedCollect(ifCollect)"
-              >{{ post.collect_amount }}</van-button
+              ><van-icon name="star-o" /><span>{{
+                collectAmount
+              }}</span></van-button
             >
-            <van-button
-              v-else
-              size="mini"
-              icon="star-o"
-              color="#3371d3"
-              @click="debouncedCollect(ifCollect)"
-              >{{ post.collect_amount + 1 }}</van-button
+            <van-button v-else size="mini" @click="debouncedCollect(ifCollect)"
+              ><van-icon name="star" color="#3371d3" /><span
+                style="color: #3371d3"
+                >{{ collectAmount }}</span
+              ></van-button
             >
             <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
               post.comment_amount
@@ -333,17 +384,16 @@ const confirmDelete = async () => {
             <van-button
               v-if="!ifLike"
               size="mini"
-              icon="good-job-o"
               @click="debouncedLike(ifLike)"
-              >{{ post.like_amount }}</van-button
+              ><van-icon name="good-job-o" /><span>{{
+                likeAmount
+              }}</span></van-button
             >
-            <van-button
-              v-else
-              size="mini"
-              icon="good-job-o"
-              color="#3371d3"
-              @click="debouncedLike(ifLike)"
-              >{{ post.like_amount + 1 }}</van-button
+            <van-button v-else size="mini" @click="debouncedLike(ifLike)"
+              ><van-icon name="good-job" color="#3371d3" /><span
+                style="color: #3371d3"
+                >{{ likeAmount }}</span
+              ></van-button
             >
           </div>
         </template>
@@ -375,6 +425,7 @@ const confirmDelete = async () => {
       提交
     </van-button>
   </van-popup>
+
   <van-dialog
     v-model:show="showBan"
     title="提示"
@@ -390,6 +441,16 @@ const confirmDelete = async () => {
     show-cancel-button
     showConfirmButton
     @confirm="confirmDelete"
+  />
+  <van-dialog
+    v-model:show="showToLogin"
+    title="提示"
+    message="请先登录才能进行该操作哦"
+    confirmButtonText="去登录"
+    cancelButtonText="再逛逛"
+    show-cancel-button
+    showConfirmButton
+    @confirm="router.push('/login')"
   />
 </template>
 
