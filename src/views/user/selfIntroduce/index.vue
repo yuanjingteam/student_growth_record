@@ -123,15 +123,15 @@ const changeContent = async () => {
   try {
     const { data } = await changeSelfCotnent({
       username: username,
-      self_content111: content.value
+      self_content: content.value
     });
     // 更新
     // 修改成功弹窗
     loading.value = false;
-    // content.value = data.result;
     isEditing.value = false;
     isNav.value = true;
     fieldText.value.blur();
+    showToast("修改成功");
   } catch {
     // 修改失败弹窗
     loading.value = false;

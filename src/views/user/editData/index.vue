@@ -36,10 +36,10 @@ const files = ref([{ url: userStore.userData.user_headshot }]);
 const beforeRead = async (file, event) => {
   // 检查文件类型是否为图片
   // 检查文件大小是否超过 2MB
-  if (file.size > 2 * 1024 * 1024) {
-    showToast("图片大小不能超过 2MB");
-    return false;
-  }
+  // if (file.size > 2 * 1024 * 1024) {
+  //   showToast("图片大小不能超过 2MB");
+  //   return false;
+  // }
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -93,96 +93,94 @@ baseUserData();
 
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
   <div class="bg">
-    <div class="bg">
-      <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
-    </div>
-    <div class="main" />
-    <van-floating-panel v-model:height="height" :anchors="anchors">
-      <div class="camera">
-        <i-icon icon="icon-park:camera" />
-      </div>
-      <div class="userImg">
-        <van-uploader
-          v-model="files"
-          :before-read="beforeRead"
-          reupload
-          max-count="1"
-          :deletable="false"
-          accept="image/*"
-        />
-      </div>
-      <div>
-        <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
-        <van-cell-group inset>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">学号</span>
-            </template>
-            <template #value>
-              <div class="both">{{ userId }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">姓名</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.name }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">性别</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.user_gender }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">班级</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.user_class }}</div>
-            </template>
-          </van-cell>
-          <van-cell is-link @click="router.push('/editData/motto')">
-            <template #title>
-              <span class="custom-title both over">个性签名</span>
-            </template>
-            <template #value>
-              <div class="both over">{{ data.user_motto }}</div>
-            </template>
-          </van-cell>
-          <van-cell is-link @click="router.push('/editData/phone')">
-            <template #title>
-              <span class="custom-title both">电话</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.phone_number }}</div>
-            </template>
-          </van-cell>
-          <van-cell is-link @click="router.push('/editData/email')">
-            <template #title>
-              <span class="custom-title both">电子邮箱</span>
-            </template>
-            <template #value>
-              <div class="both over">{{ data.user_email }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">入学年份</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.user_year }}</div>
-            </template>
-          </van-cell>
-        </van-cell-group>
-      </div>
-      <!-- <template #header> dada </template> -->
-    </van-floating-panel>
+    <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
   </div>
+  <div class="main" />
+  <van-floating-panel v-model:height="height" :anchors="anchors">
+    <div class="camera">
+      <i-icon icon="icon-park:camera" />
+    </div>
+    <div class="userImg">
+      <van-uploader
+        v-model="files"
+        :before-read="beforeRead"
+        reupload
+        max-count="1"
+        :deletable="false"
+        accept="image/*"
+      />
+    </div>
+    <div>
+      <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
+      <van-cell-group inset>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">学号</span>
+          </template>
+          <template #value>
+            <div class="both">{{ userId }}</div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">姓名</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.name }}</div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">性别</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.user_gender }}</div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">班级</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.user_class }}</div>
+          </template>
+        </van-cell>
+        <van-cell is-link @click="router.push('/editData/motto')">
+          <template #title>
+            <span class="custom-title both over">个性签名</span>
+          </template>
+          <template #value>
+            <div class="both over">{{ data.user_motto }}</div>
+          </template>
+        </van-cell>
+        <van-cell is-link @click="router.push('/editData/phone')">
+          <template #title>
+            <span class="custom-title both">电话</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.phone_number }}</div>
+          </template>
+        </van-cell>
+        <van-cell is-link @click="router.push('/editData/email')">
+          <template #title>
+            <span class="custom-title both">电子邮箱</span>
+          </template>
+          <template #value>
+            <div class="both over">{{ data.user_email }}</div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">入学年份</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.user_year }}</div>
+          </template>
+        </van-cell>
+      </van-cell-group>
+    </div>
+    <!-- <template #header> dada </template> -->
+  </van-floating-panel>
 </template>
 
 <style scoped>

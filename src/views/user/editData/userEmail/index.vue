@@ -12,13 +12,15 @@ const formRef = ref();
 text.value = userStore.userData.user_email;
 // 更新用户邮箱
 const submitEmail = async () => {
-  const { code } = await changeUserEmail({
-    username: userStore.username,
-    user_email: text.value
-  });
-  if (code == 200) {
-    console.log("yeah");
+  try {
+    const { code } = await changeUserEmail({
+      username: userStore.username,
+      user_email: text.value
+    });
     userStore.userData.user_email = text;
+    showToast("修改成功");
+  } catch {
+    showToast("修改失败，请稍后重试");
   }
 };
 
