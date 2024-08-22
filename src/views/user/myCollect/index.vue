@@ -19,6 +19,9 @@ const mystar = async () => {
       page: page.value++
     });
     userStar.value = [...userStar.value, ...data.star];
+    if (data.star.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
   }

@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import { reactive, ref } from "vue";
 import { getreportEmail } from "@/api/user";
+import { showToast } from "vant";
 const router = useRouter();
 //举报数据
 const reportData = reactive({
@@ -35,7 +36,11 @@ const onLoad = async () => {
     const res = await getreportEmail(reportData);
     loading.value = false;
     articleBan.value = [...articleBan.value, ...res.data.article_ban];
-  } catch {
+    if (res.data.article_ban.length === 0) {
+      finished.value = true;
+    }
+  } catch (error) {
+    showToast("获取失败,稍后重试");
     finished.value = true;
   }
 };

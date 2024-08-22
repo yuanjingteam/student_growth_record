@@ -76,6 +76,9 @@ const loadData1 = async () => {
       limit: 10
     });
     thumbList.value = [...thumbList.value, ...data.thumbsUp];
+    if (data.thumbsUp.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
   }
@@ -88,6 +91,9 @@ const loadData2 = async () => {
       limit: 10
     });
     comList.value = [...comList.value, ...data.comments];
+    if (data.comments.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
   }
@@ -101,6 +107,9 @@ const loadData3 = async () => {
       limit: 10
     });
     starList.value = [...starList.value, ...data.star];
+    if (data.star.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
   }
@@ -160,15 +169,18 @@ loadData2();
 loadData3();
 </script>
 <template>
-  <van-empty v-if="!finished" style="width: 100%; height: 100%">
+  <!-- <van-empty
+    v-if="!finished && thumbList.length === 0"
+    style="width: 100%; height: 100%"
+  >
     <template #image>
       <video autoplay loop muted>
         <source src="../../../icons/car.mp4" type="video/mp4" />
       </video>
     </template>
     <template #description> 页面努力加载中... </template>
-  </van-empty>
-  <div v-else>
+  </van-empty> -->
+  <div>
     <van-nav-bar title="全部消息" left-arrow @click-left="router.go(-1)" />
     <van-tabs v-model:active="active" @click-tab="onClickTab">
       <van-tab title="点赞">

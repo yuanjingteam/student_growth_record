@@ -2,6 +2,7 @@
 import { onMounted, reactive, ref, watch } from "vue";
 import CellCard from "@/components/CellCard/index.vue";
 import { getRegisterDay } from "@/api/topic";
+import { showDialog } from "vant";
 
 import { searchArticleService } from "@/api/article";
 import { useTopicStore, useUserStore } from "@/store";
@@ -117,7 +118,13 @@ const onLoad = async () => {
     finished.value = true;
   }
 };
-
+const upto = () => {
+  if (userStore.username === "passenger") {
+    showDialog({ message: "使用该功能要先去登录哦~" });
+  } else {
+    router.push("/publish");
+  }
+};
 // 监听了刷新事件;
 const onRefresh = () => {
   // 清空列表数据
@@ -133,7 +140,7 @@ const onRefresh = () => {
     icon="plus"
     axis="lock"
     :style="{ top: '-180px', left: '-5px' }"
-    @click="router.push('/publish')"
+    @click="upto"
   />
   <div class="topShow">
     <p class="title">我的大学生活</p>

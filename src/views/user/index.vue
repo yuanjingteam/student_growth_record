@@ -33,9 +33,9 @@ const username = userStore.username;
           <p><i-icon icon="mingcute:classify-2-fill" /></p>
           我的班级
         </div>
-        <div class="op-icon" @click="router.push('./myTracks')">
+        <div class="op-icon" @click="router.push('./myCollect')">
           <p><i-icon icon="hugeicons:touch-interaction-04" /></p>
-          我的足迹
+          我的收藏
         </div>
         <div class="op-icon" @click="router.push('./integralConverter')">
           <p><i-icon icon="mdi:account-convert" /></p>
@@ -58,7 +58,7 @@ const username = userStore.username;
         is-link
         @click="router.push('./myPublish')"
       />
-      <van-cell title="我的收藏" is-link @click="router.push('./myCollect')" />
+      <!-- <van-cell title="我的足迹" is-link @click="router.push('./myTracks')" /> -->
       <van-cell
         title="个人介绍"
         is-link

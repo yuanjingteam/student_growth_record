@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { getManagerNotification } from "@/api/user";
+import { showToast } from "vant";
 const router = useRouter();
 
 const loading = ref(false);
@@ -17,9 +18,16 @@ const loadData = async () => {
       page: page.value++,
       limit: 10
     });
+    if (data.manager_info.length === 0) {
+      finished.value = true;
+    }
     list.value = [...list.value, ...data.manager_info];
+    if (data.manager_info.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
+    showToast("获取异常,请稍后重试");
   }
 };
 const onLoad = async () => {

@@ -19,6 +19,9 @@ const loadData = async () => {
       limit: 10
     });
     list.value = [...list.value, ...data.admin_info];
+    if (data.admin_info.length === 0) {
+      finished.value = true;
+    }
   } catch (error) {
     finished.value = true;
   }

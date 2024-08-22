@@ -20,6 +20,9 @@ const loadData = async () => {
       limit: 10
     });
     list.value = [...list.value, ...data.content];
+    if (data.content.length == 0) {
+      finished.value = true;
+    }
   } catch (error) {
     finished.value = true;
   }
