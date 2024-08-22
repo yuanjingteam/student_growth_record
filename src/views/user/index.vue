@@ -16,7 +16,6 @@ console.log(role);
   <to-login v-if="username === 'passenger'" />
   <div v-else class="main">
     <br />
-
     <!-- 个人信息 -->
     <user-info />
 
@@ -50,7 +49,7 @@ console.log(role);
     <!-- 我的内容 -->
     <van-cell-group inset class="end">
       <van-cell
-        v-if="role === 'superman'"
+        v-if="role === 'superman' || 'college'"
         title="发布通知"
         is-link
         @click="router.push('./managerPublish')"

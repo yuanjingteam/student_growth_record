@@ -162,11 +162,7 @@ if (routername) {
           </div>
         </div>
 
-        <div
-          v-if="(role === '1' || role === 'class') && !own"
-          name="ban"
-          class="user_ban"
-        >
+        <div v-if="role !== 'user' && !own" name="ban" class="user_ban">
           <van-popover
             v-if="!data.ban"
             v-model:show="showPopover"

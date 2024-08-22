@@ -42,8 +42,9 @@ const base = reactive([
       <inter-info :base="base[2]" />
 
       <!-- 举报邮箱 -->
-      <perm-notice :base="base[3]" />
-
+      <div v-if="role !== 'user'">
+        <perm-notice :base="base[3]" />
+      </div>
       <div class="svg-bg-container">
         <div class="svg-bg">
           <img src="../../icons/svg/planet_3.svg" alt="SVG 背景图" />
