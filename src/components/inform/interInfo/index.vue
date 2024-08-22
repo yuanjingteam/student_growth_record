@@ -38,9 +38,7 @@ const userNotice = async () => {
 
     // 计算总的未读消息数量
     unread_count.value = thumUnreadCount + comUnreadCount + starUnreadCount;
-  } catch (error) {
-    console.error("Error fetching notification counts:", error);
-  }
+  } catch {}
 };
 userNotice();
 </script>

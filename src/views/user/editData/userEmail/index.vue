@@ -19,6 +19,7 @@ const submitEmail = async () => {
     });
     userStore.userData.user_email = text;
     showToast("修改成功");
+    router.go(-1);
   } catch {
     showToast("修改失败，请稍后重试");
   }
@@ -49,15 +50,8 @@ const onClickRight = async () => {
     message: "确认更改个人邮箱吗"
   })
     .then(async () => {
-      try {
-        await submitEmail();
-        // 如果 submitEmail() 函数执行成功
-        router.go(-1);
-      } catch (error) {
-        // 如果 submitEmail() 函数执行过程中出现异常
-        console.error("提交邮箱信息失败:", error);
-        showToast("提交邮箱信息失败,请稍后重试");
-      }
+      await submitEmail();
+      // 如果 submitEmail() 函数执行成功
     })
     .catch(() => {});
 };

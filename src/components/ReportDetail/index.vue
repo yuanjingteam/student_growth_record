@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { articleBanService, articleIgnoreService } from "@/api/article";
+import { showToast } from "vant";
 const props = defineProps({
   articleBan: Object
 });
@@ -27,19 +28,27 @@ const dealReport = msg => {
     ban.value = true;
   }
 };
+
+// 已处理帖子
+const checkEmaill = async () => {
+  await readEmailNotice({ article_id: articleBan.article_id });
+};
 //处理帖子
 const confirmDeal = async () => {
-  if (ban.value == true) {
-    const res = await articleBanService({
-      article_id: articleId,
-      article_ban: true
-    });
-    console.log(res);
-  } else {
-    const res = await articleIgnoreService({ article_id: articleId });
-    console.log(res);
+  try {
+    if (ban.value == true) {
+      const res = await articleBanService({
+        article_id: articleId,
+        article_ban: true
+      });
+    } else {
+      const res = await articleIgnoreService({ article_id: articleId });
+    }
+    checkEmaill();
+    emit("report");
+  } catch {
+    showToast("修改失败,请稍后重试");
   }
-  emit("report");
 };
 </script>
 

@@ -89,6 +89,7 @@ const refresh = () => {
       />
     </div>
   </div>
+  <van-back-top bottom="100px" />
 </template>
 
 <style scoped>

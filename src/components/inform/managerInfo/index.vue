@@ -23,11 +23,13 @@ const data = ref({
 
 // 获取管理员消息
 const managerNotification = async () => {
-  const res = await getManagerNotification({
-    page: 1,
-    limit: 1
-  });
-  data.value = res.data;
+  try {
+    const res = await getManagerNotification({
+      page: 1,
+      limit: 1
+    });
+    data.value = res.data;
+  } catch {}
 };
 managerNotification();
 // 是否已读

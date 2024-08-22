@@ -44,8 +44,6 @@ const base = reactive([
       <!-- 举报邮箱 -->
       <perm-notice :base="base[3]" />
 
-      <!-- 管理员发布通知入口 -->
-      <manager-publish v-if="role === '1'" />
       <div class="svg-bg-container">
         <div class="svg-bg">
           <img src="../../icons/svg/planet_3.svg" alt="SVG 背景图" />

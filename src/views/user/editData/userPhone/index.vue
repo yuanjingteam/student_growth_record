@@ -19,9 +19,10 @@ const submitPhone = async () => {
       phone_number: text.value
     });
     userStore.userData.phone_number = text;
-    showToast("dawdadw");
+    showToast("修改成功");
+    router.go(-1);
   } catch {
-    showToast("dawdadw");
+    showToast("修改失败,请稍后重试");
   }
 };
 
@@ -44,7 +45,6 @@ const onClickRight = async () => {
     .then(async () => {
       // 更新电话
       await submitPhone();
-      router.go(-1);
     })
     .catch(() => {
       // on cancel

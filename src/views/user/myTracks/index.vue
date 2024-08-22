@@ -115,6 +115,7 @@ const onRefresh = () => {
       style="width: 100%; height: 100%"
     />
   </div>
+  <van-back-top bottom="100px" />
 </template>
 <style scoped>
 .main {
