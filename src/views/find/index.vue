@@ -3,11 +3,12 @@ import { getHotPostService } from "@/api/article";
 import { useClassStore, useTopicStore } from "@/store";
 import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { getClassListService } from "@/api/class";
 
 const router = useRouter();
 const useClass = useClassStore();
 const useTopic = useTopicStore();
+//是否加载骨架屏
+const loadingTitle = ref(false);
 
 //话题数据
 const topicData = reactive({
@@ -21,34 +22,30 @@ const classData = reactive({
 });
 
 topicData.topicList = useTopic.topicList;
-
-//获取班级列表
-const getClassList = async () => {
-  const {
-    data: { class_list }
-  } = await getClassListService();
-  console.log(class_list);
-
-  classData.classList = class_list;
-  console.log("班级已更新");
-};
-getClassList();
-console.log(classData.classList);
-console.log(11);
+useClass.getClassList();
+classData.classList = useClass.classList;
 
 //监听按钮状态  false意为展开  true意为收起
 const btnState = ref(false);
 //热帖数据
 const hotPost = reactive([]);
 const getHotPost = async articleCount => {
-  const {
-    data: { article_list }
-  } = await getHotPostService({ article_count: articleCount });
-  hotPost.value = article_list;
+  loadingTitle.value = true;
+  try {
+    const {
+      data: { article_list }
+    } = await getHotPostService({ article_count: articleCount });
+    hotPost.value = article_list;
+  } catch {
+    hotPost.value = [];
+  }
+  loadingTitle.value = false;
 };
 getHotPost(3);
 //处理按钮点击事件
 const btnDeal = async state => {
+  console.log(state);
+
   if (state == true) {
     //此时写着是收起
     btnState.value = false;
@@ -94,19 +91,27 @@ function numberToEnglish(number) {
       <van-cell>
         <template #title>
           <h1>今日热帖</h1>
-          <ul>
-            <li v-for="(item, index) in hotPost.value" :key="index">
-              <i-icon :icon="`icon-park:${numberToEnglish(index + 1)}-key`" />
-              <p
-                class="hotTitle"
-                @click="router.push(`/postDetail/${item.article_id}`)"
-              >
-                {{ item.article_title }}
-              </p>
-            </li>
-          </ul>
+          <van-skeleton title :row="3" :loading="loadingTitle">
+            <ul v-if="hotPost.value.length > 0">
+              <li v-for="(item, index) in hotPost.value" :key="index">
+                <i-icon :icon="`icon-park:${numberToEnglish(index + 1)}-key`" />
+                <p
+                  class="hotTitle"
+                  @click="router.push(`/postDetail/${item.article_id}`)"
+                >
+                  {{ item.article_title }}
+                </p>
+              </li>
+            </ul>
+            <van-empty
+              v-else
+              image-size="100"
+              description="今天还没有人发帖子哦"
+            />
+          </van-skeleton>
         </template>
       </van-cell>
+
       <van-button
         v-if="btnState"
         icon="arrow-up"
@@ -157,7 +162,7 @@ function numberToEnglish(number) {
 
     .van-cell {
       padding: 15px 15px;
-      margin-top: 10px;
+      /* margin-top: 10px; */
 
       h1 {
         font-size: 20px;
@@ -192,5 +197,9 @@ function numberToEnglish(number) {
   white-space: nowrap; /* 防止文本换行 */
   overflow: hidden; /* 隐藏溢出内容 */
   text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+}
+
+.van-empty {
+  height: 150px;
 }
 </style>

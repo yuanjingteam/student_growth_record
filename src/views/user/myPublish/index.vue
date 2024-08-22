@@ -4,25 +4,27 @@ import { getArticlePublish } from "@/api/user";
 import { ref } from "vue";
 import { useUserStore } from "@/store";
 const router = useRouter();
-const page = ref(0);
+const useStore = useUserStore();
+const username = useStore.username;
+const page = ref(1);
 const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-
 // 获取我的文章
 const loadData = async () => {
   try {
     const { data } = await getArticlePublish({
+      username: username,
       page: page.value++,
       limit: 10
     });
     list.value = [...list.value, ...data.content];
   } catch (error) {
-    console.error("获取我发布的文章失败");
     finished.value = true;
   }
 };
+loadData();
 const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];
@@ -45,13 +47,6 @@ const onRefresh = () => {
 </script>
 
 <template>
-  <van-empty
-    v-if="list.length === 0"
-    image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
-    :image-size="80"
-    description="页面努力加载中。。。"
-    style="width: 100%; height: 100%"
-  />
   <div class="main">
     <van-nav-bar
       left-text="返回"
@@ -60,7 +55,11 @@ const onRefresh = () => {
     />
     <div class="my-w">
       <user-info />
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-pull-refresh
+        v-if="list.length > 0"
+        v-model="refreshing"
+        @refresh="onRefresh"
+      >
         <van-list
           v-model:loading="loading"
           :finished="finished"
@@ -76,6 +75,13 @@ const onRefresh = () => {
           />
         </van-list>
       </van-pull-refresh>
+      <van-empty
+        v-else
+        image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
+        :image-size="80"
+        description="您还没有发布文章哦"
+        style="width: 100%; height: 100%"
+      />
     </div>
   </div>
 </template>

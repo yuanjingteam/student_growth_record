@@ -1,23 +1,29 @@
 <script setup>
 import { getUserFansList, changeAttentionState } from "@/api/user";
 import { useUserStore } from "@/store";
-import { ref, nextTick } from "vue";
-import { useRouter } from "vue-router";
-import { showDialog, showToast } from "vant";
+import { ref, nextTick, onBeforeMount } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { showToast } from "vant";
 
 const router = useRouter();
+const route = useRoute();
 const userStore = useUserStore();
-const username = userStore.username;
+let username = userStore.username;
+let myname = userStore.username;
+// 解析路由获取是否为本人
+let routername = route.params.username;
+if (routername) {
+  username = routername;
+}
+
 const buttonRefs = ref([]);
 const fansList = ref({});
 const getList = async () => {
   try {
-    const { data } = await getUserFansList();
+    const { data } = await getUserFansList({ username: username });
     fansList.value = data.user_fans;
   } catch (error) {
-    console.error("获取粉丝列表失败:", error);
     showToast("获取粉丝列表失败");
-    // 你可以在这里添加错误提示等其他处理逻辑
   }
 };
 
@@ -44,11 +50,10 @@ function throttle(func, delay) {
   };
 }
 
-const changeRole = throttle(async index => {
+const changeRole = throttle(async (othername, index) => {
   try {
     const { code } = await changeAttentionState({
-      username: username,
-      othername: 1
+      othername: othername
     });
     if (code == 200) {
       const buttonElement = buttonRefs.value[index];
@@ -56,14 +61,13 @@ const changeRole = throttle(async index => {
       buttonElement.textContent = currentText === "关注" ? "已关注" : "关注";
     }
   } catch {
-    console.error("Error in changeRole:", error);
-    showDialog("修改异常请稍后重试");
+    showToast("修改异常请稍后重试");
   }
 }, 800);
 </script>
 <template>
   <van-nav-bar
-    title="我的粉丝"
+    title="粉丝列表"
     left-text="返回"
     left-arrow
     @click-left="router.go(-1)"
@@ -71,8 +75,10 @@ const changeRole = throttle(async index => {
   <van-cell-group>
     <van-cell v-for="(item, index) in fansList" :key="index" center>
       <template #title>{{ item.name }}</template>
-      <template #value>
-        <button :ref="setSmallRef" @click="changeRole(index)">关注</button>
+      <template v-if="item.username !== myname" #value>
+        <button :ref="setSmallRef" @click="changeRole(item.username, index)">
+          {{ item.is_concern }}
+        </button>
       </template>
       <template #label>
         <van-text-ellipsis :content="item.user_motto" />

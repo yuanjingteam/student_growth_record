@@ -1,8 +1,9 @@
 <script setup>
-import { ref } from "vue";
-import { changeUserHeadshot } from "@/api/user";
+import { ref, watch } from "vue";
+import { changeUserHeadshot, getUserData } from "@/api/user";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
+import { showDialog } from "vant";
 // 路由
 const router = useRouter();
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
@@ -14,7 +15,18 @@ const height = ref(anchors[0]);
 // 初始化学号
 const userId = userStore.username;
 
+// 取出初始化的数据
 const files = ref([{ url: userStore.userData.user_headshot }]);
+
+watch(files, async (newValue, oldValue) => {
+  console.log(newValue, oldValue);
+  const formData = new FormData();
+  formData.append("file", files.value[0].file);
+  const { code } = await changeUserHeadshot(formData);
+  if (code == 200) {
+    userStore.userData.user_headshot = formData;
+  }
+});
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
 
@@ -23,7 +35,7 @@ const loading = ref(false);
 // 初始化数据
 const data = ref({
   name: "",
-  user_headshot: userStore.userData.user_headshot,
+  user_headshot: "",
   user_class: "",
   user_gender: "",
   user_Identity: "",
@@ -34,22 +46,14 @@ const data = ref({
 });
 
 // 初始化页面
-userStore.baseUserData();
-data.value = userStore.userData;
-
-// 更新头像
-const updataUserHeadshot = async () => {
-  const formData = new FormData();
-  formData.append("file", files.value[0].file);
-  const { code } = await changeUserHeadshot({
-    username: username,
-    user_headshot: formData
-  });
-  if (code == 200) {
-    console.log("yeah");
-    userStore.userData.user_headshot = formData;
-  }
+// 获取用户详细信息
+const baseUserData = async () => {
+  const res = await getUserData({ username: username });
+  // 存储更新用户信息
+  userStore.userData = res.data;
+  data.value = res.data;
 };
+baseUserData();
 </script>
 <template>
   <van-overlay :show="loading">
@@ -64,17 +68,20 @@ const updataUserHeadshot = async () => {
 
   <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
   <div class="bg">
-    <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
-  </div>
-  <div class="main">
+    <div class="bg">
+      <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+    </div>
+    <div class="main" />
     <van-floating-panel v-model:height="height" :anchors="anchors">
+      <div class="camera">
+        <i-icon icon="icon-park:camera" />
+      </div>
       <div class="userImg">
         <van-uploader
           v-model="files"
           reupload
           max-count="1"
           :deletable="false"
-          @click-reupload="updataUserHeadshot"
         />
       </div>
       <div>
@@ -114,7 +121,7 @@ const updataUserHeadshot = async () => {
           </van-cell>
           <van-cell is-link @click="router.push('/editData/motto')">
             <template #title>
-              <span class="custom-title">个性签名</span>
+              <span class="custom-title both over">个性签名</span>
             </template>
             <template #value>
               <div class="both over">{{ data.user_motto }}</div>
@@ -122,7 +129,7 @@ const updataUserHeadshot = async () => {
           </van-cell>
           <van-cell is-link @click="router.push('/editData/phone')">
             <template #title>
-              <span class="custom-title">电话</span>
+              <span class="custom-title both">电话</span>
             </template>
             <template #value>
               <div class="both">{{ data.phone_number }}</div>
@@ -130,7 +137,7 @@ const updataUserHeadshot = async () => {
           </van-cell>
           <van-cell is-link @click="router.push('/editData/email')">
             <template #title>
-              <span class="custom-title">电子邮箱</span>
+              <span class="custom-title both">电子邮箱</span>
             </template>
             <template #value>
               <div class="both over">{{ data.user_email }}</div>
@@ -141,7 +148,6 @@ const updataUserHeadshot = async () => {
               <span class="custom-title">入学年份</span>
             </template>
             <template #value>
-              <div class="both">{{ data.user_year }}</div>
               <div class="both">{{ data.user_year }}</div>
             </template>
           </van-cell>
@@ -157,22 +163,28 @@ const updataUserHeadshot = async () => {
   justify-content: center;
   height: 100%;
 }
+.camera {
+  position: absolute;
+  top: 0;
+  left: 200px;
+  z-index: 5;
+  background: rgba(216, 214, 214, 0.9);
+  padding: 5px 5px;
+  border-radius: 20px;
+}
+.camera .i-icon {
+  width: 20px;
+  height: 20px;
+}
+/* .van-floating-panel {
+  position: relative;
+} */
 .userImg {
   position: absolute;
   top: -45px;
   left: 146px;
-  z-index: 10;
+  z-index: 4;
 }
-/* .userImg::before {
-  position: absolute;
-  left: 0px;
-  top: 0;
-  width: 80px;
-  height: 80px;
-  content: "";
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 40px;
-} */
 .van-uploader >>> .van-uploader__preview-image {
   border-radius: 50px;
 }
@@ -180,7 +192,7 @@ const updataUserHeadshot = async () => {
   width: 10px;
 }
 .both {
-  float: left;
+  text-align: start;
 }
 .over {
   width: 100%;

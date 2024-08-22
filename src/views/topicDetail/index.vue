@@ -80,11 +80,11 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   articleData.article_page += 1;
-  const res = await searchArticleService(articleData);
-  if (res.code == 200) {
+  try {
+    const res = await searchArticleService(articleData);
     loading.value = false;
     articleList.value = [...articleList.value, ...res.data.content];
-  } else {
+  } catch {
     finished.value = true;
   }
 };
@@ -140,8 +140,8 @@ const onRefresh = () => {
           @load="onLoad"
         >
           <post-more
-            v-for="(item, index) in articleList"
-            :key="index"
+            v-for="item in articleList"
+            :key="item.article_id"
             :post="item"
             :articleId="item.article_id"
           />

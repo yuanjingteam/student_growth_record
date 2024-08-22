@@ -2,12 +2,13 @@
 import { useRouter } from "vue-router";
 import { ref, computed } from "vue";
 import { showConfirmDialog, showDialog } from "vant";
-import { useDarkModeStore } from "@/store";
+import { useDarkModeStore, useUserStore, useInformation } from "@/store";
 
 const router = new useRouter();
 // const checked = ref(false);
 const show = ref(false);
-
+const useStore = useUserStore();
+const userInfo = useInformation();
 const darkModeStore = useDarkModeStore();
 const checked = computed({
   get() {
@@ -23,11 +24,31 @@ const loginOut = () => {
     message: "确认退出登录吗?"
   })
     .then(() => {
+      // useStore.$reset();
+      // userInfo.$reset();
+      useStore.token = "";
+      useStore.username = "passenger";
+      useStore.role = "user";
+      userInfo.activeTab = 0;
+      userInfo.userData = ref({});
+
+      // 清空本地存储
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // 删除 Cookie
+      document.cookie.split(";").forEach(function (c) {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+
+      // 重定向到login
       router.push("./login");
     })
     .catch(() => {
       // on cancel
-      showDialog("退出异常,请稍后重试");
+      // showDialog("退出异常,请稍后重试");
     });
 };
 </script>

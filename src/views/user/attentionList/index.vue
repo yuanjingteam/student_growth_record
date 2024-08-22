@@ -2,20 +2,38 @@
 import { getAttentionList, changeAttentionState } from "@/api/user";
 import { useUserStore } from "@/store";
 import { ref, nextTick } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { showToast } from "vant";
 
 const router = useRouter();
 const userStore = useUserStore();
-const username = userStore.username;
 const buttonRefs = ref([]);
 const attentionList = ref({});
+
+// 判断是否为本人
+const own = ref(true);
+// 解析路由参数
+const route = useRoute();
+
+// 获取当前用户id
+let username = userStore.username;
+let myname = userStore.username;
+
+// 解析路由获取是否为本人
+let routerName = route.params.username;
+if (routerName) {
+  if (routerName !== username) {
+    own.value = false;
+  }
+  username = routerName;
+  console.log(username, "他人用户信息");
+}
+
 const getList = async () => {
   try {
-    const { data } = await getAttentionList();
+    const { data } = await getAttentionList({ username: username });
     attentionList.value = data.user_concern;
   } catch (error) {
-    console.error("获取关注列表失败:", error);
     showToast("获取关注列表失败");
   }
 };
@@ -43,26 +61,20 @@ function throttle(func, delay) {
   };
 }
 
-const changeRole = throttle(async index => {
-  try {
-    const { code } = await changeAttentionState({
-      username: username,
-      othername: 1
-    });
-    if (code == 200) {
-      const buttonElement = buttonRefs.value[index];
-      const currentText = buttonElement.textContent.trim();
-      buttonElement.textContent = currentText === "已关注" ? "关注" : "已关注";
-    }
-  } catch {
-    console.error("Error in changeRole:", error);
-    showDialog("修改异常请稍后重试");
+const changeRole = throttle(async (othername, index) => {
+  const { code } = await changeAttentionState({
+    othername: othername
+  });
+  if (code == 200) {
+    const buttonElement = buttonRefs.value[index];
+    const currentText = buttonElement.textContent.trim();
+    buttonElement.textContent = currentText === "已关注" ? "关注" : "已关注";
   }
 }, 800);
 </script>
 <template>
   <van-nav-bar
-    title="我的关注"
+    title="关注列表"
     left-text="返回"
     left-arrow
     @click-left="router.go(-1)"
@@ -70,8 +82,10 @@ const changeRole = throttle(async index => {
   <van-cell-group>
     <van-cell v-for="(item, index) in attentionList" :key="index">
       <template #title>{{ item.name }}</template>
-      <template #value>
-        <button :ref="setSmallRef" @click="changeRole(index)">已关注</button>
+      <template v-if="item.username !== myname" #value>
+        <button :ref="setSmallRef" @click="changeRole(item.username, index)">
+          {{ item.is_concern }}
+        </button>
       </template>
       <template #label>
         <van-text-ellipsis :content="item.user_motto" />

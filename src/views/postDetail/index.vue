@@ -68,7 +68,7 @@ const refreshing = ref(false);
 //当用户滚动到底部时会触发加载更多数据的事件
 const onLoad = async () => {
   if (refreshing.value) {
-    commentData.comment_page = 1;
+    commentData.comment_page = 0;
     commentList.value = [];
     refreshing.value = false;
   }
@@ -100,7 +100,7 @@ const onRefresh = () => {
       </template>
     </van-nav-bar>
 
-    <post-more
+    <postdetail-more
       v-if="articleData.article_content.article_text != ''"
       :post="articleData"
       :articleId="articleId"
@@ -128,8 +128,8 @@ const onRefresh = () => {
         @load="onLoad"
       >
         <comment-detail
-          v-for="(item, index) in commentList"
-          :key="index"
+          v-for="item in commentList"
+          :key="item.id"
           :data="item"
           @refresh="refresh"
         />

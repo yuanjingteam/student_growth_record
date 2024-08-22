@@ -18,12 +18,14 @@ const isPublished = async () => {
     if (code === 200) {
       loading.value = false; // 关闭 loading 效果
       showSuccessToast("发布成功");
+      content.value = "";
     }
   } else {
     const { code } = await publishManagerMsg({ msg_content: content.value });
     if (code === 200) {
       loading.value = false; // 关闭 loading 效果
       showSuccessToast("发布成功");
+      content.value = "";
     }
   }
 };
@@ -42,7 +44,7 @@ const onSubmit = () => {
 
 <template>
   <van-overlay :show="loading" z-index="100">
-    <van-loading vertical>
+    <van-loading vertical style="justify-content: center; height: 100%">
       <template #icon>
         <van-icon name="star-o" size="30" />
       </template>

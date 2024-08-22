@@ -62,18 +62,16 @@ const onsubmit = async () => {
     return;
   }
   if (checked.value) {
-    const res = await userLogin(userForm);
-    if (res.code == 200) {
+    try {
+      const res = await userLogin(userForm);
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
-      console.log(res.data.role, 2214);
-
       userStore.setUserInfo(res.data);
       showSuccessToast("登录成功");
       router.push("/demo");
-    } else {
-      showFailToast(`${res.msg}`);
+    } catch (error) {
+      showFailToast(`${error.msg}`);
       userForm.username = "";
       userForm.password = "";
       userForm.verify = "";
@@ -99,6 +97,9 @@ const confirmTip = () => {
 
 //游客登录
 const passengerLogin = () => {
+  userStore.username = "passenger";
+  userStore.token = "";
+  userStore.role = "user";
   localStorage.setItem("username", "passenger");
   router.push("/demo");
   showSuccessToast("登录成功");
@@ -177,9 +178,7 @@ const passengerLogin = () => {
       checked-color="#000"
       shape="square"
       icon-size="20px"
-      >我已阅读并同意《<span @click="router.push('/userAgree')">用户协议</span
-      >》和《<span @click="router.push('/privacyAgree')">隐私协议</span
-      >》</van-checkbox
+      >我已阅读并同意《<span>用户协议</span>》和《<span>隐私协议</span>》</van-checkbox
     >
   </div>
   <van-loading v-else vertical>
@@ -253,6 +252,7 @@ const passengerLogin = () => {
 
   .van-checkbox {
     margin-top: 70px;
+    font-size: 13px;
 
     span {
       color: #549ae9;

@@ -30,7 +30,7 @@ const selectShare = option => {
 };
 
 // 获取自述内容
-const content = ref();
+const content = ref("");
 
 // 存储自述内容
 let inputMid = "";
@@ -78,6 +78,7 @@ const returnBack = () => {
   isNav.value = true;
   // 失去焦点
   fieldText.value.blur();
+  getSelf();
 };
 
 // 获取自述
@@ -85,11 +86,9 @@ const getSelf = async () => {
   try {
     const { data } = await getSelfCotnent({ username: username });
     content.value = data.selfContent;
-    console.log(content, 111222);
   } catch (error) {
     console.error("获取个人自述失败:", error);
     showToast("获取个人自述失败");
-    // 你可以在这里添加错误提示等其他处理逻辑
   }
 };
 
@@ -102,7 +101,7 @@ const onSubmit = async () => {
     // 表单校验
     await formRef.value.validate();
     showConfirmDialog({
-      title: "发布文章",
+      title: "修改自述",
       message: "确认要更改个人介绍吗?"
     })
       .then(async () => {
@@ -124,12 +123,12 @@ const changeContent = async () => {
   try {
     const { data } = await changeSelfCotnent({
       username: username,
-      self_content: content.value
+      self_content111: content.value
     });
     // 更新
     // 修改成功弹窗
     loading.value = false;
-    content.value = data.result;
+    // content.value = data.result;
     isEditing.value = false;
     isNav.value = true;
     fieldText.value.blur();

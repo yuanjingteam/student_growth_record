@@ -8,6 +8,7 @@ import { useTopicStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
+const token = userStore.token;
 const topicStore = useTopicStore();
 
 const router = useRouter();
@@ -18,9 +19,10 @@ topicStore.getTopicList();
 topicList.value = topicStore.topicList;
 //搜索框输入内容
 const inputValue = ref("");
-//获取当前用户id
+//获取当前存储的tab
+const currentName = localStorage.getItem("currentTabName") || "学习成绩";
 //控制tab栏显示
-const activeName = ref("全部");
+const activeName = ref(currentName);
 //初始化记录注册天数
 const registerTime = ref("");
 //搜索框数据
@@ -49,8 +51,13 @@ const registerDay = async () => {
   const { data } = await getRegisterDay();
   registerTime.value = data.plus_time;
 };
-registerDay();
-
+if (token != "") registerDay();
+//是否展示搜索历史记录
+const showHistory = ref(false);
+//搜索框获取焦点
+const onFocus = () => {
+  showHistory.value = true;
+};
 //搜索框事件
 const onSearch = async () => {
   searchData.article_page = 1;
@@ -65,12 +72,13 @@ const onSearch = async () => {
     articleList.value = [];
   }
 };
-
+onSearch();
 // 创建防抖后的搜索函数
 const debouncedSearch = debounce(onSearch, 300);
 
 //监听activeName的变化，从而发送请求
 watch(activeName, async (newValue, oldValue) => {
+  localStorage.setItem("currentTabName", newValue);
   searchData.article_page = 1;
   searchData.key_word = inputValue.value;
   searchData.topic_name = newValue;
@@ -129,7 +137,7 @@ const onRefresh = () => {
   />
   <div class="topShow">
     <p class="title">我的大学生活</p>
-    <span>
+    <span v-if="token != ''">
       <p>与你相遇の第{{ registerTime }}天</p>
       <i-icon icon="icon-park:read-book" class="text-xl" />
     </span>
@@ -141,6 +149,7 @@ const onRefresh = () => {
     placeholder="请输入搜索关键词"
     background="#fff"
     class="search"
+    @focus="onFocus"
   >
     <template #action>
       <van-button
@@ -179,8 +188,8 @@ const onRefresh = () => {
           @load="onLoad"
         >
           <cell-card
-            v-for="(item, index) in articleList"
-            :key="index"
+            v-for="item in articleList"
+            :key="item.article_id"
             :article="item"
           />
         </van-list>
@@ -189,6 +198,7 @@ const onRefresh = () => {
       <van-empty v-else image="search" description="没有符合该描述的帖子呢" />
     </van-tab>
   </van-tabs>
+  <!-- <div v-else class="history">历史记录</div> -->
   <van-back-top bottom="100px" />
 </template>
 
@@ -230,5 +240,9 @@ span {
 .van-tab__panel,
 .van-tab__panel-wrapper {
   background-color: #f0f1f5;
+}
+.history {
+  height: 100%;
+  background-color: #fff;
 }
 </style>

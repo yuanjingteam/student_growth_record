@@ -8,6 +8,12 @@ import "./styles/index.less";
 import "./styles/tailwind.css";
 // svg icon
 import "virtual:svg-icons-register";
+// 引入vconsole移动端调试工具
+import VConsole from "vconsole";
+import eruda from "eruda";
+
+new VConsole();
+eruda.init();
 
 import { Lazyload } from "vant";
 

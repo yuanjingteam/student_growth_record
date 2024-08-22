@@ -70,7 +70,8 @@ const assetsFormData = new FormData();
 
 // 文件列表
 const fileList = ref([]);
-
+const isvideo = ref(false);
+const v_count = ref(0);
 // 文章内容
 const content = ref("");
 // 文章小标签
@@ -232,8 +233,11 @@ const handleSubmit = async () => {
       assetsFormData.append("pic", file.file);
       console.log(file, "图片");
     } else if (file.file.type.startsWith("video/")) {
-      assetsFormData.append("video", file.flie);
-      console.log(file, "视频");
+      if (!isvideo.value) {
+        assetsFormData.append("video", file.file);
+        isvideo.value = true;
+      }
+      v_count.value++;
     }
   });
 };
@@ -254,11 +258,13 @@ const onSubmit = async () => {
     }
     // 文件上传
     handleSubmit();
+    if (v_count.value > 1) {
+      showToast("最多上传一个视频,请重新上传");
+      v_count.value = 0;
+      fileList.value = [];
+      return;
+    }
     litTag.value = littleTag.value.map(tag => tag.name);
-
-    console.log(litTag.value, 1380138190);
-
-    console.log(data);
 
     showConfirmDialog({
       title: "发布文章",
@@ -269,7 +275,10 @@ const onSubmit = async () => {
         // 调用发布文章
         // 20221544308
         assetsFormData.append("username", username);
-        assetsFormData.append("article_content", data.article_content);
+        assetsFormData.append(
+          "article_content",
+          data.article_content.replace(/\n+/g, "<br/>")
+        );
         assetsFormData.append("word_count", data.word_count);
         assetsFormData.append("article_topic", data.article_topic);
         for (const tag of data.article_tags) {
@@ -278,7 +287,9 @@ const onSubmit = async () => {
         assetsFormData.append("article_status", data.article_status);
         isPublished(assetsFormData);
       })
-      .catch(() => {});
+      .catch(() => {
+        fileList.value = [];
+      });
   } catch (error) {
     console.log("validate failed", error);
   }
@@ -289,9 +300,7 @@ const isPublished = async baseData => {
   const { code } = await newArticlePublish(baseData);
   if (code === 200) {
     loading.value = false; // 关闭 loading 效果
-    setTimeout(() => {
-      router.push("./demo");
-    }, 1500); // 1.5秒后跳转
+    router.push("./demo");
   }
 };
 
