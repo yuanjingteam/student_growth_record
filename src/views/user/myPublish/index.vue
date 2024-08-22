@@ -44,6 +44,11 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
+// 子传父重新获取数据
+const refresh = () => {
+  list.value = [];
+  onRefresh();
+};
 </script>
 
 <template>
@@ -71,7 +76,7 @@ const onRefresh = () => {
             :key="index"
             :article="item"
             :state="item.article_status"
-            @click="console.log(1)"
+            @informRefresh="refresh"
           />
         </van-list>
       </van-pull-refresh>

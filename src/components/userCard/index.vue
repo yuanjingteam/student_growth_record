@@ -10,6 +10,8 @@ const props = defineProps({
     required: false
   }
 });
+const emit = defineEmits(["informRefresh"]);
+
 const router = useRouter();
 //获取传过来的帖子id
 const articleId = props.article.article_id;
@@ -39,6 +41,7 @@ const isPublic = async () => {
     loading.value = false; // 关闭 loading 效果
     showSuccessToast("修改成功!");
     midState.value = !midState.value;
+    midContent.value = midState.value === true ? "公开" : "私密";
   } catch (error) {
     loading.value = false; // 关闭 loading 效果
     console.error("修改文章状态失败:", error);
@@ -52,9 +55,7 @@ const isDelete = async () => {
     await articleDeleteService({ article_id: articleId });
     loading.value = false; // 关闭 loading 效果
     showToast("删除成功");
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 1500); // 1.5秒后刷新页面
+    emit("informRefresh");
   } catch (error) {
     loading.value = false; // 关闭 loading 效果
     console.error("删除文章失败:", error);
