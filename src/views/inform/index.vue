@@ -6,7 +6,6 @@ const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
 const username = userStore.username;
-console.log(role, 111111);
 
 // 当前页面默认渲染的数据
 const base = reactive([
