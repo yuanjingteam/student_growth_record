@@ -7,6 +7,8 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const useClass = useClassStore();
 const useTopic = useTopicStore();
+//是否加载骨架屏
+const loadingTitle = ref(false);
 
 //话题数据
 const topicData = reactive({
@@ -20,6 +22,7 @@ const classData = reactive({
 });
 
 topicData.topicList = useTopic.topicList;
+useClass.getClassList();
 classData.classList = useClass.classList;
 
 //监听按钮状态  false意为展开  true意为收起
@@ -27,10 +30,16 @@ const btnState = ref(false);
 //热帖数据
 const hotPost = reactive([]);
 const getHotPost = async articleCount => {
-  const {
-    data: { article_list }
-  } = await getHotPostService({ article_count: articleCount });
-  hotPost.value = article_list;
+  loadingTitle.value = true;
+  try {
+    const {
+      data: { article_list }
+    } = await getHotPostService({ article_count: articleCount });
+    hotPost.value = article_list;
+  } catch {
+    hotPost.value = [];
+  }
+  loadingTitle.value = false;
 };
 getHotPost(3);
 //处理按钮点击事件
@@ -82,19 +91,23 @@ function numberToEnglish(number) {
       <van-cell>
         <template #title>
           <h1>今日热帖</h1>
-          <ul>
-            <li v-for="(item, index) in hotPost.value" :key="index">
-              <i-icon :icon="`icon-park:${numberToEnglish(index + 1)}-key`" />
-              <p
-                class="hotTitle"
-                @click="router.push(`/postDetail/${item.article_id}`)"
-              >
-                {{ item.article_title }}
-              </p>
-            </li>
-          </ul>
+          <van-skeleton title :row="3" :loading="loadingTitle">
+            <ul>
+              <li v-for="(item, index) in hotPost.value" :key="index">
+                <i-icon :icon="`icon-park:${numberToEnglish(index + 1)}-key`" />
+                <p
+                  class="hotTitle"
+                  @click="router.push(`/postDetail/${item.article_id}`)"
+                >
+                  {{ item.article_title }}
+                </p>
+              </li>
+            </ul>
+          </van-skeleton>
+          <van-empty image-size="100" description="今天还没有人发帖子哦" />
         </template>
       </van-cell>
+
       <van-button
         v-if="btnState"
         icon="arrow-up"
@@ -114,6 +127,7 @@ function numberToEnglish(number) {
     </van-cell-group>
 
     <topic-card
+      v-if="topicData.topicList"
       :message="topicData.message"
       :list="topicData.topicList.slice(0, 2)"
     />
@@ -137,13 +151,14 @@ function numberToEnglish(number) {
 <style scoped>
 .find-box {
   overflow: hidden;
+  background-color: #f0f1f5;
 
   .van-cell-group {
     margin-top: 10px;
 
     .van-cell {
       padding: 15px 15px;
-      margin-top: 10px;
+      /* margin-top: 10px; */
 
       h1 {
         font-size: 20px;
@@ -178,5 +193,9 @@ function numberToEnglish(number) {
   white-space: nowrap; /* 防止文本换行 */
   overflow: hidden; /* 隐藏溢出内容 */
   text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+}
+
+.van-empty {
+  height: 150px;
 }
 </style>

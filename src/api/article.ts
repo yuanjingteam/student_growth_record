@@ -92,7 +92,7 @@ export function articleReportService(data?: object): Promise<ListResult> {
 //封禁文章
 export function articleBanService(data?: object): Promise<ListResult> {
   return http.request({
-    url: "/article/list/ban",
+    url: "/article/ban",
     method: "post",
     data: JSON.stringify(data)
   });

@@ -1,15 +1,17 @@
 import { http } from "@/utils/http";
 
-type ListResult = {
+type classList = {
   code: String;
   msg: string;
-  data: Object;
+  data: {
+    class_list: Array<Object>;
+  };
 };
 
-export function getClassListService(data?: object): Promise<ListResult> {
+export function getClassListService(data?: object): Promise<classList> {
   return http.request({
     url: "/class/list",
-    method: "get",
+    method: "post",
     data
   });
 }

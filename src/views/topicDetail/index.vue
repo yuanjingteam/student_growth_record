@@ -24,9 +24,16 @@ const activeName = ref("最热");
 
 //获取动态路由的参数
 const topicId = route.params.id;
+
 //声明当前话题
 const topic = ref();
-topic.value = useTopic.findTopic(topicId);
+const topicList = useTopic.topicList;
+
+const findTopic = topicId => {
+  const topic = topicList.find(topic => topic.ID == topicId);
+  return topic ? topic : null;
+};
+topic.value = findTopic(topicId);
 
 //获取文章列表的数据
 const articleData = reactive({
@@ -73,11 +80,11 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   articleData.article_page += 1;
-  const res = await searchArticleService(articleData);
-  if (res.code == 200) {
+  try {
+    const res = await searchArticleService(articleData);
     loading.value = false;
     articleList.value = [...articleList.value, ...res.data.content];
-  } else {
+  } catch {
     finished.value = true;
   }
 };
@@ -133,8 +140,8 @@ const onRefresh = () => {
           @load="onLoad"
         >
           <post-more
-            v-for="(item, index) in articleList"
-            :key="index"
+            v-for="item in articleList"
+            :key="item.article_id"
             :post="item"
             :articleId="item.article_id"
           />

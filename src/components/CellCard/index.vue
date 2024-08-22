@@ -5,18 +5,22 @@ import { defineProps, ref, reactive } from "vue";
 const props = defineProps({
   article: Object
 });
+console.log(props.article);
+
 const router = useRouter();
 //获取传过来的帖子id
-const articleId = props.article.article_id;
+const articleId = ref();
+articleId.value = props.article.article_id;
+console.log(articleId.value);
 
 //跳转到帖子详情页
 const gotoArticleDetail = () => {
-  router.push(`/postDetail/${articleId}`);
+  router.push(`/postDetail/${articleId.value}`);
 };
 </script>
 
 <template>
-  <div class="cell" @click="gotoArticleDetail()">
+  <div class="cell" @click="gotoArticleDetail">
     <van-card>
       <template #tags>
         <div class="info-box">
@@ -42,10 +46,10 @@ const gotoArticleDetail = () => {
           article.like_amount
         }}</van-button>
         <van-button size="mini" icon="comment-o">{{
-          article.collect_amount
+          article.comment_amount
         }}</van-button>
         <van-button size="mini" icon="star-o">{{
-          article.comment_amount
+          article.collect_amount
         }}</van-button>
       </template>
     </van-card>

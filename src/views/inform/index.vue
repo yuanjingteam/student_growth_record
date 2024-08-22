@@ -42,7 +42,7 @@ const base = reactive([
       <inter-info :base="base[2]" />
 
       <!-- 举报邮箱 -->
-      <perm-notice v-if="role === '1'" :base="base[3]" />
+      <perm-notice :base="base[3]" />
 
       <!-- 管理员发布通知入口 -->
       <manager-publish v-if="role === '1'" />

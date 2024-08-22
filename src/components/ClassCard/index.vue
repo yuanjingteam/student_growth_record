@@ -3,7 +3,7 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-defineProps({
+const props = defineProps({
   //头部信息
   message: String,
   //渲染数据
@@ -20,8 +20,6 @@ const getAll = () => {
 const gotoDetail = id => {
   router.push(`/classDetail/${id}`);
 };
-
-// console.log(list);
 </script>
 <template>
   <van-cell-group inset>

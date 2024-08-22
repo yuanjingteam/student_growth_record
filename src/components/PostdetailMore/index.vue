@@ -11,8 +11,7 @@ import {
   articleDeleteService
 } from "@/api/article";
 import { showFailToast, showSuccessToast } from "vant";
-// import VueDPlayer from "vue-dplayer";
-// VueDPlayer.name = "VueDPlayer";
+import VueDPlayer from "vue-dplayer";
 
 // import lottie from "lottie-web"; //引入动效库
 // import like_json from "@/assets/json/like.json"; //引入下载的动效json
@@ -37,7 +36,7 @@ collectAmount.value = props.post.collect_amount;
 //是否展示图片
 const show = ref(false);
 const index = ref(0);
-const images = props.post.article_pics;
+const images = props.post.article_content.article_image;
 
 const onChange = newIndex => {
   index.value = newIndex;
@@ -47,23 +46,8 @@ const showPics = i => {
   show.value = true;
   index.value = i;
 };
-//是否展示视频
-const showVideo = ref(false);
-const videos = ["https://www.w3school.com.cn/i/movie.ogg"];
-
-//展示视频
-// const options = reactive({
-//   video: {
-//     url: "http://vjs.zencdn.net/v/oceans.mp4",
-//     pic: "https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg"
-//   }
-// });
 
 const router = useRouter();
-const route = useRoute();
-const gotoDetail = () => {
-  router.push(`/postDetail/${props.articleId}`);
-};
 
 const userStore = useUserStore();
 //获取当前token
@@ -243,128 +227,115 @@ const confirmDelete = async () => {
     :startPosition="index"
     @change="onChange"
   />
-
-  <van-cell-group inset>
-    <div class="cell">
-      <van-card>
-        <template #tags>
-          <div>
-            <div class="info-box">
-              <van-image round :src="post.user_headshot" />
-              <div class="info">
-                <div style="display: flex; justify-content: space-between">
-                  <p class="name">{{ post.name }}</p>
-                  <van-popover
-                    v-model:show="showPopover"
-                    theme="dark"
-                    :actions="actions"
-                    placement="left"
-                    @select="select"
-                  >
-                    <template #reference>
-                      <i-icon icon="ant-design:more-outlined" />
-                    </template>
-                  </van-popover>
-                </div>
-                <p class="grade">{{ post.user_class }}</p>
-              </div>
+  <div class="cell">
+    <van-card>
+      <template #tags>
+        <div class="info-box">
+          <van-image
+            round
+            :src="post.user_headshot"
+            @click="router.push(`/otherInfo/${post.username}`)"
+          />
+          <div class="info">
+            <div style="display: flex; justify-content: space-between">
+              <p class="name">{{ post.name }}</p>
+              <van-popover
+                v-model:show="showPopover"
+                theme="dark"
+                :actions="actions"
+                placement="left"
+                @select="select"
+              >
+                <template #reference>
+                  <i-icon icon="ant-design:more-outlined" />
+                </template>
+              </van-popover>
             </div>
-            <p class="post-content">{{ post.article_content }}</p>
-            <div class="video-box">
-              <ul class="video">
-                <li
-                  v-for="(item, index) in images"
-                  :key="item"
-                  @click="showPics(index)"
-                >
-                  <van-image :src="item" />
-                </li>
-              </ul>
-            </div>
-
-            <!-- <vue-dplayer :options="options" /> -->
-            <!-- <van-image-preview
-                  v-model:show="showVideo"
-                  :images="videos"
-                  :close-on-click-image="false"
-                >
-                  <template #image="{ src }">
-                    <video style="width: 100%" controls>
-                      <source :src="src" />
-                    </video>
-                  </template>
-                </van-image-preview> -->
-
-            <div v-for="(item, index) in post.article_tags" :key="index">
-              <button class="btn">
-                <i-icon icon="icon-park:message" />
-                <p class="btn-title">
-                  {{ item }}
-                </p>
-              </button>
-            </div>
-            <p class="time1">{{ post.post_time }}</p>
+            <p class="grade">{{ post.user_class }}</p>
           </div>
-        </template>
-        <template #footer>
-          <div class="btn-box">
-            <van-button
-              v-if="!ifCollect"
-              size="mini"
-              @click="debouncedCollect(ifCollect)"
-              ><van-icon name="star-o" /><span>{{
-                collectAmount
-              }}</span></van-button
-            >
-            <van-button v-else size="mini" @click="debouncedCollect(ifCollect)"
-              ><van-icon name="star" color="#3371d3" /><span
-                style="color: #3371d3"
-                >{{ collectAmount }}</span
-              ></van-button
-            >
-            <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
-              post.comment_amount
-            }}</van-button>
-            <van-action-sheet v-model:show="showCommentTable" title="发布评论">
-              <div class="content">
-                <van-cell-group inset>
-                  <van-form ref="commentRef">
-                    <van-field
-                      v-model="comment"
-                      rows="2"
-                      autosize
-                      type="textarea"
-                      maxlength="70"
-                      placeholder="请输入您的评论信息"
-                      show-word-limit
-                      :rules="[{ required: true, message: '评论信息不能为空' }]"
-                    />
-                  </van-form>
-                </van-cell-group>
-                <van-button round block type="primary" @click="submitComment()">
-                  提交
-                </van-button>
-              </div>
-            </van-action-sheet>
-            <van-button
-              v-if="!ifLike"
-              size="mini"
-              @click="debouncedLike(ifLike)"
-              ><van-icon name="good-job-o" /><span>{{
-                likeAmount
-              }}</span></van-button
-            >
-            <van-button v-else size="mini" @click="debouncedLike(ifLike)"
-              ><van-icon name="good-job" color="#3371d3" /><span
-                style="color: #3371d3"
-                >{{ likeAmount }}</span
-              ></van-button
-            >
-          </div>
-        </template>
-      </van-card>
-    </div>
-  </van-cell-group>
+        </div>
+        <p class="post-content">{{ post.article_content }}</p>
+
+        <van-grid square :column-num="3" :gutter="3">
+          <van-grid-item
+            v-for="(item, index) in images"
+            :key="item"
+            @click="showPics(index)"
+          >
+            <van-image :src="item" />
+          </van-grid-item>
+          <van-grid-item />
+        </van-grid>
+        <div>
+          <button
+            v-for="(item, index) in post.article_tags"
+            :key="index"
+            class="btn"
+          >
+            <i-icon icon="icon-park:message" />
+            <p class="btn-title">
+              {{ item }}
+            </p>
+          </button>
+        </div>
+        <p class="time2">{{ post.post_time }}</p>
+      </template>
+
+      <template #footer>
+        <div class="btn-box">
+          <van-button
+            v-if="!ifCollect"
+            size="mini"
+            @click="debouncedCollect(ifCollect)"
+            ><van-icon name="star-o" /><span>{{
+              collectAmount
+            }}</span></van-button
+          >
+          <van-button v-else size="mini" @click="debouncedCollect(ifCollect)"
+            ><van-icon name="star" color="#3371d3" /><span
+              style="color: #3371d3"
+              >{{ collectAmount }}</span
+            ></van-button
+          >
+          <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
+            post.comment_amount
+          }}</van-button>
+          <van-action-sheet v-model:show="showCommentTable" title="发布评论">
+            <div class="content">
+              <van-cell-group inset>
+                <van-form ref="commentRef">
+                  <van-field
+                    v-model="comment"
+                    rows="2"
+                    autosize
+                    type="textarea"
+                    maxlength="70"
+                    placeholder="请输入您的评论信息"
+                    show-word-limit
+                    :rules="[{ required: true, message: '评论信息不能为空' }]"
+                  />
+                </van-form>
+              </van-cell-group>
+              <van-button round block type="primary" @click="submitComment()">
+                提交
+              </van-button>
+            </div>
+          </van-action-sheet>
+          <van-button v-if="!ifLike" size="mini" @click="debouncedLike(ifLike)"
+            ><van-icon name="good-job-o" /><span>{{
+              likeAmount
+            }}</span></van-button
+          >
+          <van-button v-else size="mini" @click="debouncedLike(ifLike)"
+            ><van-icon name="good-job" color="#3371d3" /><span
+              style="color: #3371d3"
+              >{{ likeAmount }}</span
+            ></van-button
+          >
+        </div>
+      </template>
+    </van-card>
+  </div>
 
   <van-popup
     v-model:show="showReport"
@@ -513,18 +484,10 @@ const confirmDelete = async () => {
 .content {
   padding: 16px 16px 160px;
 }
-.video-box {
+.van-grid {
   margin-bottom: 15px;
-  .video {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 3px;
-    li {
-      display: flex;
-      border-radius: 8px;
-      // justify-content: center;
-      overflow: hidden;
-    }
+  .van-grid-item {
+    border-radius: 15px;
   }
 }
 </style>

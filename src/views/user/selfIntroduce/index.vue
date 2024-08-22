@@ -78,6 +78,7 @@ const returnBack = () => {
   isNav.value = true;
   // 失去焦点
   fieldText.value.blur();
+  getSelf();
 };
 
 // 获取自述
