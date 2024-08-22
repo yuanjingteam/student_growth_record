@@ -8,8 +8,6 @@ const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
 const username = userStore.username;
-console.log(role);
-// debugger;
 </script>
 
 <template>
@@ -48,12 +46,13 @@ console.log(role);
 
     <!-- 我的内容 -->
     <van-cell-group inset class="end">
-      <van-cell
-        v-if="role === 'superman' || 'college'"
-        title="发布通知"
-        is-link
-        @click="router.push('./managerPublish')"
-      />
+      <div v-if="role === 'superman' || role === 'college'">
+        <van-cell
+          title="发布通知"
+          is-link
+          @click="router.push('./managerPublish')"
+        />
+      </div>
       <van-cell
         title="我发布的内容"
         is-link

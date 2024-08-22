@@ -28,7 +28,7 @@ loadData();
 const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];
-    page.value = 0;
+    page.value = 1;
     refreshing.value = false;
   }
   await loadData();
@@ -45,9 +45,9 @@ const onRefresh = () => {
   onLoad();
 };
 // 子传父重新获取数据
-const refresh = () => {
-  list.value = [];
-  onRefresh();
+const refresh = async () => {
+  refreshing.value = true;
+  onLoad();
 };
 </script>
 

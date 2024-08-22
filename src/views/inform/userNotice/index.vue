@@ -15,9 +15,9 @@ const useInfor = useInformation();
 // 哪一栏
 const active = ref(0);
 
-const page1 = ref(0);
-const page2 = ref(0);
-const page3 = ref(0);
+const page1 = ref(1);
+const page2 = ref(1);
+const page3 = ref(1);
 // 获取到的列表
 // 点赞
 const thumbList = ref([]);
@@ -155,12 +155,12 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
+loadData1();
+loadData2();
+loadData3();
 </script>
 <template>
-  <van-empty
-    v-if="thumbList.length === 0 && comList.length === 0 && starList === 0"
-    style="width: 100%; height: 100%"
-  >
+  <van-empty v-if="!finished" style="width: 100%; height: 100%">
     <template #image>
       <video autoplay loop muted>
         <source src="../../../icons/car.mp4" type="video/mp4" />
@@ -168,67 +168,69 @@ const onRefresh = () => {
     </template>
     <template #description> 页面努力加载中... </template>
   </van-empty>
-  <van-nav-bar title="全部消息" left-arrow @click-left="router.go(-1)" />
-  <van-tabs v-model:active="active" @click-tab="onClickTab">
-    <van-tab title="点赞">
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <van-list
-          v-model:loading="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-        >
-          <info-item
-            v-for="(item, index) in thumbList"
-            :key="index"
-            :data="item"
-            :type="active"
-            :icon="icon[0]"
-            :state1="state[0]"
-            :state2="state[1]"
-          />
-        </van-list>
-      </van-pull-refresh>
-    </van-tab>
-    <van-tab title="评论">
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <van-list
-          v-model:loading="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-        >
-          <info-item
-            v-for="(item, index) in comList"
-            :key="index"
-            :data="item"
-            :type="active"
-            :icon="icon[1]"
-            :state1="state[2]"
-            :state2="state[3]"
-          />
-        </van-list>
-      </van-pull-refresh>
-    </van-tab>
-    <van-tab title="收藏">
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <van-list
-          v-model:loading="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-        >
-          <info-item
-            v-for="(item, index) in starList"
-            :key="index"
-            :data="item"
-            :type="active"
-            :icon="icon[2]"
-            :state1="state[4]"
-            :state2="state[5]"
-          />
-        </van-list>
-      </van-pull-refresh>
-    </van-tab>
-  </van-tabs>
+  <div v-else>
+    <van-nav-bar title="全部消息" left-arrow @click-left="router.go(-1)" />
+    <van-tabs v-model:active="active" @click-tab="onClickTab">
+      <van-tab title="点赞">
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+          <van-list
+            v-model:loading="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
+            <info-item
+              v-for="(item, index) in thumbList"
+              :key="index"
+              :data="item"
+              :type="active"
+              :icon="icon[0]"
+              :state1="state[0]"
+              :state2="state[1]"
+            />
+          </van-list>
+        </van-pull-refresh>
+      </van-tab>
+      <van-tab title="评论">
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+          <van-list
+            v-model:loading="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
+            <info-item
+              v-for="(item, index) in comList"
+              :key="index"
+              :data="item"
+              :type="active"
+              :icon="icon[1]"
+              :state1="state[2]"
+              :state2="state[3]"
+            />
+          </van-list>
+        </van-pull-refresh>
+      </van-tab>
+      <van-tab title="收藏">
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+          <van-list
+            v-model:loading="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
+            <info-item
+              v-for="(item, index) in starList"
+              :key="index"
+              :data="item"
+              :type="active"
+              :icon="icon[2]"
+              :state1="state[4]"
+              :state2="state[5]"
+            />
+          </van-list>
+        </van-pull-refresh>
+      </van-tab>
+    </van-tabs>
+  </div>
 </template>

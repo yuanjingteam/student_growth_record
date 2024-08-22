@@ -8,7 +8,7 @@ const finished = ref(false);
 const refreshing = ref(false);
 
 // 初始化页面数据
-const page = ref(0);
+const page = ref(1);
 const list = ref([]);
 
 // 获取系统消息
@@ -46,9 +46,10 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
+loadData();
 </script>
 <template>
-  <van-empty v-if="list.length === 0" style="width: 100%; height: 100%">
+  <van-empty v-if="!finished" style="width: 100%; height: 100%">
     <template #image>
       <video autoplay loop muted>
         <source src="../../../icons/car.mp4" type="video/mp4" />
@@ -56,22 +57,24 @@ const onRefresh = () => {
     </template>
     <template #description> 页面努力加载中... </template>
   </van-empty>
-  <van-nav-bar
-    title="系统通知"
-    left-text="返回"
-    left-arrow
-    @click-left="router.go(-1)"
-  />
-  <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-    <van-list
-      v-model:loading="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
-    >
-      <system-item v-for="(item, index) in list" :key="index" :data="item" />
-    </van-list>
-  </van-pull-refresh>
+  <div v-else>
+    <van-nav-bar
+      title="系统通知"
+      left-text="返回"
+      left-arrow
+      @click-left="router.go(-1)"
+    />
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-list
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <system-item v-for="(item, index) in list" :key="index" :data="item" />
+      </van-list>
+    </van-pull-refresh>
+  </div>
 </template>
 <style scoped>
 .main {

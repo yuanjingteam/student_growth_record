@@ -44,6 +44,9 @@ const beforeRead = async (file, event) => {
     const formData = new FormData();
     formData.append("file", file);
     await changeUserHeadshot(formData);
+    userStore.user_headshot = data.value.user_headshot;
+    showToast("修改成功");
+
     return true;
   } catch (error) {
     showToast("修改失败");
