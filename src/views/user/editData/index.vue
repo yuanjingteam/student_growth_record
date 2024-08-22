@@ -33,7 +33,7 @@ const files = ref([{ url: userStore.userData.user_headshot }]);
 //   }
 // });
 
-const beforeRead = async file => {
+const beforeRead = async (file, event) => {
   // 检查文件类型是否为图片
   // 检查文件大小是否超过 2MB
   if (file.size > 2 * 1024 * 1024) {
@@ -44,12 +44,10 @@ const beforeRead = async file => {
     const formData = new FormData();
     formData.append("file", file);
     await changeUserHeadshot(formData);
-    debugger;
-    // userStore.userData.user_headshot =
     return true;
   } catch (error) {
     showToast("修改失败");
-    files = ref([{ url: userStore.userData.user_headshot }]);
+    event.preventDefault();
     return false;
   }
 };
