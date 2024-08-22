@@ -99,7 +99,7 @@ const confirmTip = () => {
 const passengerLogin = () => {
   userStore.username = "passenger";
   userStore.token = "";
-  userStore.role = "0";
+  userStore.role = "user";
   localStorage.setItem("username", "passenger");
   router.push("/demo");
   showSuccessToast("登录成功");

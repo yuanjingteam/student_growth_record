@@ -11,12 +11,7 @@ import {
   articleDeleteService
 } from "@/api/article";
 import { showFailToast, showSuccessToast } from "vant";
-// import VueDPlayer from "vue-dplayer";
-// VueDPlayer.name = "VueDPlayer";
 
-// import lottie from "lottie-web"; //引入动效库
-// import like_json from "@/assets/json/like.json"; //引入下载的动效json
-// import collect_json from "@/assets/json/collect.json"; //引入下载的动效json
 const props = defineProps({
   post: Object,
   articleId: Number
@@ -49,20 +44,21 @@ const showPics = i => {
 };
 //是否展示视频
 const showVideo = ref(false);
-const videos = ["https://www.w3school.com.cn/i/movie.ogg"];
+const video = props.post.article_video;
+const videos = [video];
 
 //展示视频
-// const options = reactive({
-//   video: {
-//     url: "http://vjs.zencdn.net/v/oceans.mp4",
-//     pic: "https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg"
-//   }
-// });
+const playVideo = () => {
+  showVideo.value = true;
+};
 
 const router = useRouter();
 const route = useRoute();
 const gotoDetail = () => {
   router.push(`/postDetail/${props.articleId}`);
+};
+const gotoUser = () => {
+  router.push(`/otherInfo/${props.post.username}`);
 };
 
 const userStore = useUserStore();
@@ -71,18 +67,6 @@ let token = userStore.token;
 
 //未登录去登录弹窗
 const showToLogin = ref(false);
-
-// const loadingArticleDetail = ref(false);
-
-// const like = ref(null); //获取dom
-
-// lottie.loadAnimation({
-//   container: like.value, //选择渲染dom
-//   renderer: "svg", //渲染格式
-//   loop: true, //循环播放
-//   autoplay: true, //是否自动播放
-//   animationData: like_json //渲染动效json
-// });
 
 // 防抖函数
 function debounce(func, delay) {
@@ -99,7 +83,7 @@ const showCommentTable = ref(false);
 const showPopover = ref(false);
 //选择框内容
 let actions = [];
-if (userStore.role == "0") {
+if (userStore.role == "user") {
   actions = [{ text: "举报" }];
 } else {
   actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
@@ -236,13 +220,23 @@ const confirmDelete = async () => {
 </script>
 
 <template>
-  <!-- <div ref="like" /> -->
   <van-image-preview
     v-model:show="show"
     :images="images"
     :startPosition="index"
     @change="onChange"
   />
+  <van-image-preview
+    v-model:show="showVideo"
+    :images="videos"
+    :close-on-click-image="false"
+  >
+    <template #image="{ src }">
+      <video style="width: 100%" controls>
+        <source :src="src" />
+      </video>
+    </template>
+  </van-image-preview>
 
   <van-cell-group inset>
     <div class="cell">
@@ -250,7 +244,7 @@ const confirmDelete = async () => {
         <template #tags>
           <div>
             <div class="info-box">
-              <van-image round :src="post.user_headshot" />
+              <van-image round :src="post.user_headshot" @click="gotoUser" />
               <div class="info">
                 <div style="display: flex; justify-content: space-between">
                   <p class="name">{{ post.name }}</p>
@@ -269,7 +263,9 @@ const confirmDelete = async () => {
                 <p class="grade">{{ post.user_class }}</p>
               </div>
             </div>
-            <p class="post-content">{{ post.article_content }}</p>
+            <p class="post-content" @click="gotoDetail">
+              {{ post.article_content }}
+            </p>
             <div class="video-box">
               <ul class="video">
                 <li
@@ -279,21 +275,11 @@ const confirmDelete = async () => {
                 >
                   <van-image :src="item" />
                 </li>
+                <li v-if="video != ''" class="video-content" @click="playVideo">
+                  <van-icon name="video-o" />
+                </li>
               </ul>
             </div>
-
-            <!-- <vue-dplayer :options="options" /> -->
-            <!-- <van-image-preview
-                  v-model:show="showVideo"
-                  :images="videos"
-                  :close-on-click-image="false"
-                >
-                  <template #image="{ src }">
-                    <video style="width: 100%" controls>
-                      <source :src="src" />
-                    </video>
-                  </template>
-                </van-image-preview> -->
 
             <div v-for="(item, index) in post.article_tags" :key="index">
               <button class="btn">
@@ -520,11 +506,24 @@ const confirmDelete = async () => {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 3px;
     li {
+      height: 100px;
       display: flex;
       border-radius: 8px;
       // justify-content: center;
       overflow: hidden;
     }
+  }
+}
+.video-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  .van-icon {
+    font-size: 50px;
+    color: #fff;
   }
 }
 </style>

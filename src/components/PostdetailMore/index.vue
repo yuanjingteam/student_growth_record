@@ -83,7 +83,7 @@ const showCommentTable = ref(false);
 const showPopover = ref(false);
 //选择框内容
 let actions = [];
-if (userStore.role == "0") {
+if (userStore.role == "user") {
   actions = [{ text: "举报" }];
 } else {
   actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
@@ -254,18 +254,8 @@ const confirmDelete = async () => {
             <p class="grade">{{ post.user_class }}</p>
           </div>
         </div>
-        <p class="post-content">{{ post.article_content }}</p>
+        <p class="post-content">{{ post.article_content.article_text }}</p>
 
-        <van-grid square :column-num="3" :gutter="3">
-          <van-grid-item
-            v-for="(item, index) in images"
-            :key="item"
-            @click="showPics(index)"
-          >
-            <van-image :src="item" />
-          </van-grid-item>
-          <van-grid-item />
-        </van-grid>
         <div>
           <button
             v-for="(item, index) in post.article_tags"
