@@ -33,7 +33,7 @@ const getCommentsList = async () => {
   commentList.value = data.comment_list;
   comment_total.value = data.comment_num;
 };
-getCommentsList();
+// getCommentsList();
 
 //获取帖子详情列表
 const getArticleDetailList = async () => {

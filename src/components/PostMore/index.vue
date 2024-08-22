@@ -485,11 +485,6 @@ const confirmDelete = async () => {
       font-size: 12px;
       color: rgba(166, 168, 173, 1);
     }
-    .time2 {
-      margin-left: 280px;
-      font-size: 12px;
-      color: rgba(166, 168, 173, 1);
-    }
   }
 }
 
@@ -508,8 +503,8 @@ const confirmDelete = async () => {
     li {
       height: 100px;
       display: flex;
+      align-items: center;
       border-radius: 8px;
-      // justify-content: center;
       overflow: hidden;
     }
   }

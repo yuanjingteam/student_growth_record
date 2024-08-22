@@ -35,7 +35,7 @@ const gotoArticleDetail = () => {
             <p class="grade">{{ article.user_class }}</p>
           </div>
         </div>
-        <van-text-ellipsis rows="3" :content="article.article_content" />
+        <van-text-ellipsis rows="3" :content="article.article_content.trim()" />
       </template>
       <template #footer>
         <button class="btn">

@@ -47,6 +47,17 @@ const showPics = i => {
   index.value = i;
 };
 
+//是否展示视频
+const showVideo = ref(false);
+
+const video = props.post.article_content.article_video;
+const videos = [video];
+
+//展示视频
+const playVideo = () => {
+  showVideo.value = true;
+};
+
 const router = useRouter();
 
 const userStore = useUserStore();
@@ -227,6 +238,17 @@ const confirmDelete = async () => {
     :startPosition="index"
     @change="onChange"
   />
+  <van-image-preview
+    v-model:show="showVideo"
+    :images="videos"
+    :close-on-click-image="false"
+  >
+    <template #image="{ src }">
+      <video style="width: 100%" controls>
+        <source :src="src" />
+      </video>
+    </template>
+  </van-image-preview>
   <div class="cell">
     <van-card>
       <template #tags>
@@ -255,13 +277,22 @@ const confirmDelete = async () => {
           </div>
         </div>
         <p class="post-content">{{ post.article_content.article_text }}</p>
-
-        <div>
-          <button
-            v-for="(item, index) in post.article_tags"
-            :key="index"
-            class="btn"
-          >
+        <div class="video-box">
+          <ul class="video">
+            <li
+              v-for="(item, index) in images"
+              :key="item"
+              @click="showPics(index)"
+            >
+              <van-image :src="item" />
+            </li>
+            <li v-if="video != ''" class="video-content" @click="playVideo">
+              <van-icon name="video-o" />
+            </li>
+          </ul>
+        </div>
+        <div v-for="(item, index) in post.article_tags" :key="index">
+          <button class="btn">
             <i-icon icon="icon-park:message" />
             <p class="btn-title">
               {{ item }}
@@ -455,11 +486,6 @@ const confirmDelete = async () => {
       margin-top: 20px;
     }
 
-    .time1 {
-      margin-left: 250px;
-      font-size: 12px;
-      color: rgba(166, 168, 173, 1);
-    }
     .time2 {
       margin-left: 280px;
       font-size: 12px;
@@ -474,10 +500,32 @@ const confirmDelete = async () => {
 .content {
   padding: 16px 16px 160px;
 }
-.van-grid {
+
+.video-box {
   margin-bottom: 15px;
-  .van-grid-item {
-    border-radius: 15px;
+  .video {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    li {
+      height: 100px;
+      display: flex;
+      border-radius: 8px;
+      align-items: center;
+      overflow: hidden;
+    }
+  }
+}
+.video-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  .van-icon {
+    font-size: 50px;
+    color: #fff;
   }
 }
 </style>
