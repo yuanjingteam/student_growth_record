@@ -118,7 +118,7 @@ const reloadCommentSec = async () => {
 };
 //下拉选择框数据
 let actions = [];
-if (userStore.role != "0") {
+if (userStore.role != "user") {
   actions = [{ text: "删除" }];
 }
 

@@ -27,8 +27,8 @@ const loginOut = () => {
       // useStore.$reset();
       // userInfo.$reset();
       useStore.token = "";
-      useStore.username = "";
-      useStore.role = 0;
+      useStore.username = "passenger";
+      useStore.role = "user";
       userInfo.activeTab = 0;
       userInfo.userData = ref({});
 

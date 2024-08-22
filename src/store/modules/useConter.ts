@@ -7,7 +7,7 @@ export const useUserStore = defineStore(
   () => {
     const username = ref("passenger");
     const token = ref("");
-    const role = ref("0");
+    const role = ref("user");
     const router = useRouter();
     // https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg
     // 用户详细资料
@@ -31,7 +31,7 @@ export const useUserStore = defineStore(
     const removeUserInfo = () => {
       username.value = "";
       token.value = "";
-      role.value = "0";
+      role.value = "user";
     };
 
     // 区分身份信息
