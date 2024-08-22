@@ -21,6 +21,9 @@ const getTracks = async () => {
       limit: 10
     });
     inter_info.value = [...inter_info.value, ...data.inter_info];
+    if (data.inter_info.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
     inter_info.value = [];

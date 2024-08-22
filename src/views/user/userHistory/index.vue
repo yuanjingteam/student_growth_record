@@ -20,6 +20,9 @@ const mystar = async () => {
       limit: 10
     });
     userHistory.value = [...userHistory.value, ...data.history];
+    if (data.history.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
   }

@@ -8,8 +8,6 @@ const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
 const username = userStore.username;
-console.log(role);
-// debugger;
 </script>
 
 <template>
@@ -35,9 +33,9 @@ console.log(role);
           <p><i-icon icon="mingcute:classify-2-fill" /></p>
           我的班级
         </div>
-        <div class="op-icon" @click="router.push('./myTracks')">
+        <div class="op-icon" @click="router.push('./myCollect')">
           <p><i-icon icon="hugeicons:touch-interaction-04" /></p>
-          我的足迹
+          我的收藏
         </div>
         <div class="op-icon" @click="router.push('./integralConverter')">
           <p><i-icon icon="mdi:account-convert" /></p>
@@ -48,18 +46,19 @@ console.log(role);
 
     <!-- 我的内容 -->
     <van-cell-group inset class="end">
-      <van-cell
-        v-if="role === 'superman' || 'college'"
-        title="发布通知"
-        is-link
-        @click="router.push('./managerPublish')"
-      />
+      <div v-if="role === 'superman' || role === 'college'">
+        <van-cell
+          title="发布通知"
+          is-link
+          @click="router.push('./managerPublish')"
+        />
+      </div>
       <van-cell
         title="我发布的内容"
         is-link
         @click="router.push('./myPublish')"
       />
-      <van-cell title="我的收藏" is-link @click="router.push('./myCollect')" />
+      <!-- <van-cell title="我的足迹" is-link @click="router.push('./myTracks')" /> -->
       <van-cell
         title="个人介绍"
         is-link

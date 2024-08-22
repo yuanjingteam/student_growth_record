@@ -11,7 +11,7 @@ const router = useRouter();
 const props = defineProps({
   base: Object
 });
-const unread_count = ref(0);
+const unread_count = ref();
 // 获取页面消息
 const userNotice = async () => {
   try {

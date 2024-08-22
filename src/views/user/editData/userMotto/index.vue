@@ -15,7 +15,7 @@ const submitMotto = async () => {
   try {
     const { code } = await changeUserMotto({
       username: userStore.username,
-      user_motto: text
+      user_motto: text.value
     });
     showToast("修改成功");
     userStore.userData.user_motto = text;
