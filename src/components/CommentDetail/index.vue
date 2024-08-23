@@ -7,18 +7,19 @@ import {
   articleUpvoteService
 } from "@/api/article";
 import { useUserStore } from "@/store";
+import { useRouter } from "vue-router";
+import { showSuccessToast } from "vant";
 
+const router = useRouter();
 const userStore = useUserStore();
 //获取token
 const token = userStore.token;
 const props = defineProps({
   data: Object
 });
-console.log(props.data);
-
 //是否点赞
 const ifLike = ref(false);
-ifLike.value = props.data.is_like;
+ifLike.value = props.data.comment_if_like;
 //点赞数量
 const likeAmount = ref();
 likeAmount.value = props.data.comment_like_num;
@@ -44,7 +45,7 @@ const likeBtn = async state => {
 // 创建防抖后的点赞
 const debouncedLike = debounce(likeBtn, 400);
 
-const emit = defineEmits(["refresh"]);
+const emit = defineEmits(["refresh", "reloadCommentTwo"]);
 // 防抖函数
 function debounce(func, delay) {
   let timer;
@@ -87,6 +88,14 @@ const showCommentDetail = ref(false);
 const handleComment = () => {
   showCommentDetail.value = true;
 };
+
+//子传父，重新发起请求接收二级评论
+const reloadCommentSec = async () => {
+  const {
+    data: { comment_se_list }
+  } = await getCommentsSecondService(commentSeData);
+  commentSeList.value = comment_se_list;
+};
 //评论内容
 const comment = ref("");
 //是否展示评论输入框
@@ -108,14 +117,9 @@ const submitComment = async () => {
     comment_content: comment.value
   });
   console.log(res);
+  reloadCommentSec();
 };
-//子传父，重新发起请求接收二级评论
-const reloadCommentSec = async () => {
-  const {
-    data: { comment_se_list }
-  } = await getCommentsSecondService(commentSeData);
-  commentSeList.value = comment_se_list;
-};
+
 //下拉选择框数据
 let actions = [];
 if (userStore.role != "user") {
@@ -134,8 +138,13 @@ const confirmDelete = async () => {
   const res = await deleteCommentsService({
     comment_id: props.data.id
   });
+  showSuccessToast("删除评论成功");
   console.log(res);
   emit("refresh");
+};
+//点击评论头像去用户主页
+const gotoUser = () => {
+  router.push(`/otherInfo/${props.data.username}`);
 };
 </script>
 
@@ -149,6 +158,7 @@ const confirmDelete = async () => {
             :src="data.user_headshot"
             width="3rem"
             height="3rem"
+            @click="gotoUser"
           />
           <div class="info">
             <div class="info-row">
