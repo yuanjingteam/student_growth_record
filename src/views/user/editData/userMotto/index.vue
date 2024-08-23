@@ -29,6 +29,10 @@ const rules = [
   {
     validator: value => {
       // 个性签名长度校验
+      if (value.trim().length === 0) {
+        text.value = "";
+        return "请输入内容";
+      }
       if (value.length > 20) {
         return "个性签名不能超过20个字符";
       }
