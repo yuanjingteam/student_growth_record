@@ -203,4 +203,11 @@ const onRefresh = () => {
   background-color: #f0f1f5;
   overflow: hidden;
 }
+.van-tabs {
+  height: 100%;
+}
+.van-tabs >>> .van-tabs__content {
+  height: 100%;
+  background-color: #f0f1f5;
+}
 </style>

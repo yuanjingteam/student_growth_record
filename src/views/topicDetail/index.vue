@@ -149,6 +149,7 @@ const onRefresh = () => {
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
+
   <van-back-top bottom="100px" />
 </template>
 <style scoped>
@@ -199,5 +200,12 @@ const onRefresh = () => {
 .van-list {
   background-color: #f0f1f5;
   overflow: hidden;
+}
+.van-tabs {
+  height: 100%;
+}
+.van-tabs >>> .van-tabs__content {
+  height: 100%;
+  background-color: #f0f1f5;
 }
 </style>

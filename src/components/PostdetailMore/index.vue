@@ -20,7 +20,7 @@ const props = defineProps({
   post: Object,
   articleId: Number
 });
-
+const emit = defineEmits(["refreshComment"]);
 //是否点赞
 const ifLike = ref(false);
 ifLike.value = props.post.is_like;
@@ -198,6 +198,7 @@ const submitComment = async () => {
   showSuccessToast("发布评论成功");
   comment.value = "";
   showCommentTable.value = !showCommentTable.value;
+  emit("refreshComment");
 };
 //提交举报理由
 const submitReport = async () => {
@@ -255,12 +256,16 @@ const confirmDelete = async () => {
         <div class="info-box">
           <van-image
             round
-            :src="post.user_headshot"
+            :src="
+              post.user_headshot
+                ? post.user_headshot
+                : 'https://picsum.photos/200/300'
+            "
             @click="router.push(`/otherInfo/${post.username}`)"
           />
           <div class="info">
             <div style="display: flex; justify-content: space-between">
-              <p class="name">{{ post.name }}</p>
+              <p class="name">{{ post.name ? post.name : "用户已被删除" }}</p>
               <van-popover
                 v-model:show="showPopover"
                 theme="dark"
@@ -273,10 +278,12 @@ const confirmDelete = async () => {
                 </template>
               </van-popover>
             </div>
-            <p class="grade">{{ post.user_class }}</p>
+            <p v-if="post.username != ''" class="grade">
+              {{ post.user_class }}
+            </p>
           </div>
         </div>
-        <p class="post-content">{{ post.article_content.article_text }}</p>
+        <p class="post-content" v-html="post.article_content.article_text" />
         <div class="video-box">
           <ul class="video">
             <li
@@ -429,6 +436,9 @@ const confirmDelete = async () => {
 
       .info {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
         .name {
           font-size: 16px;
