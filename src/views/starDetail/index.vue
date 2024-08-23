@@ -38,7 +38,7 @@ const getSchoolStarList = async () => {
     } = await getSchoolStar();
     starList.value = starlist;
   } catch {
-    starList.value = [];
+    starList.value = null;
   }
 };
 
@@ -91,10 +91,10 @@ const list = reactive([
       :title="item.title"
       :name="item.name"
     >
-      <van-grid v-if="starList.length > 0" :gutter="10">
+      <van-grid v-if="starList" :gutter="10">
         <van-grid-item
           v-for="item in starList"
-          :key="item.username"
+          :key="item"
           @click="router.push(`/otherInfo/${item.username}`)"
         >
           <div class="star-box">
@@ -132,5 +132,13 @@ const list = reactive([
   p {
     margin-top: 10px;
   }
+}
+
+.van-tabs {
+  height: 100%;
+}
+.van-tabs >>> .van-tabs__content {
+  height: 100%;
+  background-color: #f0f1f5;
 }
 </style>
