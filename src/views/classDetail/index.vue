@@ -24,7 +24,7 @@ const roleList = ref([
   }
 ]);
 //获取当前存储的tab
-const currentName = localStorage.getItem("currentTabDetail") || "最热";
+const currentName = localStorage.getItem("currentTabClassDetail") || "最热";
 //tab内容
 const activeName = ref(currentName);
 
@@ -59,7 +59,7 @@ const getArticleList = async () => {
 };
 //监听切换排序方式
 watch(activeName, (newValue, oldValue) => {
-  localStorage.setItem("currentTabDetail", newValue);
+  localStorage.setItem("currentTabClassDetail", newValue);
   classData.article_page = 1;
   if (newValue == "最热") {
     newValue = "hot";

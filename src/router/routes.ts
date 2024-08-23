@@ -24,26 +24,26 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: "发现"
         }
-      },
-      {
-        path: "inform",
-        name: "Inform",
-        component: () => import("@/views/inform/index.vue"),
-        meta: {
-          title: "通知"
-          //在路由更新时强制刷新页面内容，而不使用缓存中的数据。
-          //控制页面是否需要被缓存。
-          // noCache: true
-        }
-      },
-      {
-        path: "user",
-        name: "User",
-        component: () => import("@/views/user/index.vue"),
-        meta: {
-          title: "我的"
-        }
       }
+      // {
+      //   path: "inform",
+      //   name: "Inform",
+      //   component: () => import("@/views/inform/index.vue"),
+      //   meta: {
+      //     title: "通知"
+      //     //在路由更新时强制刷新页面内容，而不使用缓存中的数据。
+      //     //控制页面是否需要被缓存。
+      //     // noCache: true
+      //   }
+      // },
+      // {
+      //   path: "user",
+      //   name: "User",
+      //   component: () => import("@/views/user/index.vue"),
+      //   meta: {
+      //     title: "我的"
+      //   }
+      // }
     ]
   },
   // {
@@ -277,39 +277,39 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "用户协议"
     }
-  },
-  // 我说,这个是用户通知消息区
-  {
-    path: "/managerNotice",
-    name: "managerNotice",
-    component: () => import("@/views/inform/managerNotice/index.vue"),
-    meta: {
-      title: "管理员消息"
-    }
-  },
-  {
-    path: "/systemNotice",
-    name: "systemNotice",
-    component: () => import("@/views/inform/systemNotice/index.vue"),
-    meta: {
-      title: "系统消息"
-    }
-  },
-  {
-    path: "/userNotice",
-    name: "userNotice",
-    component: () => import("@/views/inform/userNotice/index.vue"),
-    meta: {
-      title: "互动消息"
-    }
-  },
-  {
-    path: "/permNotice",
-    name: "permNotice",
-    component: () => import("@/views/inform/PermNotice/index.vue"),
-    meta: {
-      title: "举报邮箱"
-    }
   }
+  // 我说,这个是用户通知消息区
+  // {
+  //   path: "/managerNotice",
+  //   name: "managerNotice",
+  //   component: () => import("@/views/inform/managerNotice/index.vue"),
+  //   meta: {
+  //     title: "管理员消息"
+  //   }
+  // },
+  // {
+  //   path: "/systemNotice",
+  //   name: "systemNotice",
+  //   component: () => import("@/views/inform/systemNotice/index.vue"),
+  //   meta: {
+  //     title: "系统消息"
+  //   }
+  // },
+  // {
+  //   path: "/userNotice",
+  //   name: "userNotice",
+  //   component: () => import("@/views/inform/userNotice/index.vue"),
+  //   meta: {
+  //     title: "互动消息"
+  //   }
+  // },
+  // {
+  //   path: "/permNotice",
+  //   name: "permNotice",
+  //   component: () => import("@/views/inform/PermNotice/index.vue"),
+  //   meta: {
+  //     title: "举报邮箱"
+  //   }
+  // }
 ];
 export default routes;
