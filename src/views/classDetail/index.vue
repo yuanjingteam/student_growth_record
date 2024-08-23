@@ -1,6 +1,7 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { useClassStore, useUserStore } from "@/store";
+import { showDialog } from "vant";
 import { reactive, ref, watch } from "vue";
 import { searchArticleService } from "@/api/article";
 const route = useRoute();
@@ -89,7 +90,13 @@ const onLoad = async () => {
     finished.value = true;
   }
 };
-
+const upto = () => {
+  if (userStore.username === "passenger") {
+    showDialog({ message: "使用该功能要先去登录哦~" });
+  } else {
+    router.push("/publish");
+  }
+};
 //监听了刷新事件
 const onRefresh = () => {
   // 清空列表数据
@@ -113,7 +120,7 @@ const onRefresh = () => {
       round
       icon="plus"
       type="primary"
-      @click="router.push('/publish')"
+      @click="upto"
     />
     <div class="title" style="display: flex">
       <i-icon icon="icon-park:message" />
