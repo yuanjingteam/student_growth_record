@@ -21,7 +21,9 @@ const articlePublish = async () => {
       limit: 10
     });
     list.value = [...list.value, ...data.content];
-    console.log(list.value);
+    if (data.content.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
   }
@@ -51,10 +53,6 @@ const onRefresh = () => {
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;
   onLoad();
-};
-const show = ref(false);
-const banwei = () => {
-  show.value = true;
 };
 </script>
 

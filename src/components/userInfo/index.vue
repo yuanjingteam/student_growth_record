@@ -139,7 +139,7 @@ if (routername) {
       </div>
     </div>
     <!-- 头部总组件 -->
-    <van-cell-group inset>
+    <van-cell-group>
       <div class="user-header">
         <div v-if="!own" name="other">
           <div class="my-attention" @click="concernChange">
@@ -212,11 +212,14 @@ if (routername) {
 .van-image {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
 }
-
+.van-cell-group {
+  width: 340px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
 .user-header {
   position: relative;
   padding: 10vmin 3.6667vmin 15px;
-  border-radius: 7px;
   overflow: hidden;
 }
 .my-motto {

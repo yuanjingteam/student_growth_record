@@ -10,7 +10,7 @@ const props = defineProps({
     required: false
   }
 });
-const emit = defineEmits(["informRefresh"]);
+// const emit = defineEmits(["informRefresh"]);
 
 const router = useRouter();
 //获取传过来的帖子id
@@ -42,6 +42,7 @@ const isPublic = async () => {
     showSuccessToast("修改成功!");
     midState.value = !midState.value;
     midContent.value = midState.value === true ? "公开" : "私密";
+    location.reload();
   } catch (error) {
     loading.value = false; // 关闭 loading 效果
     console.error("修改文章状态失败:", error);
@@ -134,7 +135,10 @@ const onSelect = async item => {
             </template>
           </van-popover>
         </div>
-        <div class="article_title">#{{ article.article_topic }}</div>
+        <div class="article_title">
+          <i-icon icon="icon-park:topic" />
+          {{ article.article_topic }}
+        </div>
         <van-text-ellipsis
           rows="4"
           :content="article.article_content"
@@ -146,7 +150,6 @@ const onSelect = async item => {
       </template>
       <template #footer>
         <div class="litle_tag">
-          <span>文章话题：</span>
           <button
             v-for="(item, index) in article.article_tags"
             :key="index"
@@ -172,8 +175,8 @@ const onSelect = async item => {
 
 <style lang="less" scoped>
 .article_title {
-  background-color: rgb(234, 239, 246);
-  width: 80px;
+  border-radius: 10px;
+  padding: 0 5px;
   font-size: 16px;
   margin-bottom: 15px;
 }
@@ -216,6 +219,7 @@ const onSelect = async item => {
     .litle_tag {
       display: flex;
       justify-content: flex-start;
+      font-size: 14px;
       margin-bottom: 8px;
       span {
         text-align: start;
@@ -226,7 +230,6 @@ const onSelect = async item => {
         background-color: rgba(0, 81, 255, 0.1);
         border-radius: 10px;
         padding: 0 10px;
-        margin: 0 5px;
         .btn-title {
           color: rgba(0, 81, 255);
           white-space: nowrap;

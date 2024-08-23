@@ -80,11 +80,13 @@ baseUserData();
   </van-overlay>
   <!-- 其他内容 -->
 
-  <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
-  <div class="bg">
-    <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+  <div class="return" @click="router.go(-1)">
+    <i-icon icon="ep:arrow-left-bold" />返回
   </div>
-  <div class="main" />
+  <!-- <van-nav-bar left-text="返回" left-arrow  /> -->
+  <div class="bg">
+    <van-image src="https://www.logo9.net/userfiles/images/9HENANIOSAT.jpg" />
+  </div>
   <van-floating-panel v-model:height="height" :anchors="anchors">
     <div class="camera">
       <i-icon icon="icon-park:camera" />
@@ -173,6 +175,13 @@ baseUserData();
 </template>
 
 <style scoped>
+.return {
+  position: relative;
+  padding: 8px 5px 10px;
+  width: 60px;
+  height: 30px;
+  z-index: 5;
+}
 .van-loading {
   justify-content: center;
   height: 100%;
@@ -190,9 +199,6 @@ baseUserData();
   width: 20px;
   height: 20px;
 }
-/* .van-floating-panel {
-  position: relative;
-} */
 .userImg {
   position: absolute;
   top: -45px;
@@ -214,17 +220,6 @@ baseUserData();
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.van-nav-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1; /* 确保导航栏位于背景图片上方 */
-  --van-nav-bar-background: rgba(255, 255, 255, 0.8); /* 设置半透明背景 */
-  --van-nav-bar-icon-color: black;
-  --van-nav-bar-text-color: black;
-  --van-nav-bar-border-color: transparent; /* 去除底部边框 */
-}
 .bg {
   position: absolute;
   top: 0;
@@ -233,7 +228,8 @@ baseUserData();
   height: 100%;
   background-size: cover;
   background-position: center;
-  filter: blur(2px); /* 模糊背景图片 */
+  /* 模糊背景图片 */
+  /* filter: blur(2px); */
 }
 
 .van-cell {

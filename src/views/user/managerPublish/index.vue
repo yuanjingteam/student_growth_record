@@ -63,7 +63,7 @@ const onSubmit = () => {
     />
     <van-tabs v-model:active="active" @click-tab="onClickTab">
       <van-tab title="管理员通知">
-        <van-form @submit="onSubmit">
+        <van-form v-if="role === 'college'" @submit="onSubmit">
           <van-field
             v-model="content"
             rows="3"
@@ -80,6 +80,13 @@ const onSubmit = () => {
             </van-button>
           </div>
         </van-form>
+        <div v-else>
+          <van-empty
+            image="https://student-grow.oss-cn-beijing.aliyuncs.com/image/nolimit.png"
+            image-size="260"
+            description="暂无使用权限"
+          />
+        </div>
       </van-tab>
       <van-tab title="系统通知">
         <van-form v-if="role === 'superman'" @submit="onSubmit">
@@ -103,7 +110,7 @@ const onSubmit = () => {
           <van-empty
             image="https://student-grow.oss-cn-beijing.aliyuncs.com/image/nolimit.png"
             image-size="260"
-            description="暂无权限,只有系统管理员才能使用"
+            description="暂无使用权限"
           />
         </div>
       </van-tab>
