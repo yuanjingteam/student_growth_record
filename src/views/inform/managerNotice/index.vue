@@ -18,16 +18,12 @@ const loadData = async () => {
       page: page.value++,
       limit: 10
     });
-    if (data.manager_info.length === 0) {
-      finished.value = true;
-    }
     list.value = [...list.value, ...data.manager_info];
     if (data.manager_info.length == 0) {
       finished.value = true;
     }
   } catch {
     finished.value = true;
-    showToast("获取异常,请稍后重试");
   }
 };
 const onLoad = async () => {
@@ -55,7 +51,10 @@ const onRefresh = () => {
 loadData();
 </script>
 <template>
-  <van-empty v-if="!finished" style="width: 100%; height: 100%">
+  <van-empty
+    v-if="!finished && list.length === 0"
+    style="width: 100%; height: 100%"
+  >
     <template #image>
       <video autoplay loop muted>
         <source src="../../../icons/car.mp4" type="video/mp4" />

@@ -6,24 +6,23 @@ const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
 const username = userStore.username;
-console.log(role, 111111);
 
 // 当前页面默认渲染的数据
 const base = reactive([
   {
-    userImg: "src/assets/image/system.png",
+    userImg: "/image/system.png",
     userName: "系统通知"
   },
   {
-    userImg: "src/assets/image/manager.png",
+    userImg: "/image/manager.png",
     userName: "管理员消息"
   },
   {
-    userImg: "src/assets/image/user_1.png",
+    userImg: "/image/user_1.png",
     userName: "互动消息"
   },
   {
-    userImg: "src/assets/image/emaill.png",
+    userImg: "/image/emaill.png",
     userName: "举报邮箱"
   }
 ]);

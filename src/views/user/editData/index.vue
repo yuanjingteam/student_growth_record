@@ -19,20 +19,6 @@ const userId = userStore.username;
 // 取出初始化的数据
 const files = ref([{ url: userStore.userData.user_headshot }]);
 
-// watch(files, async (newValue, oldValue) => {
-//   try {
-//     console.log(newValue, oldValue);
-//     const formData = new FormData();
-//     formData.append("file", files.value[0].file);
-//     const { code } = await changeUserHeadshot(formData);
-//     userStore.userData.user_headshot = newValue;
-//   } catch {
-//     userStore.userData.user_headshot = oldValue;
-//     files.value[0].file = oldValue.url;
-//     debugger;
-//   }
-// });
-
 const beforeRead = async (file, event) => {
   // 检查文件类型是否为图片
   // 检查文件大小是否超过 2MB
@@ -43,10 +29,10 @@ const beforeRead = async (file, event) => {
   try {
     const formData = new FormData();
     formData.append("file", file);
-    await changeUserHeadshot(formData);
-    userStore.user_headshot = data.value.user_headshot;
+    const res = await changeUserHeadshot(formData);
+    userStore.userData.user_headshot = res.data.user_headshot;
+    files.value[0].url = res.data.user_headshot;
     showToast("修改成功");
-
     return true;
   } catch (error) {
     showToast("修改失败");
@@ -63,7 +49,7 @@ const loading = ref(false);
 // 初始化数据
 const data = ref({
   name: "",
-  user_headshot: "",
+  user_headshot: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
   user_class: "",
   user_gender: "",
   user_Identity: "",

@@ -52,7 +52,10 @@ const onRefresh = () => {
 loadData();
 </script>
 <template>
-  <van-empty v-if="!finished" style="width: 100%; height: 100%">
+  <van-empty
+    v-if="!finished && list.length === 0"
+    style="width: 100%; height: 100%"
+  >
     <template #image>
       <video autoplay loop muted>
         <source src="../../../icons/car.mp4" type="video/mp4" />

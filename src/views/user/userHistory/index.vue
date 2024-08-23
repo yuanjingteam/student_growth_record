@@ -96,8 +96,8 @@ const onRefresh = () => {
             <template #icon>
               <van-image
                 round
-                width="2rem"
-                height="2rem"
+                width="3rem"
+                height="3rem"
                 :src="item.user_headshot"
               />
             </template>
@@ -129,9 +129,7 @@ const onRefresh = () => {
   background-color: #f0f1f5;
   height: 100%;
 }
-.content {
-  margin-top: 5px;
-}
+
 .van-image {
   margin: 0 10px 0 5px;
 }
