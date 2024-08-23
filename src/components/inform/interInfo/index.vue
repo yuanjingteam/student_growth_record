@@ -21,23 +21,28 @@ const userNotice = async () => {
       limit: 1
     });
     const thumUnreadCount = res1.data.unread_count;
-
+    if (thumUnreadCount !== undefined) {
+      unread_count.value += thumUnreadCount;
+    }
     // 获取评论通知的未读消息数量
     const res2 = await getUserComNotification({
       page: 1,
       limit: 1
     });
     const comUnreadCount = res2.data.unread_count;
-
+    if (comUnreadCount !== undefined) {
+      unread_count.value += comUnreadCount;
+    }
     // 获取关注通知的未读消息数量
     const res3 = await getUserStarNotification({
       page: 1,
       limit: 1
     });
-    const starUnreadCount = res3.data.unread_count;
 
-    // 计算总的未读消息数量
-    unread_count.value = thumUnreadCount + comUnreadCount + starUnreadCount;
+    const starUnreadCount = res3.data.unread_count;
+    if (starUnreadCount !== undefined) {
+      unread_count.value += starUnreadCount;
+    }
   } catch {}
 };
 userNotice();

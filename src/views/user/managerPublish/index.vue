@@ -101,7 +101,7 @@ const onSubmit = () => {
         </van-form>
         <div v-else>
           <van-empty
-            image="/image/nolimit.png"
+            image="https://student-grow.oss-cn-beijing.aliyuncs.com/image/nolimit.png"
             image-size="260"
             description="暂无权限,只有系统管理员才能使用"
           />
