@@ -122,13 +122,13 @@ const onLoad = async () => {
   if (refreshing.value) {
     if (active.value == 0) {
       thumbList.value = [];
-      page1.value = 0;
+      page1.value = 1;
     } else if (active.value == 1) {
       comList.value = [];
-      page2.value = 0;
+      page2.value = 1;
     } else if (active.value == 2) {
       starList.value = [];
-      page3.value = 0;
+      page3.value = 1;
     }
     refreshing.value = false;
   }

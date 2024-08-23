@@ -69,11 +69,13 @@ const base = reactive([
   position: relative;
   height: 88vh;
   overflow: hidden;
+  background-color: #fff;
 }
 .svg-bg-container {
   position: absolute;
   width: 100%;
-  height: 200px; /* 设置容器高度 */
+  height: 200px;
+  /* 设置容器高度 */
 }
 
 .svg-bg {

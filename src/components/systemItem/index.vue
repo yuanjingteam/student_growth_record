@@ -25,7 +25,7 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
         <van-text-ellipsis :content="data.msg_time" />
       </template>
       <template #right-icon>
-        <i-icon icon="ri:more-fill" />
+        <!-- <i-icon icon="ri:more-fill" /> -->
       </template>
     </van-cell>
     <van-cell>
@@ -46,6 +46,7 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
   margin: 15px;
 }
 .van-cell {
-  background-color: pink;
+  /* background: linear-gradient(to right, #f0f9ff, #d1ecf1); */
+  background: linear-gradient(to right, #e7f1fa, #bfdbfe);
 }
 </style>

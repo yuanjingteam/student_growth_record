@@ -26,7 +26,7 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
       </template>
       <template #right-icon>
         <div v-if="true">
-          <i-icon icon="ri:more-fill" />
+          <!-- <i-icon icon="ri:more-fill" /> -->
         </div>
       </template>
     </van-cell>
@@ -48,6 +48,6 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
   margin: 15px;
 }
 .van-cell {
-  background-color: pink;
+  background: linear-gradient(to right, #e7f1fa, #bfdbfe);
 }
 </style>

@@ -138,7 +138,7 @@ const onRefresh = () => {
 }
 
 .content {
-  background-color: pink;
+  background: linear-gradient(to right, #f0f9ff, #d1ecf1);
   padding: 10px;
   border: 1px solid gray;
   border-radius: 5px;

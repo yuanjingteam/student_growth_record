@@ -87,11 +87,12 @@ const refresh = async () => {
         v-else
         image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
         :image-size="80"
-        description="您还没有发布文章哦"
+        description="这里空空如也~"
         style="width: 100%; height: 100%"
       />
     </div>
   </div>
+
   <van-back-top bottom="100px" />
 </template>
 
