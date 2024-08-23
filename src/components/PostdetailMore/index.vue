@@ -11,11 +11,7 @@ import {
   articleDeleteService
 } from "@/api/article";
 import { showFailToast, showSuccessToast } from "vant";
-import VueDPlayer from "vue-dplayer";
 
-// import lottie from "lottie-web"; //引入动效库
-// import like_json from "@/assets/json/like.json"; //引入下载的动效json
-// import collect_json from "@/assets/json/collect.json"; //引入下载的动效json
 const props = defineProps({
   post: Object,
   articleId: Number
@@ -66,18 +62,6 @@ let token = userStore.token;
 
 //未登录去登录弹窗
 const showToLogin = ref(false);
-
-// const loadingArticleDetail = ref(false);
-
-// const like = ref(null); //获取dom
-
-// lottie.loadAnimation({
-//   container: like.value, //选择渲染dom
-//   renderer: "svg", //渲染格式
-//   loop: true, //循环播放
-//   autoplay: true, //是否自动播放
-//   animationData: like_json //渲染动效json
-// });
 
 // 防抖函数
 function debounce(func, delay) {
@@ -229,6 +213,14 @@ const confirmDelete = async () => {
 
   router.push("/demo");
 };
+//跳转进用户主页
+const gotoUser = () => {
+  if (post.username != "") {
+    router.push(`/otherInfo/${post.username}`);
+  } else {
+    return;
+  }
+};
 </script>
 
 <template>
@@ -261,7 +253,7 @@ const confirmDelete = async () => {
                 ? post.user_headshot
                 : 'https://picsum.photos/200/300'
             "
-            @click="router.push(`/otherInfo/${post.username}`)"
+            @click="gotoUser"
           />
           <div class="info">
             <div style="display: flex; justify-content: space-between">

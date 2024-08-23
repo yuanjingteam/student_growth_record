@@ -9,9 +9,9 @@ const userStore = useUserStore();
 
 //评论总数
 const comment_total = ref(0);
+//从路由中获取文章id
 const articleId = Number(route.params.id);
-//文章详情数据
-//初始化数据要写
+//文章详情数据，初始化数据要写
 const articleData = ref({
   article_content: {
     article_text: ""
@@ -25,7 +25,7 @@ const commentData = {
   comment_page: 1,
   username: userStore.username
 };
-//评论详情列表
+//一级评论详情列表
 const commentList = ref([]);
 //获取评论详情列表
 const getCommentsList = async () => {
@@ -71,11 +71,14 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   commentData.comment_page += 1;
-  try {
-    const res = await getCommentsService(commentData);
+
+  const {
+    data: { comment_list }
+  } = await getCommentsService(commentData);
+  if (comment_list.length > 0) {
+    commentList.value = [...commentList.value, ...comment_list];
     loading.value = false;
-    commentList.value = [...commentList.value, ...res.data.comment_list];
-  } catch {
+  } else {
     finished.value = true;
   }
 };

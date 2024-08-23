@@ -2,44 +2,35 @@
 import { onMounted, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { getClassStar, getGradeStar, getSchoolStar } from "@/api/star";
+
+const router = useRouter();
+
 //成长之星列表
 const starList = ref([]);
-const router = useRouter();
+//当前tab
 const activeName = ref("班级");
 
 //获取班级成长之星
 const getClassStarList = async () => {
-  try {
-    const {
-      data: { starlist }
-    } = await getClassStar();
-    starList.value = starlist;
-  } catch {
-    starList.value = [];
-  }
+  const {
+    data: { starlist }
+  } = await getClassStar();
+  starList.value = starlist;
 };
 
 //获取年级成长之星
 const getGradeStarList = async () => {
-  try {
-    const {
-      data: { starlist }
-    } = await getGradeStar();
-    starList.value = starlist;
-  } catch {
-    starList.value = [];
-  }
+  const {
+    data: { starlist }
+  } = await getGradeStar();
+  starList.value = starlist;
 };
 //获取校级成长之星
 const getSchoolStarList = async () => {
-  try {
-    const {
-      data: { starlist }
-    } = await getSchoolStar();
-    starList.value = starlist;
-  } catch {
-    starList.value = null;
-  }
+  const {
+    data: { starlist }
+  } = await getSchoolStar();
+  starList.value = starlist;
 };
 
 watch(activeName, (newValue, oldValue) => {

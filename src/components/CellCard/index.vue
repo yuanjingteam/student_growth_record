@@ -11,7 +11,6 @@ const router = useRouter();
 //获取传过来的帖子id
 const articleId = ref();
 articleId.value = props.article.article_id;
-console.log(articleId.value);
 
 //跳转到帖子详情页
 const gotoArticleDetail = () => {

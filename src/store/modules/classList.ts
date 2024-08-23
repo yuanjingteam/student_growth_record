@@ -13,7 +13,6 @@ export const useClassStore = defineStore(
         data: { class_list }
       } = await getClassListService();
       classList.value = class_list;
-      console.log("班级已更新");
     };
 
     // const findClassId = className => {

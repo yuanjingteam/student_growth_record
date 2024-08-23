@@ -46,166 +46,166 @@ const routes: Array<RouteRecordRaw> = [
       }
     ]
   },
-  {
-    path: "/articleWait",
-    name: "articleWait",
-    component: () => import("@/views/articleWait/index.vue"),
-    meta: {
-      title: "消息通知"
-    }
-  },
-  {
-    path: "/publish",
-    name: "Publish",
-    component: () => import("@/views/articlePublish/index.vue"),
-    meta: {
-      title: "发布文章"
-    }
-  },
-  {
-    path: "/editData",
-    name: "editData",
-    component: () => import("@/views/user/editData/index.vue"),
-    meta: {
-      title: "编辑资料"
-    }
-  },
-  {
-    path: "/editData/email",
-    name: "email",
-    component: () => import("@/views/user/editData/userEmail/index.vue"),
-    meta: {
-      title: "我的邮箱"
-    }
-  },
-  {
-    path: "/editData/motto",
-    name: "motto",
-    component: () => import("@/views/user/editData/userMotto/index.vue"),
-    meta: {
-      title: "个性签名"
-    }
-  },
-  {
-    path: "/editData/phone",
-    name: "phone",
-    component: () => import("@/views/user/editData/userPhone/index.vue"),
-    meta: {
-      title: "我的电话"
-    }
-  },
-  {
-    path: "/userFans/:username",
-    name: "userFans",
-    component: () => import("@/views/user/fansList/index.vue"),
-    meta: {
-      title: "粉丝列表"
-    }
-  },
-  {
-    path: "/userAttention/:username",
-    name: "userAttention",
-    component: () => import("@/views/user/attentionList/index.vue"),
-    meta: {
-      title: "关注列表"
-    }
-  },
-  {
-    path: "/myHistory",
-    name: "myHistory",
-    component: () => import("@/views/user/userHistory/index.vue"),
-    meta: {
-      title: "浏览记录"
-    }
-  },
-  {
-    path: "/myclass",
-    name: "myclass",
-    component: () => import("@/views/user/myClass/index.vue"),
-    meta: {
-      title: "我的班级"
-    }
-  },
-  {
-    path: "/myTracks",
-    name: "myTracks",
-    component: () => import("@/views/user/myTracks/index.vue"),
-    meta: {
-      title: "我的足迹"
-    }
-  },
-  {
-    path: "/integralConverter",
-    name: "integralConverter",
-    component: () => import("@/views/user/integralConverter/index.vue"),
-    meta: {
-      title: "积分换算器"
-    }
-  },
-  {
-    path: "/managerPublish",
-    name: "managerPublish",
-    component: () => import("@/views/user/managerPublish/index.vue"),
-    meta: {
-      title: "管理员发布通知"
-    }
-  },
-  {
-    path: "/myPublish",
-    name: "myPublish",
-    component: () => import("@/views/user/myPublish/index.vue"),
-    meta: {
-      title: "我发布的内容"
-    }
-  },
-  {
-    path: "/myCollect",
-    name: "myCollect",
-    component: () => import("@/views/user/myCollect/index.vue"),
-    meta: {
-      title: "我的收藏"
-    }
-  },
-  {
-    path: "/otherInfo/otherIntroduce/:username",
-    name: "otherIntroduce",
-    component: () => import("@/views/otherIntroduce/index.vue"),
-    meta: {
-      title: "他人介绍"
-    }
-  },
-  {
-    path: "/selfIntroduce",
-    name: "selfIntroduce",
-    component: () => import("@/views/user/selfIntroduce/index.vue"),
-    meta: {
-      title: "个人介绍"
-    }
-  },
-  {
-    path: "/feedBack",
-    name: "feedBack",
-    component: () => import("@/views/user/feedBack/index.vue"),
-    meta: {
-      title: "意见反馈"
-    }
-  },
-  {
-    path: "/sets",
-    name: "sets",
-    component: () => import("@/views/user/sets/index.vue"),
-    meta: {
-      title: "设置"
-    }
-  },
-  {
-    path: "/otherInfo/:username",
-    name: "otherInfo",
-    component: () => import("@/views/otherInfo/index.vue"),
-    meta: {
-      title: "他人信息"
-    }
-  },
+  // {
+  //   path: "/articleWait",
+  //   name: "articleWait",
+  //   component: () => import("@/views/articleWait/index.vue"),
+  //   meta: {
+  //     title: "消息通知"
+  //   }
+  // },
+  // {
+  //   path: "/publish",
+  //   name: "Publish",
+  //   component: () => import("@/views/articlePublish/index.vue"),
+  //   meta: {
+  //     title: "发布文章"
+  //   }
+  // },
+  // {
+  //   path: "/editData",
+  //   name: "editData",
+  //   component: () => import("@/views/user/editData/index.vue"),
+  //   meta: {
+  //     title: "编辑资料"
+  //   }
+  // },
+  // {
+  //   path: "/editData/email",
+  //   name: "email",
+  //   component: () => import("@/views/user/editData/userEmail/index.vue"),
+  //   meta: {
+  //     title: "我的邮箱"
+  //   }
+  // },
+  // {
+  //   path: "/editData/motto",
+  //   name: "motto",
+  //   component: () => import("@/views/user/editData/userMotto/index.vue"),
+  //   meta: {
+  //     title: "个性签名"
+  //   }
+  // },
+  // {
+  //   path: "/editData/phone",
+  //   name: "phone",
+  //   component: () => import("@/views/user/editData/userPhone/index.vue"),
+  //   meta: {
+  //     title: "我的电话"
+  //   }
+  // },
+  // {
+  //   path: "/userFans/:username",
+  //   name: "userFans",
+  //   component: () => import("@/views/user/fansList/index.vue"),
+  //   meta: {
+  //     title: "粉丝列表"
+  //   }
+  // },
+  // {
+  //   path: "/userAttention/:username",
+  //   name: "userAttention",
+  //   component: () => import("@/views/user/attentionList/index.vue"),
+  //   meta: {
+  //     title: "关注列表"
+  //   }
+  // },
+  // {
+  //   path: "/myHistory",
+  //   name: "myHistory",
+  //   component: () => import("@/views/user/userHistory/index.vue"),
+  //   meta: {
+  //     title: "浏览记录"
+  //   }
+  // },
+  // {
+  //   path: "/myclass",
+  //   name: "myclass",
+  //   component: () => import("@/views/user/myClass/index.vue"),
+  //   meta: {
+  //     title: "我的班级"
+  //   }
+  // },
+  // {
+  //   path: "/myTracks",
+  //   name: "myTracks",
+  //   component: () => import("@/views/user/myTracks/index.vue"),
+  //   meta: {
+  //     title: "我的足迹"
+  //   }
+  // },
+  // {
+  //   path: "/integralConverter",
+  //   name: "integralConverter",
+  //   component: () => import("@/views/user/integralConverter/index.vue"),
+  //   meta: {
+  //     title: "积分换算器"
+  //   }
+  // },
+  // {
+  //   path: "/managerPublish",
+  //   name: "managerPublish",
+  //   component: () => import("@/views/user/managerPublish/index.vue"),
+  //   meta: {
+  //     title: "管理员发布通知"
+  //   }
+  // },
+  // {
+  //   path: "/myPublish",
+  //   name: "myPublish",
+  //   component: () => import("@/views/user/myPublish/index.vue"),
+  //   meta: {
+  //     title: "我发布的内容"
+  //   }
+  // },
+  // {
+  //   path: "/myCollect",
+  //   name: "myCollect",
+  //   component: () => import("@/views/user/myCollect/index.vue"),
+  //   meta: {
+  //     title: "我的收藏"
+  //   }
+  // },
+  // {
+  //   path: "/otherInfo/otherIntroduce/:username",
+  //   name: "otherIntroduce",
+  //   component: () => import("@/views/otherIntroduce/index.vue"),
+  //   meta: {
+  //     title: "他人介绍"
+  //   }
+  // },
+  // {
+  //   path: "/selfIntroduce",
+  //   name: "selfIntroduce",
+  //   component: () => import("@/views/user/selfIntroduce/index.vue"),
+  //   meta: {
+  //     title: "个人介绍"
+  //   }
+  // },
+  // {
+  //   path: "/feedBack",
+  //   name: "feedBack",
+  //   component: () => import("@/views/user/feedBack/index.vue"),
+  //   meta: {
+  //     title: "意见反馈"
+  //   }
+  // },
+  // {
+  //   path: "/sets",
+  //   name: "sets",
+  //   component: () => import("@/views/user/sets/index.vue"),
+  //   meta: {
+  //     title: "设置"
+  //   }
+  // },
+  // {
+  //   path: "/otherInfo/:username",
+  //   name: "otherInfo",
+  //   component: () => import("@/views/otherInfo/index.vue"),
+  //   meta: {
+  //     title: "他人信息"
+  //   }
+  // },
   {
     path: "/login",
     name: "Login",

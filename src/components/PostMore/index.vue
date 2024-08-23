@@ -33,7 +33,7 @@ collectAmount.value = props.post.collect_amount;
 const show = ref(false);
 const index = ref(0);
 const images = props.post.article_pics;
-
+//切换图片
 const onChange = newIndex => {
   index.value = newIndex;
 };
@@ -53,12 +53,17 @@ const playVideo = () => {
 };
 
 const router = useRouter();
-const route = useRoute();
+//点击文章内容跳转帖子详情
 const gotoDetail = () => {
   router.push(`/postDetail/${props.articleId}`);
 };
+//点击头像进入主页
 const gotoUser = () => {
-  router.push(`/otherInfo/${props.post.username}`);
+  if (post.username != "") {
+    router.push(`/otherInfo/${props.post.username}`);
+  } else {
+    return;
+  }
 };
 
 const userStore = useUserStore();
