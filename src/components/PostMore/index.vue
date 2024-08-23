@@ -244,20 +244,10 @@ const confirmDelete = async () => {
         <template #tags>
           <div>
             <div class="info-box">
-              <van-image
-                round
-                :src="
-                  post.user_headshot
-                    ? post.user_headshot
-                    : 'https://picsum.photos/200/300'
-                "
-                @click="gotoUser"
-              />
+              <van-image round :src="post.user_headshot" @click="gotoUser" />
               <div class="info">
                 <div style="display: flex; justify-content: space-between">
-                  <p class="name">
-                    {{ post.name ? post.name : "用户已被删除" }}
-                  </p>
+                  <p class="name">{{ post.name }}</p>
                   <van-popover
                     v-model:show="showPopover"
                     theme="dark"
@@ -270,16 +260,12 @@ const confirmDelete = async () => {
                     </template>
                   </van-popover>
                 </div>
-                <p v-if="post.username != ''" class="grade">
-                  {{ post.user_class }}
-                </p>
+                <p class="grade">{{ post.user_class }}</p>
               </div>
             </div>
-            <p
-              class="post-content"
-              @click="gotoDetail"
-              v-html="post.article_content"
-            />
+            <p class="post-content" @click="gotoDetail">
+              {{ post.article_content }}
+            </p>
             <div class="video-box">
               <ul class="video">
                 <li
@@ -437,13 +423,9 @@ const confirmDelete = async () => {
 
       .info {
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
 
         .name {
           font-size: 16px;
-          line-height: 30px;
         }
 
         .grade {
@@ -503,6 +485,11 @@ const confirmDelete = async () => {
       font-size: 12px;
       color: rgba(166, 168, 173, 1);
     }
+    .time2 {
+      margin-left: 280px;
+      font-size: 12px;
+      color: rgba(166, 168, 173, 1);
+    }
   }
 }
 
@@ -521,8 +508,8 @@ const confirmDelete = async () => {
     li {
       height: 100px;
       display: flex;
-      align-items: center;
       border-radius: 8px;
+      // justify-content: center;
       overflow: hidden;
     }
   }
