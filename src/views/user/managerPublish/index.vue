@@ -16,7 +16,7 @@ const onClickTab = () => {
   content.value = "";
 };
 const isPublished = async () => {
-  if (active.value === 0) {
+  if (active.value === 1) {
     const { code } = await publishSystemMsg({ msg_content: content.value });
     if (code === 200) {
       loading.value = false; // 关闭 loading 效果
@@ -101,7 +101,7 @@ const onSubmit = () => {
         </van-form>
         <div v-else>
           <van-empty
-            image="src/assets/image/nolimit.png"
+            image="/image/nolimit.png"
             image-size="260"
             description="暂无权限,只有系统管理员才能使用"
           />
