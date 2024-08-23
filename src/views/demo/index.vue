@@ -9,13 +9,16 @@ import { useTopicStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
+//获取pinia的token
 const token = userStore.token;
 const topicStore = useTopicStore();
-
 const router = useRouter();
+
+//首页帖子列表
+const articleList = ref([]);
 //分类标签tabber栏
 const topicList = ref([]);
-//更新仓库数据
+//重新发送请求更新仓库数据
 topicStore.getTopicList();
 topicList.value = topicStore.topicList;
 //搜索框输入内容
@@ -44,34 +47,25 @@ function debounce(func, delay) {
     timer = setTimeout(() => func.apply(this, args), delay);
   };
 }
-//首页帖子列表
-const articleList = ref([]);
 
 //获取注册天数
 const registerDay = async () => {
   const { data } = await getRegisterDay();
   registerTime.value = data.plus_time;
 };
-if (token != "") registerDay();
-//是否展示搜索历史记录
-const showHistory = ref(false);
-//搜索框获取焦点
-const onFocus = () => {
-  showHistory.value = true;
-};
+if (token != "") {
+  registerDay();
+}
+
 //搜索框事件
 const onSearch = async () => {
   searchData.article_page = 1;
   searchData.key_word = inputValue.value;
   searchData.topic_name = activeName.value;
-  try {
-    const {
-      data: { content }
-    } = await searchArticleService(searchData);
-    articleList.value = content;
-  } catch {
-    articleList.value = [];
-  }
+  const {
+    data: { content }
+  } = await searchArticleService(searchData);
+  articleList.value = content;
 };
 onSearch();
 // 创建防抖后的搜索函数
@@ -83,14 +77,11 @@ watch(activeName, async (newValue, oldValue) => {
   searchData.article_page = 1;
   searchData.key_word = inputValue.value;
   searchData.topic_name = newValue;
-  try {
-    const {
-      data: { content }
-    } = await searchArticleService(searchData);
-    articleList.value = content;
-  } catch {
-    articleList.value = [];
-  }
+
+  const {
+    data: { content }
+  } = await searchArticleService(searchData);
+  articleList.value = content;
 });
 
 //控制列表加载状态的显示和隐藏
@@ -110,11 +101,14 @@ const onLoad = async () => {
   searchData.key_word = inputValue.value;
   searchData.topic_name = activeName.value;
   searchData.article_page += 1;
-  try {
-    const res = await searchArticleService(searchData);
+
+  const {
+    data: { content }
+  } = await searchArticleService(searchData);
+  if (content.length > 0) {
+    articleList.value = [...articleList.value, ...content];
     loading.value = false;
-    articleList.value = [...articleList.value, ...res.data.content];
-  } catch {
+  } else {
     finished.value = true;
   }
 };
@@ -133,6 +127,13 @@ const onRefresh = () => {
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;
   onLoad();
+};
+
+//是否展示搜索历史记录
+const showHistory = ref(false);
+//搜索框获取焦点
+const onFocus = () => {
+  showHistory.value = true;
 };
 </script>
 <template>
@@ -201,7 +202,6 @@ const onRefresh = () => {
           />
         </van-list>
       </van-pull-refresh>
-
       <van-empty v-else image="search" description="没有符合该描述的帖子呢" />
     </van-tab>
   </van-tabs>

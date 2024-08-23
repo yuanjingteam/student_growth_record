@@ -81,11 +81,14 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   articleData.article_page += 1;
-  try {
-    const res = await searchArticleService(articleData);
+
+  const {
+    data: { content }
+  } = await searchArticleService(articleData);
+  if (content.length > 0) {
+    articleList.value = [...articleList.value, ...content];
     loading.value = false;
-    articleList.value = [...articleList.value, ...res.data.content];
-  } catch {
+  } else {
     finished.value = true;
   }
 };
@@ -156,6 +159,7 @@ const onRefresh = () => {
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
+
   <van-back-top bottom="100px" />
 </template>
 <style scoped>
@@ -206,5 +210,12 @@ const onRefresh = () => {
 .van-list {
   background-color: #f0f1f5;
   overflow: hidden;
+}
+.van-tabs {
+  height: 100%;
+}
+.van-tabs >>> .van-tabs__content {
+  height: 100%;
+  background-color: #f0f1f5;
 }
 </style>

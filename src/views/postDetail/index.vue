@@ -9,9 +9,9 @@ const userStore = useUserStore();
 
 //评论总数
 const comment_total = ref(0);
+//从路由中获取文章id
 const articleId = Number(route.params.id);
-//文章详情数据
-//初始化数据要写
+//文章详情数据，初始化数据要写
 const articleData = ref({
   article_content: {
     article_text: ""
@@ -22,13 +22,15 @@ const commentData = {
   article_id: articleId,
   comment_sort: "new",
   comment_count: 5,
-  comment_page: 0,
+  comment_page: 1,
   username: userStore.username
 };
-//评论详情列表
+//一级评论详情列表
 const commentList = ref([]);
 //获取评论详情列表
 const getCommentsList = async () => {
+  commentData.comment_page = 1;
+  commentData.comment_sort = "new";
   const { data } = await getCommentsService(commentData);
   commentList.value = data.comment_list;
   comment_total.value = data.comment_num;
@@ -48,14 +50,10 @@ getArticleDetailList();
 
 //切换状态获取类型信息
 const getType = async state => {
-  commentData.comment_way = state;
+  commentData.comment_sort = state;
   const { data } = await getCommentsService(commentData);
   commentList.value = data.comment_list;
   comment_total.value = data.comment_num;
-};
-//重新获取数据
-const refresh = async () => {
-  getCommentsList();
 };
 
 //控制列表加载状态的显示和隐藏
@@ -73,13 +71,20 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   commentData.comment_page += 1;
-  try {
-    const res = await getCommentsService(commentData);
+
+  const {
+    data: { comment_list }
+  } = await getCommentsService(commentData);
+  if (comment_list.length > 0) {
+    commentList.value = [...commentList.value, ...comment_list];
     loading.value = false;
-    commentList.value = [...commentList.value, ...res.data.comment_list];
-  } catch {
+  } else {
     finished.value = true;
   }
+};
+//重新加载评论数据
+const onRefreshCommentData = () => {
+  getCommentsList();
 };
 
 //监听了刷新事件
@@ -104,6 +109,7 @@ const onRefresh = () => {
       v-if="articleData.article_content.article_text != ''"
       :post="articleData"
       :articleId="articleId"
+      @refreshComment="onRefreshCommentData"
     />
 
     <van-cell>
@@ -131,7 +137,7 @@ const onRefresh = () => {
           v-for="item in commentList"
           :key="item.id"
           :data="item"
-          @refresh="refresh"
+          @refresh="onRefreshCommentData"
         />
       </van-list>
     </van-pull-refresh>

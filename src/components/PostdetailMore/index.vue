@@ -11,16 +11,12 @@ import {
   articleDeleteService
 } from "@/api/article";
 import { showFailToast, showSuccessToast } from "vant";
-import VueDPlayer from "vue-dplayer";
 
-// import lottie from "lottie-web"; //引入动效库
-// import like_json from "@/assets/json/like.json"; //引入下载的动效json
-// import collect_json from "@/assets/json/collect.json"; //引入下载的动效json
 const props = defineProps({
   post: Object,
   articleId: Number
 });
-
+const emit = defineEmits(["refreshComment"]);
 //是否点赞
 const ifLike = ref(false);
 ifLike.value = props.post.is_like;
@@ -47,6 +43,17 @@ const showPics = i => {
   index.value = i;
 };
 
+//是否展示视频
+const showVideo = ref(false);
+
+const video = props.post.article_content.article_video;
+const videos = [video];
+
+//展示视频
+const playVideo = () => {
+  showVideo.value = true;
+};
+
 const router = useRouter();
 
 const userStore = useUserStore();
@@ -55,18 +62,6 @@ let token = userStore.token;
 
 //未登录去登录弹窗
 const showToLogin = ref(false);
-
-// const loadingArticleDetail = ref(false);
-
-// const like = ref(null); //获取dom
-
-// lottie.loadAnimation({
-//   container: like.value, //选择渲染dom
-//   renderer: "svg", //渲染格式
-//   loop: true, //循环播放
-//   autoplay: true, //是否自动播放
-//   animationData: like_json //渲染动效json
-// });
 
 // 防抖函数
 function debounce(func, delay) {
@@ -187,6 +182,7 @@ const submitComment = async () => {
   showSuccessToast("发布评论成功");
   comment.value = "";
   showCommentTable.value = !showCommentTable.value;
+  emit("refreshComment");
 };
 //提交举报理由
 const submitReport = async () => {
@@ -217,6 +213,14 @@ const confirmDelete = async () => {
 
   router.push("/demo");
 };
+//跳转进用户主页
+const gotoUser = () => {
+  if (post.username != "") {
+    router.push(`/otherInfo/${post.username}`);
+  } else {
+    return;
+  }
+};
 </script>
 
 <template>
@@ -227,18 +231,33 @@ const confirmDelete = async () => {
     :startPosition="index"
     @change="onChange"
   />
+  <van-image-preview
+    v-model:show="showVideo"
+    :images="videos"
+    :close-on-click-image="false"
+  >
+    <template #image="{ src }">
+      <video style="width: 100%" controls>
+        <source :src="src" />
+      </video>
+    </template>
+  </van-image-preview>
   <div class="cell">
     <van-card>
       <template #tags>
         <div class="info-box">
           <van-image
             round
-            :src="post.user_headshot"
-            @click="router.push(`/otherInfo/${post.username}`)"
+            :src="
+              post.user_headshot
+                ? post.user_headshot
+                : 'https://picsum.photos/200/300'
+            "
+            @click="gotoUser"
           />
           <div class="info">
             <div style="display: flex; justify-content: space-between">
-              <p class="name">{{ post.name }}</p>
+              <p class="name">{{ post.name ? post.name : "用户已被删除" }}</p>
               <van-popover
                 v-model:show="showPopover"
                 theme="dark"
@@ -251,17 +270,28 @@ const confirmDelete = async () => {
                 </template>
               </van-popover>
             </div>
-            <p class="grade">{{ post.user_class }}</p>
+            <p v-if="post.username != ''" class="grade">
+              {{ post.user_class }}
+            </p>
           </div>
         </div>
-        <p class="post-content">{{ post.article_content.article_text }}</p>
-
-        <div>
-          <button
-            v-for="(item, index) in post.article_tags"
-            :key="index"
-            class="btn"
-          >
+        <p class="post-content" v-html="post.article_content.article_text" />
+        <div class="video-box">
+          <ul class="video">
+            <li
+              v-for="(item, index) in images"
+              :key="item"
+              @click="showPics(index)"
+            >
+              <van-image :src="item" />
+            </li>
+            <li v-if="video != ''" class="video-content" @click="playVideo">
+              <van-icon name="video-o" />
+            </li>
+          </ul>
+        </div>
+        <div v-for="(item, index) in post.article_tags" :key="index">
+          <button class="btn">
             <i-icon icon="icon-park:message" />
             <p class="btn-title">
               {{ item }}
@@ -398,6 +428,9 @@ const confirmDelete = async () => {
 
       .info {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
         .name {
           font-size: 16px;
@@ -455,11 +488,6 @@ const confirmDelete = async () => {
       margin-top: 20px;
     }
 
-    .time1 {
-      margin-left: 250px;
-      font-size: 12px;
-      color: rgba(166, 168, 173, 1);
-    }
     .time2 {
       margin-left: 280px;
       font-size: 12px;
@@ -474,10 +502,32 @@ const confirmDelete = async () => {
 .content {
   padding: 16px 16px 160px;
 }
-.van-grid {
+
+.video-box {
   margin-bottom: 15px;
-  .van-grid-item {
-    border-radius: 15px;
+  .video {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    li {
+      height: 100px;
+      display: flex;
+      border-radius: 8px;
+      align-items: center;
+      overflow: hidden;
+    }
+  }
+}
+.video-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  .van-icon {
+    font-size: 50px;
+    color: #fff;
   }
 }
 </style>

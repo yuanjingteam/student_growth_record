@@ -13,9 +13,6 @@ export const useTopicStore = defineStore(
         data: { topic_list }
       } = await getTopicListService();
       topicList.value = topic_list;
-      console.log(topicList.value);
-
-      console.log("话题已更新");
     };
     // const findTopicId = (topicName: String) => {
     //   const topic = topicList.value.find(
