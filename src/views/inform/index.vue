@@ -10,19 +10,23 @@ const username = userStore.username;
 // 当前页面默认渲染的数据
 const base = reactive([
   {
-    userImg: "/image/system.png",
+    userImg:
+      "https://student-grow.oss-cn-beijing.aliyuncs.com/image/system.png",
     userName: "系统通知"
   },
   {
-    userImg: "/image/manager.png",
+    userImg:
+      "https://student-grow.oss-cn-beijing.aliyuncs.com/image/manager.png",
     userName: "管理员消息"
   },
   {
-    userImg: "/image/user_1.png",
+    userImg:
+      "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_1.png",
     userName: "互动消息"
   },
   {
-    userImg: "/image/emaill.png",
+    userImg:
+      "https://student-grow.oss-cn-beijing.aliyuncs.com/image/emaill.png",
     userName: "举报邮箱"
   }
 ]);
@@ -41,9 +45,9 @@ const base = reactive([
       <inter-info :base="base[2]" />
 
       <!-- 举报邮箱 -->
-      <div v-if="role !== 'user'">
-        <perm-notice :base="base[3]" />
-      </div>
+      <div v-if="role !== 'user'" />
+      <perm-notice v-else :base="base[3]" />
+
       <div class="svg-bg-container">
         <div class="svg-bg">
           <img src="../../icons/svg/planet_3.svg" alt="SVG 背景图" />
