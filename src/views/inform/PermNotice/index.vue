@@ -40,7 +40,6 @@ const onLoad = async () => {
       finished.value = true;
     }
   } catch (error) {
-    showToast("获取失败,稍后重试");
     finished.value = true;
   }
 };
