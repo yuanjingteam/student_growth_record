@@ -69,6 +69,7 @@ const refresh = async () => {
       <van-pull-refresh
         v-if="list.length > 0"
         v-model="refreshing"
+        pull-distance
         @refresh="onRefresh"
       >
         <van-list

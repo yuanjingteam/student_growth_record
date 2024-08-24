@@ -13,8 +13,12 @@ const data = ref({
     {
       article_id: 0,
       article_content: "",
-      report_msg: "",
-      report_time: ""
+      report_content: [
+        {
+          report_time: "",
+          report_msg: ""
+        }
+      ]
     }
   ],
   unread_count: 0
@@ -36,6 +40,9 @@ reportEmail();
     </template>
     <template #value>
       <div class="right-content">
+        <!-- <div v-if="data.article_ban.length !== 0" class="va-time">
+          {{ data.article_ban[0].report_content[0].report_time }}
+        </div> -->
         <div v-if="data.unread_count !== 0">
           <van-badge :content="data.unread_count" max="99" />
         </div>
