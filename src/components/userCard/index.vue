@@ -104,6 +104,10 @@ const onSelect = async item => {
       });
   }
 };
+const formattedContent = content => {
+  // 使用正则表达式替换 <br/> 标签为换行符
+  return content.replace(/<br\s*\/?>/g, "\n");
+};
 </script>
 
 <template>
@@ -141,7 +145,7 @@ const onSelect = async item => {
         </div>
         <van-text-ellipsis
           rows="4"
-          :content="article.article_content"
+          :content="formattedContent(props.article.article_content)"
           @click="gotoArticleDetail()"
         />
         <div class="info-box">
