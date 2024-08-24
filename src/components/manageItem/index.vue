@@ -50,4 +50,7 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
 .van-cell {
   background: linear-gradient(to right, #e7f1fa, #bfdbfe);
 }
+.van-image {
+  margin: 2px 8px 0px 0px;
+}
 </style>

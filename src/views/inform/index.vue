@@ -45,7 +45,7 @@ const base = reactive([
       <inter-info :base="base[2]" />
 
       <!-- 举报邮箱 -->
-      <div v-if="role !== 'user'" />
+      <div v-if="role === 'user'" />
       <perm-notice v-else :base="base[3]" />
 
       <div class="svg-bg-container">
