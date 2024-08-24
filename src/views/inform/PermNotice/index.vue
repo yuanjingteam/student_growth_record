@@ -58,6 +58,9 @@ const onLoad = async () => {
     title="举报邮箱"
     left-text="返回"
     left-arrow
+    fixed
+    placeholder
+    z-index="3"
     @click-left="router.go(-1)"
   />
   <van-list

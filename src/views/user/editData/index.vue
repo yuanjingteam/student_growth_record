@@ -30,8 +30,8 @@ const beforeRead = async (file, event) => {
     const formData = new FormData();
     formData.append("file", file);
     const res = await changeUserHeadshot(formData);
-    userStore.userData.user_headshot = res.data.user_headshot;
     files.value[0].url = res.data.user_headshot;
+    userStore.userData.user_headshot = res.data.user_headshot;
     showToast("修改成功");
     return true;
   } catch (error) {
@@ -188,11 +188,11 @@ baseUserData();
 }
 .camera {
   position: absolute;
-  top: 0;
-  left: 200px;
+  top: 5px;
+  left: 205px;
   z-index: 5;
-  background: rgba(216, 214, 214, 0.9);
-  padding: 5px 5px;
+  background: rgba(216, 214, 214, 0.6);
+  padding: 5px 5px 3px;
   border-radius: 20px;
 }
 .camera .i-icon {

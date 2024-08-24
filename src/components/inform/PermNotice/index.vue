@@ -27,7 +27,7 @@ const data = ref({
 // 获取举报邮箱
 const reportEmail = async () => {
   try {
-    const res = await getreportEmail({ limit: 1, page: 1 });
+    const res = await getreportEmail({ page: 1, limit: 1 });
     data.value = res.data;
   } catch {}
 };
