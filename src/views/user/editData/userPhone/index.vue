@@ -8,7 +8,7 @@ const userStore = useUserStore();
 const router = useRouter();
 const text = ref(0);
 const formRef = ref();
-
+const showState = ref(false);
 text.value = userStore.userData.phone_number;
 
 // 更新用户电话
@@ -38,17 +38,7 @@ const rules = [
 ];
 const onClickRight = async () => {
   await formRef.value.validate();
-  showConfirmDialog({
-    title: "我的电话",
-    message: "确认修改手机号吗?"
-  })
-    .then(async () => {
-      // 更新电话
-      await submitPhone();
-    })
-    .catch(() => {
-      // on cancel
-    });
+  showState.value = true;
 };
 </script>
 <template>
@@ -77,4 +67,12 @@ const onClickRight = async () => {
       </van-cell>
     </van-cell-group>
   </van-form>
+  <van-dialog
+    v-model:show="showState"
+    title="我的电话"
+    message="确认修改手机号吗"
+    show-cancel-button
+    showConfirmButton
+    @confirm="submitPhone"
+  />
 </template>

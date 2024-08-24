@@ -8,7 +8,7 @@ const userStore = useUserStore();
 const router = useRouter();
 const text = ref("");
 const formRef = ref();
-
+const showState = ref(false);
 text.value = userStore.userData.user_motto;
 // 更新用户个签
 const submitMotto = async () => {
@@ -49,18 +49,7 @@ const rules = [
 
 const onClickRight = async () => {
   await formRef.value.validate();
-
-  showConfirmDialog({
-    title: "提交个签",
-    message: "确认修改个性签名吗"
-  })
-    .then(async () => {
-      // 更新个签
-      await submitMotto();
-    })
-    .catch(() => {
-      // on cancel
-    });
+  showState.value = true;
 };
 </script>
 <template>
@@ -92,5 +81,13 @@ const onClickRight = async () => {
       </van-cell>
     </van-cell-group>
   </van-form>
+  <van-dialog
+    v-model:show="showState"
+    title="提交个签"
+    message="确认修改个性签名吗"
+    show-cancel-button
+    showConfirmButton
+    @confirm="submitMotto"
+  />
 </template>
 <style scoped></style>

@@ -62,7 +62,7 @@ const refresh = async () => {
       fixed
       placeholder
       z-index="3"
-      @click-left="router.push('/user')"
+      @click-left="router.go(-1)"
     />
     <div class="my-w">
       <user-info />
@@ -84,6 +84,7 @@ const refresh = async () => {
             :key="index"
             :article="item"
             :state="item.article_status"
+            :isban="item.ban"
             @informRefresh="refresh"
           />
         </van-list>
@@ -96,7 +97,6 @@ const refresh = async () => {
       />
     </div>
   </div>
-
   <van-back-top bottom="100px" />
 </template>
 
