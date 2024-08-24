@@ -56,7 +56,8 @@ const isDelete = async () => {
     await articleDeleteService({ article_id: articleId });
     loading.value = false; // 关闭 loading 效果
     showToast("删除成功");
-    emit("informRefresh");
+    location.reload();
+    // emit("informRefresh");
   } catch (error) {
     loading.value = false; // 关闭 loading 效果
     console.error("删除文章失败:", error);
