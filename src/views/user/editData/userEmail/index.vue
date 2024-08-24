@@ -9,6 +9,7 @@ const userStore = useUserStore();
 const router = useRouter();
 const text = ref("");
 const formRef = ref();
+const showState = ref(false);
 text.value = userStore.userData.user_email;
 // 更新用户邮箱
 const submitEmail = async () => {
@@ -44,16 +45,7 @@ const rules = [
 
 const onClickRight = async () => {
   await formRef.value.validate();
-
-  showConfirmDialog({
-    title: "个人邮箱",
-    message: "确认更改个人邮箱吗"
-  })
-    .then(async () => {
-      await submitEmail();
-      // 如果 submitEmail() 函数执行成功
-    })
-    .catch(() => {});
+  showState.value = true;
 };
 </script>
 <template>
@@ -82,4 +74,12 @@ const onClickRight = async () => {
       </van-cell>
     </van-cell-group>
   </van-form>
+  <van-dialog
+    v-model:show="showState"
+    title="个人邮箱"
+    message="确认更改个人邮箱吗"
+    show-cancel-button
+    showConfirmButton
+    @confirm="submitEmail"
+  />
 </template>
