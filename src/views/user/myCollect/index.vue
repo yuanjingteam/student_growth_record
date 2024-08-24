@@ -16,7 +16,8 @@ const mystar = async () => {
   try {
     const { data } = await getStar({
       username: myname,
-      page: page.value++
+      page: page.value++,
+      limit: 10
     });
     userStar.value = [...userStar.value, ...data.star];
     if (data.star.length == 0) {
@@ -77,7 +78,7 @@ const onRefresh = () => {
                 <p class="remark">
                   <span>{{ item.name }}</span>
                   <span
-                    ><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span
+                    ><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span
                   >
                   <span
                     ><i-icon icon="lets-icons:comment" />{{
