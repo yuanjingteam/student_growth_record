@@ -26,6 +26,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "ali-oss": "^6.21.0",
     "axios": "^1.6.8",
     "eruda": "^3.2.3",
     "lottie-web": "^5.12.2",
@@ -45,6 +46,7 @@
     "@iconify-icons/fa6-solid": "^1.2.13",
     "@iconify/vue": "^4.1.2",
     "@rushstack/eslint-patch": "^1.10.2",
+    "@types/ali-oss": "^6.16.11",
     "@types/node": "^20.12.12",
     "@types/nprogress": "^0.2.3",
     "@typescript-eslint/eslint-plugin": "^7.9.0",

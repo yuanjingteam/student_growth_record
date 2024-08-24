@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { readEmailNotice, getreportEmail } from "@/api/user";
+import { getreportEmail } from "@/api/user";
 // 父传子
 // 给一个默认值
 const props = defineProps({
@@ -36,7 +36,6 @@ reportEmail();
     </template>
     <template #value>
       <div class="right-content">
-        <div class="va-time">{{ data.article_ban[0].report_time }}</div>
         <div v-if="data.unread_count !== 0">
           <van-badge :content="data.unread_count" max="99" />
         </div>

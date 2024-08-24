@@ -1,5 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
+
 import { showConfirmDialog, showSuccessToast, showToast } from "vant";
 import {
   reactive,
@@ -7,7 +8,6 @@ import {
   nextTick,
   computed,
   onMounted,
-  onUpdated,
   onBeforeUpdate
 } from "vue";
 import { newArticlePublish, getLittleTags } from "@/api/article";

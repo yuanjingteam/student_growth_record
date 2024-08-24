@@ -23,7 +23,7 @@ const checkOne = async () => {
 };
 const goto = () => {
   if (username === props.data.username) {
-    router.push(`/user`);
+    router.push(`/myPublish`);
   } else {
     router.push(`/otherInfo/${props.data.username}`);
   }
