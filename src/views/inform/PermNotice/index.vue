@@ -2,7 +2,7 @@
 import { useRouter } from "vue-router";
 import { reactive, ref } from "vue";
 import { getreportEmail } from "@/api/user";
-
+import { showToast } from "vant";
 const router = useRouter();
 //举报数据
 const reportData = reactive({
@@ -14,7 +14,6 @@ const articleBan = ref([]);
 
 //刷新举报数据
 const reportRefresh = async () => {
-  reportData.page = 1;
   const {
     data: { article_ban }
   } = await getreportEmail(reportData);
