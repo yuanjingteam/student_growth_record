@@ -1,6 +1,6 @@
 <h1 align="center">大学成长档案</h1>
 
-**基于 Vue3 全家桶、TS/JS、Vite 构建工具，开箱即用的移动端项目基础模板 //**
+**基于 Vue3 全家桶、TS/JS、Vite 构建工具，开箱即用的移动端项目基础模板**
 
 - [x] Vue3 + Vite5 + TypeScript + Pinia + Vue-router 4 + Axios + Mock + ESLint
 - [x] Vant4 组件库

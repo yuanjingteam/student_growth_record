@@ -5,6 +5,10 @@ const props = defineProps({
   data: Object
 });
 let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
+const formattedContent = content => {
+  // 使用正则表达式替换 <br/> 标签为换行符
+  return content.replace(/<br\s*\/?>/g, "\n");
+};
 </script>
 <template>
   <van-cell-group inset>
@@ -32,7 +36,7 @@ let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
       <template #title>
         <van-text-ellipsis
           rows="2"
-          :content="data.msg_content"
+          :content="formattedContent(data.msg_content)"
           expand-text="展开"
           collapse-text="收起"
         />

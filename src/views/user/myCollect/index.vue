@@ -31,7 +31,7 @@ mystar();
 const onLoad = async () => {
   if (refreshing.value) {
     userStar.value = [];
-    page.value = 0;
+    page.value = 1;
     refreshing.value = false;
   }
   await mystar();
