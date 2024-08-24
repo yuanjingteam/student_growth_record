@@ -26,9 +26,10 @@ const loginOut = () => {
     .then(() => {
       // useStore.$reset();
       // userInfo.$reset();
-      useStore.token = "";
-      useStore.username = "";
-      useStore.role = 0;
+      // useStore.token = "";
+      // useStore.username = "";
+      // useStore.role = 0;
+      useStore.removeUserInfo();
       userInfo.activeTab = 0;
       userInfo.userData = ref({});
 
