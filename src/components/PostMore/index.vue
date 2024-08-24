@@ -69,6 +69,8 @@ const gotoUser = () => {
 const userStore = useUserStore();
 //获取当前token
 let token = userStore.token;
+//获取当前用户是否为老师
+let ifTeacher = userStore.ifTeacher;
 
 //未登录去登录弹窗
 const showToLogin = ref(false);
@@ -260,9 +262,14 @@ const confirmDelete = async () => {
               />
               <div class="info">
                 <div style="display: flex; justify-content: space-between">
-                  <p class="name">
-                    {{ post.name ? post.name : "用户已被删除" }}
-                  </p>
+                  <div style="display: flex; align-items: center">
+                    <p class="name">
+                      {{ post.name ? post.name : "用户已被删除" }}
+                    </p>
+                    <van-tag v-if="ifTeacher" plain type="primary"
+                      >教师</van-tag
+                    >
+                  </div>
                   <van-popover
                     v-model:show="showPopover"
                     theme="dark"
@@ -449,6 +456,7 @@ const confirmDelete = async () => {
         .name {
           font-size: 16px;
           line-height: 30px;
+          position: relative;
         }
 
         .grade {
@@ -543,5 +551,8 @@ const confirmDelete = async () => {
     font-size: 50px;
     color: #fff;
   }
+}
+.van-tag {
+  margin-left: 3px;
 }
 </style>

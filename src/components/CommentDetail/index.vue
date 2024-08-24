@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, reactive } from "vue";
+import { ref, defineProps, defineEmits, reactive } from "vue";
 import {
   getCommentsSecondService,
   articleCommentService,
@@ -14,6 +14,7 @@ const router = useRouter();
 const userStore = useUserStore();
 //获取token
 const token = userStore.token;
+const showToLogin = ref(false);
 const props = defineProps({
   data: Object
 });
@@ -117,6 +118,7 @@ const submitComment = async () => {
     comment_content: comment.value
   });
   console.log(res);
+  emit("refresh");
   reloadCommentSec();
 };
 
@@ -145,6 +147,10 @@ const confirmDelete = async () => {
 //点击评论头像去用户主页
 const gotoUser = () => {
   router.push(`/otherInfo/${props.data.username}`);
+};
+//重新获取一级评论
+const again = () => {
+  emit("refresh");
 };
 </script>
 
@@ -232,7 +238,7 @@ const gotoUser = () => {
         :key="index"
         :comment_com="item"
         :commentId="data.id"
-        @reload="reloadCommentSec"
+        @reload="again"
       />
     </div>
   </van-action-sheet>
@@ -264,6 +270,16 @@ const gotoUser = () => {
     show-cancel-button
     showConfirmButton
     @confirm="confirmDelete"
+  />
+  <van-dialog
+    v-model:show="showToLogin"
+    title="提示"
+    message="请先登录才能进行该操作哦"
+    confirmButtonText="去登录"
+    cancelButtonText="再逛逛"
+    show-cancel-button
+    showConfirmButton
+    @confirm="router.push('/login')"
   />
 </template>
 

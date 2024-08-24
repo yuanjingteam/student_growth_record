@@ -361,10 +361,11 @@ export function changeSelfCotnent(data?: Object): Promise<ListResult> {
 }
 
 // 获取用户积分统计表
-export function getUserPoints(): Promise<ListResult> {
+export function getUserPoints(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/points_get",
-    method: "post"
+    method: "post",
+    data: JSON.stringify(data)
   });
 }
 

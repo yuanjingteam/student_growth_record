@@ -14,7 +14,7 @@ topicData.topicList = useTopic.topicList;
   <div class="topics">
     <topic-card
       :message="topicData.message"
-      :list="topicData.topicList"
+      :list="topicData.topicList.slice(1)"
       :ifNeed="true"
     />
   </div>
