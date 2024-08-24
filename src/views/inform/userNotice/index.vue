@@ -181,7 +181,14 @@ loadData3();
     <template #description> 页面努力加载中... </template>
   </van-empty> -->
   <div>
-    <van-nav-bar title="全部消息" left-arrow @click-left="router.go(-1)" />
+    <van-nav-bar
+      title="全部消息"
+      left-arrow
+      fixed
+      placeholder
+      z-index="3"
+      @click-left="router.go(-1)"
+    />
     <van-tabs v-model:active="active" @click-tab="onClickTab">
       <van-tab title="点赞">
         <van-pull-refresh
