@@ -68,6 +68,7 @@ const formattedContent = content => {
     <van-pull-refresh
       v-if="userStar.length > 0"
       v-model="refreshing"
+      style="min-height: 100vh"
       @refresh="onRefresh"
     >
       <van-list
@@ -124,7 +125,6 @@ const formattedContent = content => {
       image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
       :image-size="80"
       description="还没有收藏的文章哦,去主页逛逛吧~"
-      style="width: 100%; height: 100%"
     />
   </div>
   <van-back-top bottom="100px" />
@@ -146,5 +146,9 @@ const formattedContent = content => {
   span {
     margin: 0 2px;
   }
+}
+.van-empty {
+  width: 100vw;
+  height: 100vh;
 }
 </style>

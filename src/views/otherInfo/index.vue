@@ -64,6 +64,7 @@ const onRefresh = () => {
       <van-pull-refresh
         v-if="list.length > 0"
         v-model="refreshing"
+        style="min-height: 100vh"
         @refresh="onRefresh"
       >
         <van-list

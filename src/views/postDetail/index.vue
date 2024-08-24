@@ -125,6 +125,7 @@ const onRefresh = () => {
     <van-pull-refresh
       v-if="comment_total != 0"
       v-model="refreshing"
+      style="min-height: 100vh"
       @refresh="onRefresh"
     >
       <van-list
