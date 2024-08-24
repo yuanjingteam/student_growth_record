@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { articleBanService, articleIgnoreService } from "@/api/article";
+import { readEmailNotice } from "@/api/user";
 import { showToast } from "vant";
 const props = defineProps({
   articleBan: Object
