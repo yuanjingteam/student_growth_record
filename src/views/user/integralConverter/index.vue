@@ -80,6 +80,8 @@ getPoints();
           v-model="myPoints.honor_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
         />
       </van-cell>
       <van-cell title="工作履历">
@@ -87,6 +89,8 @@ getPoints();
           v-model="myPoints.work_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
         />
       </van-cell>
       <van-cell title="社会实践">
@@ -94,24 +98,32 @@ getPoints();
           v-model="myPoints.social_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
       /></van-cell>
       <van-cell title="志愿公益">
         <van-field
           v-model="myPoints.volunteer_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
       /></van-cell>
       <van-cell title="文体活动">
         <van-field
           v-model="myPoints.sport_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
       /></van-cell>
       <van-cell title="生活日常">
         <van-field
           v-model="myPoints.life_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
         />
       </van-cell>
     </van-cell-group>
