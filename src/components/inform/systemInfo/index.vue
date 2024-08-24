@@ -46,13 +46,17 @@ const formattedContent = content => {
       {{ base.userName }}
     </template>
     <template #label>
-      <van-text-ellipsis
-        :content="formattedContent(data.admin_info[0].msg_content)"
-      />
+      <div v-if="data.admin_info.length !== 0">
+        <van-text-ellipsis
+          :content="formattedContent(data.admin_info[0].msg_content)"
+        />
+      </div>
     </template>
     <template #value>
       <div class="right-content">
-        <div class="va-time">{{ data.admin_info[0].msg_time }}</div>
+        <div v-if="data.admin_info.length !== 0" class="va-time">
+          {{ data.admin_info[0].msg_time }}
+        </div>
         <div v-if="data.unread_count !== 0">
           <van-badge :content="data.unread_count" max="99" />
         </div>
