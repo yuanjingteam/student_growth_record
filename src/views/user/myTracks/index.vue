@@ -54,7 +54,14 @@ const onRefresh = () => {
 };
 </script>
 <template>
-  <van-nav-bar left-text="返回" left-arrow @click-left="router.push('/user')" />
+  <van-nav-bar
+    left-text="返回"
+    left-arrow
+    fixed
+    placeholder
+    z-index="3"
+    @click-left="router.push('/user')"
+  />
   <div class="main">
     <van-pull-refresh
       v-if="inter_info.length > 0"

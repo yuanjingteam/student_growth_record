@@ -59,6 +59,9 @@ const formattedContent = content => {
     left-text="返回"
     title="我的收藏"
     left-arrow
+    fixed
+    placeholder
+    z-index="3"
     @click-left="router.go(-1)"
   />
   <div class="main">

@@ -59,6 +59,9 @@ const refresh = async () => {
     <van-nav-bar
       left-text="返回"
       left-arrow
+      fixed
+      placeholder
+      z-index="3"
       @click-left="router.push('/user')"
     />
     <div class="my-w">
