@@ -1,7 +1,10 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { defineProps, ref, reactive } from "vue";
+import { useUserStore } from "@/store";
 
+const userStore = useUserStore();
+const ifTeacher = userStore.ifTeacher;
 const props = defineProps({
   article: Object
 });
@@ -34,9 +37,12 @@ const gotoArticleDetail = () => {
             "
           />
           <div class="info">
-            <p class="name">
-              {{ article.name ? article.name : "用户已被删除" }}
-            </p>
+            <div style="display: flex; align-items: center">
+              <p class="name">
+                {{ article.name ? article.name : "用户已被删除" }}
+              </p>
+              <van-tag v-if="ifTeacher" plain type="primary">教师</van-tag>
+            </div>
             <p v-if="article.username != ''" class="grade">
               {{ article.user_class }}
             </p>
@@ -129,5 +135,8 @@ const gotoArticleDetail = () => {
       color: rgba(203, 202, 204, 1);
     }
   }
+}
+.van-tag {
+  margin-left: 3px;
 }
 </style>

@@ -7,6 +7,8 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 
+//控制详情信息骨架屏
+const loadingSke = ref(false);
 //评论总数
 const comment_total = ref(0);
 //从路由中获取文章id
@@ -39,17 +41,20 @@ getCommentsList();
 
 //获取帖子详情列表
 const getArticleDetailList = async () => {
+  loadingSke.value = true;
   const { data } = await getArticlesService({
     article_id: articleId,
     username: userStore.username
   });
   articleData.value = data;
+  loadingSke.value = false;
 };
 
 getArticleDetailList();
 
 //切换状态获取类型信息
 const getType = async state => {
+  commentData.comment_page = 1;
   commentData.comment_sort = state;
   const { data } = await getCommentsService(commentData);
   commentList.value = data.comment_list;
@@ -104,45 +109,58 @@ const onRefresh = () => {
         <van-icon name="ellipsis" />
       </template>
     </van-nav-bar>
-
-    <postdetail-more
-      v-if="articleData.article_content.article_text != ''"
-      :post="articleData"
-      :articleId="articleId"
-      @refreshComment="onRefreshCommentData"
+    <!-- <van-empty
+      v-if="articleData.ban"
+      image="error"
+      description="该文章已被封禁"
     />
+    <van-empty
+      v-else-if="!articleData.status"
+      image="error"
+      description="该文章已被私密"
+    /> -->
+    <div>
+      <div class="detailSke">
+        <van-skeleton title avatar :row="4" :loading="loadingSke">
+          <postdetail-more
+            :post="articleData"
+            :articleId="articleId"
+            @refreshComment="onRefreshCommentData"
+          />
+        </van-skeleton>
+      </div>
 
-    <van-cell>
-      <!-- 使用 title 插槽来自定义标题 -->
-      <template #title>
-        <span class="custom-title">评论</span>
-        <span class="comment_count">{{ comment_total }}</span>
-      </template>
-      <template v-if="comment_total != 0" #value>
-        <change-btn style="float: right" @get_type="getType" />
-      </template>
-    </van-cell>
-    <van-pull-refresh
-      v-if="comment_total != 0"
-      v-model="refreshing"
-      style="min-height: 100vh"
-      @refresh="onRefresh"
-    >
-      <van-list
-        v-model:loading="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
+      <van-cell>
+        <!-- 使用 title 插槽来自定义标题 -->
+        <template #title>
+          <span class="custom-title">评论</span>
+          <span class="comment_count">{{ comment_total }}</span>
+        </template>
+        <template v-if="comment_total != 0" #value>
+          <change-btn style="float: right" @get_type="getType" />
+        </template>
+      </van-cell>
+      <van-pull-refresh
+        v-if="comment_total != 0"
+        v-model="refreshing"
+        @refresh="onRefresh"
       >
-        <comment-detail
-          v-for="item in commentList"
-          :key="item.id"
-          :data="item"
-          @refresh="onRefreshCommentData"
-        />
-      </van-list>
-    </van-pull-refresh>
-    <van-empty v-else description="还没有人评论，快来抢沙发吧~" />
+        <van-list
+          v-model:loading="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <comment-detail
+            v-for="item in commentList"
+            :key="item.id"
+            :data="item"
+            @refresh="onRefreshCommentData"
+          />
+        </van-list>
+      </van-pull-refresh>
+      <van-empty v-else description="还没有人评论，快来抢沙发吧~" />
+    </div>
   </div>
 </template>
 
@@ -169,5 +187,11 @@ const onRefresh = () => {
     margin-right: 4px;
     vertical-align: middle;
   }
+}
+.detailSke {
+  background-color: #fff;
+}
+.van-skeleton {
+  padding: 20px 0;
 }
 </style>

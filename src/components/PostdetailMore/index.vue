@@ -59,6 +59,7 @@ const router = useRouter();
 const userStore = useUserStore();
 //获取当前token
 let token = userStore.token;
+let ifTeacher = userStore.ifTeacher;
 
 //未登录去登录弹窗
 const showToLogin = ref(false);
@@ -257,7 +258,12 @@ const gotoUser = () => {
           />
           <div class="info">
             <div style="display: flex; justify-content: space-between">
-              <p class="name">{{ post.name ? post.name : "用户已被删除" }}</p>
+              <div style="display: flex; align-items: center">
+                <p class="name">
+                  {{ post.name ? post.name : "用户已被删除" }}
+                </p>
+                <van-tag v-if="ifTeacher" plain type="primary">教师</van-tag>
+              </div>
               <van-popover
                 v-model:show="showPopover"
                 theme="dark"
@@ -529,5 +535,8 @@ const gotoUser = () => {
     font-size: 50px;
     color: #fff;
   }
+}
+.van-tag {
+  margin-left: 3px;
 }
 </style>
