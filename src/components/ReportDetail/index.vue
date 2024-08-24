@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { articleBanService, articleIgnoreService } from "@/api/article";
 import { readEmailNotice } from "@/api/user";
-import { showToast } from "vant";
+import { showSuccessToast } from "vant";
 const props = defineProps({
   articleBan: Object
 });
@@ -27,6 +27,8 @@ const dealReport = msg => {
   showTip.value = true;
   if (msg == "封禁") {
     ban.value = true;
+  } else {
+    ban.value = false;
   }
 };
 
@@ -42,8 +44,12 @@ const confirmDeal = async () => {
         article_id: articleId,
         article_ban: true
       });
+      console.log(res);
+      showSuccessToast("封禁成功");
     } else {
       const res = await articleIgnoreService({ article_id: articleId });
+      console.log(res);
+      showSuccessToast("不处理成功");
     }
     checkEmaill();
     emit("report");
