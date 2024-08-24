@@ -8,6 +8,7 @@ export const useUserStore = defineStore(
     const username = ref("passenger");
     const token = ref("");
     const role = ref("user");
+    const ifTeacher = ref(false);
     const router = useRouter();
     // https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg
     // 用户详细资料
@@ -27,11 +28,13 @@ export const useUserStore = defineStore(
       username.value = obj.username;
       token.value = obj.token;
       role.value = obj.role;
+      ifTeacher.value = obj.ifTeacher;
     };
     const removeUserInfo = () => {
-      username.value = "";
+      username.value = "passenger";
       token.value = "";
       role.value = "user";
+      ifTeacher.value = false;
     };
 
     // 区分身份信息
@@ -49,6 +52,7 @@ export const useUserStore = defineStore(
       username,
       token,
       role,
+      ifTeacher,
       userData,
       setUserInfo,
       removeUserInfo,
