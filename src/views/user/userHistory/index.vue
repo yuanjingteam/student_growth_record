@@ -110,8 +110,6 @@ const formattedContent = content => {
             <template #right-icon>
               <van-image
                 v-if="item.article_pic"
-                width="8rem"
-                height="6rem"
                 :src="item.article_pic"
                 class="right"
               />
@@ -134,7 +132,11 @@ const formattedContent = content => {
   background-color: #f0f1f5;
   height: 100%;
 }
-
+.right {
+  width: 110px;
+  height: 90px;
+  object-fit: cover;
+}
 .van-image {
   margin: 0 10px 0 5px;
 }
