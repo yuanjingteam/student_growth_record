@@ -59,7 +59,7 @@ const gotoDetail = () => {
 };
 //点击头像进入主页
 const gotoUser = () => {
-  if (post.username != "") {
+  if (props.post.username != "") {
     router.push(`/otherInfo/${props.post.username}`);
   } else {
     return;

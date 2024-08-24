@@ -215,8 +215,8 @@ const confirmDelete = async () => {
 };
 //跳转进用户主页
 const gotoUser = () => {
-  if (post.username != "") {
-    router.push(`/otherInfo/${post.username}`);
+  if (props.post.username != "") {
+    router.push(`/otherInfo/${props.post.username}`);
   } else {
     return;
   }

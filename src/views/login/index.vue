@@ -71,6 +71,7 @@ const onsubmit = async () => {
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
+      localStorage.setItem("ifTeacher", res.data.ifTeacher);
       userStore.setUserInfo(res.data);
       showSuccessToast("登录成功");
       router.push("/demo");
