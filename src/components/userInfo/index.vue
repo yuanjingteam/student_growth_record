@@ -137,7 +137,7 @@ if (routername) {
       <div class="my-name">
         {{ data.name }}
       </div>
-      <div v-if="userStore.isTeacher" class="teacher">
+      <div v-if="userStore.ifTeacher" class="teacher">
         <i-icon icon="ph:chalkboard-teacher" />
         <span>教师</span>
       </div>
