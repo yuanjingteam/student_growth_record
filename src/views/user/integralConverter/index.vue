@@ -44,6 +44,14 @@ const images = [
 const onChange = () => {
   show.value = true;
 };
+const formatter = value => {
+  // 去掉开头的 0
+  if (value.startsWith("0") && value.length > 1) {
+    return value.slice(1);
+  }
+  return value;
+};
+
 getPoints();
 </script>
 <template>
@@ -63,6 +71,8 @@ getPoints();
           v-model="myPoints.study_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
         />
       </van-cell>
       <van-cell title="获奖荣誉">

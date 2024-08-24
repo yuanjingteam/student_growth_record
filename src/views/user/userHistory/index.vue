@@ -38,11 +38,6 @@ const onLoad = async () => {
   console.log(page.value, 31313);
 
   loading.value = false;
-
-  // 数据全部加载完成
-  if (userHistory.value.length >= 20) {
-    finished.value = true;
-  }
 };
 // 刷新列表
 const onRefresh = () => {
