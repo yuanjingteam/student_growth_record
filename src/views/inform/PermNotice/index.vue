@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import { reactive, ref } from "vue";
 import { getreportEmail } from "@/api/user";
+import { showToast } from "vant";
 const router = useRouter();
 //举报数据
 const reportData = reactive({

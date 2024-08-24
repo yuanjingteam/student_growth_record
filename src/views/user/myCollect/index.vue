@@ -2,7 +2,7 @@
 import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { getStar } from "@/api/user";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 const userStore = useUserStore();
 const router = useRouter();
 const myname = userStore.username;
@@ -16,7 +16,8 @@ const mystar = async () => {
   try {
     const { data } = await getStar({
       username: myname,
-      page: page.value++
+      page: page.value++,
+      limit: 10
     });
     userStar.value = [...userStar.value, ...data.star];
     if (data.star.length == 0) {
@@ -48,6 +49,10 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
+const formattedContent = content => {
+  // 使用正则表达式替换 <br/> 标签为换行符
+  return content.replace(/<br\s*\/?>/g, "\n");
+};
 </script>
 <template>
   <van-nav-bar
@@ -73,11 +78,14 @@ const onRefresh = () => {
             <template #title
               >{{ item.name }}
               <div class="content">
-                <van-text-ellipsis rows="2" :content="item.article_content" />
+                <van-text-ellipsis
+                  rows="2"
+                  :content="formattedContent(item.article_content)"
+                />
                 <p class="remark">
                   <span>{{ item.name }}</span>
                   <span
-                    ><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span
+                    ><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span
                   >
                   <span
                     ><i-icon icon="lets-icons:comment" />{{

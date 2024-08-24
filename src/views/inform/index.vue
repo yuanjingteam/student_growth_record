@@ -80,7 +80,7 @@ const base = reactive([
 
 .svg-bg {
   position: absolute;
-  top: 200px;
+  top: 130px;
   left: 0;
   width: 100%;
   height: 100%;
