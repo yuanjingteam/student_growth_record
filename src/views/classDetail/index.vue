@@ -147,11 +147,7 @@ const onRefresh = () => {
       :title="item.title"
       :name="item.name"
     >
-      <van-pull-refresh
-        v-model="refreshing"
-        style="min-height: 100vh"
-        @refresh="onRefresh"
-      >
+      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
         <van-list
           v-model:loading="loading"
           :finished="finished"

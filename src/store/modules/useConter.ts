@@ -41,7 +41,7 @@ export const useUserStore = defineStore(
     const otherSwitch = user => {
       // 如果是自己的主页就跳自己
       if (user === username.value) {
-        router.push(`/myPublish`);
+        router.push(`/user`);
       } else {
         // 否则跳他人主页
         router.push(`./otherInfo/${user}`);

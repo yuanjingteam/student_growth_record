@@ -3,7 +3,7 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-defineProps({
+const props = defineProps({
   //头部信息
   message: String,
   //渲染数据
@@ -11,6 +11,7 @@ defineProps({
   //是否显示头部（在详情页外或者在详情页内）
   ifNeed: Boolean
 });
+console.log(props.list);
 
 const getAll = () => {
   router.push("/topics");

@@ -1,20 +1,22 @@
 <script setup>
 import { ref, defineProps, reactive } from "vue";
-import { deleteCommentsService } from "@/api/article";
+import { deleteCommentsService, articleUpvoteService } from "@/api/article";
 import { useUserStore } from "@/store";
 
 const userStore = useUserStore();
+let token = userStore.token;
 const props = defineProps({
   comment_com: Object,
   commentId: Number
 });
+const showToLogin = ref(false);
 const emit = defineEmits(["reload"]);
 
 const showPopover = ref(false);
 let actions = [];
-if (userStore.role != "user") {
-  actions = [{ text: "删除" }];
-}
+// if (userStore.role != "user") {
+//   actions = [{ text: "删除" }];
+// }
 
 const select = (action, index) => {
   if (action.text == "删除") {
@@ -32,6 +34,43 @@ const confirmDelete = async () => {
   console.log(res);
   emit("reload");
 };
+
+//是否点赞
+const ifLike = ref(false);
+ifLike.value = props.comment_com.comment_if_like;
+//点赞数量
+const likeAmount = ref();
+likeAmount.value = props.comment_com.comment_like_num;
+
+//点赞文章
+const likeBtn = async state => {
+  if (token != "") {
+    ifLike.value = !state;
+    if (ifLike.value) {
+      likeAmount.value++;
+    } else {
+      likeAmount.value--;
+    }
+    const res = await articleUpvoteService({
+      id: props.comment_com.id,
+      like_type: 1
+    });
+    console.log(res);
+  } else {
+    showToLogin.value = !showToLogin.value;
+  }
+};
+// 创建防抖后的点赞
+const debouncedLike = debounce(likeBtn, 400);
+
+// 防抖函数
+function debounce(func, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
+}
 </script>
 
 <template>
@@ -64,9 +103,20 @@ const confirmDelete = async () => {
             <div class="comment-footer">
               <p class="btn-title">{{ comment_com.comment_time }}</p>
               <div>
-                <van-button size="mini" icon="good-job-o">{{
-                  comment_com.comment_like_num
-                }}</van-button>
+                <van-button
+                  v-if="!ifLike"
+                  size="mini"
+                  @click="debouncedLike(ifLike)"
+                  ><van-icon name="good-job-o" /><span>{{
+                    likeAmount
+                  }}</span></van-button
+                >
+                <van-button v-else size="mini" @click="debouncedLike(ifLike)"
+                  ><van-icon name="good-job" color="#3371d3" /><span
+                    style="color: #3371d3"
+                    >{{ likeAmount }}</span
+                  ></van-button
+                >
               </div>
             </div>
           </div>
@@ -81,6 +131,16 @@ const confirmDelete = async () => {
     show-cancel-button
     showConfirmButton
     @confirm="confirmDelete"
+  />
+  <van-dialog
+    v-model:show="showToLogin"
+    title="提示"
+    message="请先登录才能进行该操作哦"
+    confirmButtonText="去登录"
+    cancelButtonText="再逛逛"
+    show-cancel-button
+    showConfirmButton
+    @confirm="router.push('/login')"
   />
 </template>
 
