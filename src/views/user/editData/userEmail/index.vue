@@ -9,16 +9,20 @@ const userStore = useUserStore();
 const router = useRouter();
 const text = ref("");
 const formRef = ref();
+const showState = ref(false);
 text.value = userStore.userData.user_email;
 // 更新用户邮箱
 const submitEmail = async () => {
-  const { code } = await changeUserEmail({
-    username: userStore.username,
-    user_email: text.value
-  });
-  if (code == 200) {
-    console.log("yeah");
+  try {
+    const { code } = await changeUserEmail({
+      username: userStore.username,
+      user_email: text.value
+    });
     userStore.userData.user_email = text;
+    showToast("修改成功");
+    router.go(-1);
+  } catch {
+    showToast("修改失败，请稍后重试");
   }
 };
 
@@ -41,23 +45,7 @@ const rules = [
 
 const onClickRight = async () => {
   await formRef.value.validate();
-
-  showConfirmDialog({
-    title: "个人邮箱",
-    message: "确认更改个人邮箱吗"
-  })
-    .then(async () => {
-      try {
-        await submitEmail();
-        // 如果 submitEmail() 函数执行成功
-        router.go(-1);
-      } catch (error) {
-        // 如果 submitEmail() 函数执行过程中出现异常
-        console.error("提交邮箱信息失败:", error);
-        showToast("提交邮箱信息失败,请稍后重试");
-      }
-    })
-    .catch(() => {});
+  showState.value = true;
 };
 </script>
 <template>
@@ -86,4 +74,12 @@ const onClickRight = async () => {
       </van-cell>
     </van-cell-group>
   </van-form>
+  <van-dialog
+    v-model:show="showState"
+    title="个人邮箱"
+    message="确认更改个人邮箱吗"
+    show-cancel-button
+    showConfirmButton
+    @confirm="submitEmail"
+  />
 </template>

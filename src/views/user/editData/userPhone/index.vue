@@ -8,17 +8,21 @@ const userStore = useUserStore();
 const router = useRouter();
 const text = ref(0);
 const formRef = ref();
-
+const showState = ref(false);
 text.value = userStore.userData.phone_number;
 
 // 更新用户电话
 const submitPhone = async () => {
-  const { code } = await changeUserPhone({
-    username: userStore.username,
-    phone_number: text.value
-  });
-  if (code == 200) {
+  try {
+    const { code } = await changeUserPhone({
+      username: userStore.username,
+      phone_number: text.value
+    });
     userStore.userData.phone_number = text;
+    showToast("修改成功");
+    router.go(-1);
+  } catch {
+    showToast("修改失败,请稍后重试");
   }
 };
 
@@ -34,23 +38,7 @@ const rules = [
 ];
 const onClickRight = async () => {
   await formRef.value.validate();
-  showConfirmDialog({
-    title: "我的电话",
-    message: "确认修改手机号吗?"
-  })
-    .then(async () => {
-      // 更新电话
-      try {
-        await submitPhone();
-        router.go(-1);
-      } catch (error) {
-        console.error("提交手机号码失败:", error);
-        showToast("提交手机号码失败,请稍后重试");
-      }
-    })
-    .catch(() => {
-      // on cancel
-    });
+  showState.value = true;
 };
 </script>
 <template>
@@ -79,4 +67,12 @@ const onClickRight = async () => {
       </van-cell>
     </van-cell-group>
   </van-form>
+  <van-dialog
+    v-model:show="showState"
+    title="我的电话"
+    message="确认修改手机号吗"
+    show-cancel-button
+    showConfirmButton
+    @confirm="submitPhone"
+  />
 </template>

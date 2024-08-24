@@ -55,21 +55,6 @@ type adminList = {
   };
 };
 
-// 管理员列表
-type managerList = {
-  code: 0;
-  data: {
-    manager_info: [
-      {
-        m_id: string;
-        m_content: string;
-        not_time: string;
-      }
-    ];
-    unread_count: number;
-  };
-};
-
 // 点赞列表
 type thumbsList = {
   code: 0;
@@ -206,16 +191,14 @@ export function getSystemNotification(data?: Object): Promise<adminList> {
     data: JSON.stringify(data)
   });
 }
-
 // 获取管理员消息列表
-export function getManagerNotification(data?: Object): Promise<managerList> {
+export function getManagerNotification(data?: Object): Promise<adminList> {
   return http.request({
     url: "/message/get_manager",
     method: "post",
     data: JSON.stringify(data)
   });
 }
-
 // 获取举报邮箱
 export function getreportEmail(data?: Object): Promise<ListResult> {
   return http.request({
@@ -246,7 +229,7 @@ export function readManagerNotice(data?: Object): Promise<ListResult> {
 // 已读邮箱消息
 export function readEmailNotice(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/report_box/getlist",
+    url: "/report_box/ack",
     method: "post",
     data: JSON.stringify(data)
   });

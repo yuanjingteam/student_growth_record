@@ -21,7 +21,9 @@ const articlePublish = async () => {
       limit: 10
     });
     list.value = [...list.value, ...data.content];
-    console.log(list.value);
+    if (data.content.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
   }
@@ -52,10 +54,6 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
-const show = ref(false);
-const banwei = () => {
-  show.value = true;
-};
 </script>
 
 <template>
@@ -66,6 +64,7 @@ const banwei = () => {
       <van-pull-refresh
         v-if="list.length > 0"
         v-model="refreshing"
+        style="min-height: 100vh"
         @refresh="onRefresh"
       >
         <van-list

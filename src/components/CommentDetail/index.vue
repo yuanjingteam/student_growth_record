@@ -1,17 +1,52 @@
 <script setup>
-import { ref, defineProps, reactive } from "vue";
+import { ref, defineProps, defineEmits, reactive } from "vue";
 import {
   getCommentsSecondService,
   articleCommentService,
-  deleteCommentsService
+  deleteCommentsService,
+  articleUpvoteService
 } from "@/api/article";
 import { useUserStore } from "@/store";
+import { useRouter } from "vue-router";
+import { showSuccessToast } from "vant";
 
+const router = useRouter();
 const userStore = useUserStore();
+//获取token
+const token = userStore.token;
+const showToLogin = ref(false);
 const props = defineProps({
   data: Object
 });
-const emit = defineEmits(["refresh"]);
+//是否点赞
+const ifLike = ref(false);
+ifLike.value = props.data.comment_if_like;
+//点赞数量
+const likeAmount = ref();
+likeAmount.value = props.data.comment_like_num;
+
+//点赞文章
+const likeBtn = async state => {
+  if (token != "") {
+    ifLike.value = !state;
+    if (ifLike.value) {
+      likeAmount.value++;
+    } else {
+      likeAmount.value--;
+    }
+    const res = await articleUpvoteService({
+      id: props.data.id,
+      like_type: 1
+    });
+    console.log(res);
+  } else {
+    showToLogin.value = !showToLogin.value;
+  }
+};
+// 创建防抖后的点赞
+const debouncedLike = debounce(likeBtn, 400);
+
+const emit = defineEmits(["refresh", "reloadCommentTwo"]);
 // 防抖函数
 function debounce(func, delay) {
   let timer;
@@ -26,10 +61,10 @@ const commentSeList = ref();
 const showPopover = ref(false);
 
 //二级评论数据
-const commentSeData = ref({
+const commentSeData = reactive({
   username: userStore.username,
   comment_id: props.data.id,
-  page: 0,
+  page: 1,
   limit: 3
 });
 //控制当前哪个下拉框展开
@@ -54,6 +89,14 @@ const showCommentDetail = ref(false);
 const handleComment = () => {
   showCommentDetail.value = true;
 };
+
+//子传父，重新发起请求接收二级评论
+const reloadCommentSec = async () => {
+  const {
+    data: { comment_se_list }
+  } = await getCommentsSecondService(commentSeData);
+  commentSeList.value = comment_se_list;
+};
 //评论内容
 const comment = ref("");
 //是否展示评论输入框
@@ -75,17 +118,13 @@ const submitComment = async () => {
     comment_content: comment.value
   });
   console.log(res);
+  emit("refresh");
+  reloadCommentSec();
 };
-//子传父，重新发起请求接收二级评论
-const reloadCommentSec = async () => {
-  const {
-    data: { comment_se_list }
-  } = await getCommentsSecondService(commentSeData);
-  commentSeList.value = comment_se_list;
-};
+
 //下拉选择框数据
 let actions = [];
-if (userStore.role != "0") {
+if (userStore.role != "user") {
   actions = [{ text: "删除" }];
 }
 
@@ -101,7 +140,16 @@ const confirmDelete = async () => {
   const res = await deleteCommentsService({
     comment_id: props.data.id
   });
+  showSuccessToast("删除评论成功");
   console.log(res);
+  emit("refresh");
+};
+//点击评论头像去用户主页
+const gotoUser = () => {
+  router.push(`/otherInfo/${props.data.username}`);
+};
+//重新获取一级评论
+const again = () => {
   emit("refresh");
 };
 </script>
@@ -116,6 +164,7 @@ const confirmDelete = async () => {
             :src="data.user_headshot"
             width="3rem"
             height="3rem"
+            @click="gotoUser"
           />
           <div class="info">
             <div class="info-row">
@@ -141,9 +190,20 @@ const confirmDelete = async () => {
                   icon="comment-o"
                   @click="commentClick"
                 />
-                <van-button size="mini" icon="good-job-o">{{
-                  data.comment_like_num
-                }}</van-button>
+                <van-button
+                  v-if="!ifLike"
+                  size="mini"
+                  @click="debouncedLike(ifLike)"
+                  ><van-icon name="good-job-o" /><span>{{
+                    likeAmount
+                  }}</span></van-button
+                >
+                <van-button v-else size="mini" @click="debouncedLike(ifLike)"
+                  ><van-icon name="good-job" color="#3371d3" /><span
+                    style="color: #3371d3"
+                    >{{ likeAmount }}</span
+                  ></van-button
+                >
               </div>
             </div>
             <van-collapse
@@ -178,7 +238,7 @@ const confirmDelete = async () => {
         :key="index"
         :comment_com="item"
         :commentId="data.id"
-        @reload="reloadCommentSec"
+        @reload="again"
       />
     </div>
   </van-action-sheet>
@@ -210,6 +270,16 @@ const confirmDelete = async () => {
     show-cancel-button
     showConfirmButton
     @confirm="confirmDelete"
+  />
+  <van-dialog
+    v-model:show="showToLogin"
+    title="提示"
+    message="请先登录才能进行该操作哦"
+    confirmButtonText="去登录"
+    cancelButtonText="再逛逛"
+    show-cancel-button
+    showConfirmButton
+    @confirm="router.push('/login')"
   />
 </template>
 

@@ -7,16 +7,19 @@ import { showFailToast, showSuccessToast } from "vant";
 
 const userStore = useUserStore();
 const router = useRouter();
+
 //复选框是否勾选
 const checked = ref(false);
 //是否显示忘记密码弹窗
 const showDialog = ref(false);
 //是否显示协议提示框
 const showTip = ref(false);
-//加载验证码
+//加载验证码loading效果
 const loadingVerify = ref(false);
-//登录加载中
+//登录loading
 const loginLoading = ref(false);
+//图片地址
+const imageUrl = ref("");
 //用户的登录信息
 const userForm = reactive({
   username: "",
@@ -24,7 +27,7 @@ const userForm = reactive({
   verify: "",
   verifyId: ""
 });
-//绑定表单
+//绑定表单用于校验
 const formRef = ref();
 
 //真实验证码
@@ -38,7 +41,7 @@ const convertBase64ToBlob = base64 => {
   }
   return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
 };
-//验证码换一换
+//点击验证码换一换
 const changeVerify = async () => {
   loadingVerify.value = true;
   const { data } = await getVerifyImg();
@@ -51,7 +54,7 @@ const changeVerify = async () => {
   imageUrl.value = URL.createObjectURL(blob);
   loadingVerify.value = false;
 };
-//提交时的表单校验
+//登录提交并进行表单校验
 const onsubmit = async () => {
   loginLoading.value = true;
   try {
@@ -61,19 +64,19 @@ const onsubmit = async () => {
     loginLoading.value = false;
     return;
   }
+  //用户勾选复选框后
   if (checked.value) {
-    const res = await userLogin(userForm);
-    if (res.code == 200) {
+    try {
+      const res = await userLogin(userForm);
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
-      console.log(res.data.role, 2214);
-
+      localStorage.setItem("ifTeacher", res.data.ifTeacher);
       userStore.setUserInfo(res.data);
       showSuccessToast("登录成功");
       router.push("/demo");
-    } else {
-      showFailToast(`${res.msg}`);
+    } catch (error) {
+      showFailToast(`${error.msg}`);
       userForm.username = "";
       userForm.password = "";
       userForm.verify = "";
@@ -84,8 +87,7 @@ const onsubmit = async () => {
   }
   loginLoading.value = false;
 };
-//图片地址
-const imageUrl = ref("");
+
 //展示验证码图片
 const showVerify = async () => {
   changeVerify();
@@ -99,6 +101,9 @@ const confirmTip = () => {
 
 //游客登录
 const passengerLogin = () => {
+  userStore.username = "passenger";
+  userStore.token = "";
+  userStore.role = "user";
   localStorage.setItem("username", "passenger");
   router.push("/demo");
   showSuccessToast("登录成功");
@@ -177,9 +182,7 @@ const passengerLogin = () => {
       checked-color="#000"
       shape="square"
       icon-size="20px"
-      >我已阅读并同意《<span @click="router.push('/userAgree')">用户协议</span
-      >》和《<span @click="router.push('/privacyAgree')">隐私协议</span
-      >》</van-checkbox
+      >我已阅读并同意《<span>用户协议</span>》和《<span>隐私协议</span>》</van-checkbox
     >
   </div>
   <van-loading v-else vertical>
@@ -253,6 +256,7 @@ const passengerLogin = () => {
 
   .van-checkbox {
     margin-top: 70px;
+    font-size: 13px;
 
     span {
       color: #549ae9;

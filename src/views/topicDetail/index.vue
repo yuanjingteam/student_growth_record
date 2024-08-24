@@ -2,6 +2,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { useTopicStore, useUserStore } from "@/store";
 import { reactive, ref, watch } from "vue";
+import { showDialog } from "vant";
 import { searchArticleService } from "@/api/article";
 const route = useRoute();
 const router = useRouter();
@@ -24,9 +25,16 @@ const activeName = ref("最热");
 
 //获取动态路由的参数
 const topicId = route.params.id;
+
 //声明当前话题
 const topic = ref();
-topic.value = useTopic.findTopic(topicId);
+const topicList = useTopic.topicList;
+
+const findTopic = topicId => {
+  const topic = topicList.find(topic => topic.ID == topicId);
+  return topic ? topic : null;
+};
+topic.value = findTopic(topicId);
 
 //获取文章列表的数据
 const articleData = reactive({
@@ -73,15 +81,24 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   articleData.article_page += 1;
-  const res = await searchArticleService(articleData);
-  if (res.code == 200) {
+
+  const {
+    data: { content }
+  } = await searchArticleService(articleData);
+  if (content.length > 0) {
+    articleList.value = [...articleList.value, ...content];
     loading.value = false;
-    articleList.value = [...articleList.value, ...res.data.content];
   } else {
     finished.value = true;
   }
 };
-
+const upto = () => {
+  if (userStore.username === "passenger") {
+    showDialog({ message: "使用该功能要先去登录哦~" });
+  } else {
+    router.push("/publish");
+  }
+};
 //监听了刷新事件
 const onRefresh = () => {
   // 清空列表数据
@@ -104,7 +121,7 @@ const onRefresh = () => {
       round
       icon="plus"
       type="primary"
-      @click="router.push('/publish')"
+      @click="upto"
     />
     <div class="title" style="display: flex">
       <i-icon icon="icon-park:message" />
@@ -133,8 +150,8 @@ const onRefresh = () => {
           @load="onLoad"
         >
           <post-more
-            v-for="(item, index) in articleList"
-            :key="index"
+            v-for="item in articleList"
+            :key="item.article_id"
             :post="item"
             :articleId="item.article_id"
           />
@@ -142,6 +159,7 @@ const onRefresh = () => {
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
+
   <van-back-top bottom="100px" />
 </template>
 <style scoped>
@@ -192,5 +210,12 @@ const onRefresh = () => {
 .van-list {
   background-color: #f0f1f5;
   overflow: hidden;
+}
+.van-tabs {
+  height: 100%;
+}
+.van-tabs >>> .van-tabs__content {
+  height: 100%;
+  background-color: #f0f1f5;
 }
 </style>

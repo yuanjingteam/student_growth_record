@@ -23,17 +23,23 @@ const data = ref({
 
 // 获取管理员消息
 const managerNotification = async () => {
-  const res = await getManagerNotification({
-    page: 1,
-    limit: 1
-  });
-  data.value = res.data;
+  try {
+    const res = await getManagerNotification({
+      page: 1,
+      limit: 1
+    });
+    data.value = res.data;
+  } catch {}
 };
 managerNotification();
 // 是否已读
 const checkManager = async () => {
   router.push("./managerNotice");
   const { code } = await readManagerNotice();
+};
+const formattedContent = content => {
+  // 使用正则表达式替换 <br/> 标签为换行符
+  return content.replace(/<br\s*\/?>/g, "");
 };
 </script>
 <template>
@@ -42,7 +48,9 @@ const checkManager = async () => {
       {{ base.userName }}
     </template>
     <template #label>
-      <van-text-ellipsis :content="data.manager_info[0].msg_content" />
+      <van-text-ellipsis
+        :content="formattedContent(data.manager_info[0].msg_content)"
+      />
     </template>
     <template #value>
       <div class="right-content">

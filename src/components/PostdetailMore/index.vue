@@ -16,7 +16,7 @@ const props = defineProps({
   post: Object,
   articleId: Number
 });
-
+const emit = defineEmits(["refreshComment"]);
 //是否点赞
 const ifLike = ref(false);
 ifLike.value = props.post.is_like;
@@ -32,8 +32,8 @@ collectAmount.value = props.post.collect_amount;
 //是否展示图片
 const show = ref(false);
 const index = ref(0);
-const images = props.post.article_pics;
-//切换图片
+const images = props.post.article_content.article_image;
+
 const onChange = newIndex => {
   index.value = newIndex;
 };
@@ -42,9 +42,11 @@ const showPics = i => {
   show.value = true;
   index.value = i;
 };
+
 //是否展示视频
 const showVideo = ref(false);
-const video = props.post.article_video;
+
+const video = props.post.article_content.article_video;
 const videos = [video];
 
 //展示视频
@@ -53,23 +55,10 @@ const playVideo = () => {
 };
 
 const router = useRouter();
-//点击文章内容跳转帖子详情
-const gotoDetail = () => {
-  router.push(`/postDetail/${props.articleId}`);
-};
-//点击头像进入主页
-const gotoUser = () => {
-  if (props.post.username != "") {
-    router.push(`/otherInfo/${props.post.username}`);
-  } else {
-    return;
-  }
-};
 
 const userStore = useUserStore();
 //获取当前token
 let token = userStore.token;
-//获取当前用户是否为老师
 let ifTeacher = userStore.ifTeacher;
 
 //未登录去登录弹窗
@@ -194,6 +183,7 @@ const submitComment = async () => {
   showSuccessToast("发布评论成功");
   comment.value = "";
   showCommentTable.value = !showCommentTable.value;
+  emit("refreshComment");
 };
 //提交举报理由
 const submitReport = async () => {
@@ -224,9 +214,18 @@ const confirmDelete = async () => {
 
   router.push("/demo");
 };
+//跳转进用户主页
+const gotoUser = () => {
+  if (props.post.username != "") {
+    router.push(`/otherInfo/${props.post.username}`);
+  } else {
+    return;
+  }
+};
 </script>
 
 <template>
+  <!-- <div ref="like" /> -->
   <van-image-preview
     v-model:show="show"
     :images="images"
@@ -244,139 +243,125 @@ const confirmDelete = async () => {
       </video>
     </template>
   </van-image-preview>
-
-  <van-cell-group inset>
-    <div class="cell">
-      <van-card>
-        <template #tags>
-          <div>
-            <div class="info-box">
-              <van-image
-                round
-                :src="
-                  post.user_headshot
-                    ? post.user_headshot
-                    : 'https://picsum.photos/200/300'
-                "
-                @click="gotoUser"
-              />
-              <div class="info">
-                <div style="display: flex; justify-content: space-between">
-                  <div style="display: flex; align-items: center">
-                    <p class="name">
-                      {{ post.name ? post.name : "用户已被删除" }}
-                    </p>
-                    <van-tag v-if="ifTeacher" plain type="primary"
-                      >教师</van-tag
-                    >
-                  </div>
-                  <van-popover
-                    v-model:show="showPopover"
-                    theme="dark"
-                    :actions="actions"
-                    placement="left"
-                    @select="select"
-                  >
-                    <template #reference>
-                      <i-icon icon="ant-design:more-outlined" />
-                    </template>
-                  </van-popover>
-                </div>
-                <p v-if="post.username != ''" class="grade">
-                  {{ post.user_class }}
+  <div class="cell">
+    <van-card>
+      <template #tags>
+        <div class="info-box">
+          <van-image
+            round
+            :src="
+              post.user_headshot
+                ? post.user_headshot
+                : 'https://picsum.photos/200/300'
+            "
+            @click="gotoUser"
+          />
+          <div class="info">
+            <div style="display: flex; justify-content: space-between">
+              <div style="display: flex; align-items: center">
+                <p class="name">
+                  {{ post.name ? post.name : "用户已被删除" }}
                 </p>
+                <van-tag v-if="ifTeacher" plain type="primary">教师</van-tag>
               </div>
+              <van-popover
+                v-model:show="showPopover"
+                theme="dark"
+                :actions="actions"
+                placement="left"
+                @select="select"
+              >
+                <template #reference>
+                  <i-icon icon="ant-design:more-outlined" />
+                </template>
+              </van-popover>
             </div>
-            <p
-              class="post-content"
-              @click="gotoDetail"
-              v-html="post.article_content"
-            />
-            <div class="video-box">
-              <ul class="video">
-                <li
-                  v-for="(item, index) in images"
-                  :key="item"
-                  @click="showPics(index)"
-                >
-                  <van-image :src="item" />
-                </li>
-                <li v-if="video != ''" class="video-content" @click="playVideo">
-                  <van-icon name="video-o" />
-                </li>
-              </ul>
-            </div>
+            <p v-if="post.username != ''" class="grade">
+              {{ post.user_class }}
+            </p>
+          </div>
+        </div>
+        <p class="post-content" v-html="post.article_content.article_text" />
+        <div class="video-box">
+          <ul class="video">
+            <li
+              v-for="(item, index) in images"
+              :key="item"
+              @click="showPics(index)"
+            >
+              <van-image :src="item" />
+            </li>
+            <li v-if="video != ''" class="video-content" @click="playVideo">
+              <van-icon name="video-o" />
+            </li>
+          </ul>
+        </div>
+        <div v-for="(item, index) in post.article_tags" :key="index">
+          <button class="btn">
+            <i-icon icon="icon-park:message" />
+            <p class="btn-title">
+              {{ item }}
+            </p>
+          </button>
+        </div>
+        <p class="time2">{{ post.post_time }}</p>
+      </template>
 
-            <div v-for="(item, index) in post.article_tags" :key="index">
-              <button class="btn">
-                <i-icon icon="icon-park:message" />
-                <p class="btn-title">
-                  {{ item }}
-                </p>
-              </button>
+      <template #footer>
+        <div class="btn-box">
+          <van-button
+            v-if="!ifCollect"
+            size="mini"
+            @click="debouncedCollect(ifCollect)"
+            ><van-icon name="star-o" /><span>{{
+              collectAmount
+            }}</span></van-button
+          >
+          <van-button v-else size="mini" @click="debouncedCollect(ifCollect)"
+            ><van-icon name="star" color="#3371d3" /><span
+              style="color: #3371d3"
+              >{{ collectAmount }}</span
+            ></van-button
+          >
+          <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
+            post.comment_amount
+          }}</van-button>
+          <van-action-sheet v-model:show="showCommentTable" title="发布评论">
+            <div class="content">
+              <van-cell-group inset>
+                <van-form ref="commentRef">
+                  <van-field
+                    v-model="comment"
+                    rows="2"
+                    autosize
+                    type="textarea"
+                    maxlength="70"
+                    placeholder="请输入您的评论信息"
+                    show-word-limit
+                    :rules="[{ required: true, message: '评论信息不能为空' }]"
+                  />
+                </van-form>
+              </van-cell-group>
+              <van-button round block type="primary" @click="submitComment()">
+                提交
+              </van-button>
             </div>
-            <p class="time1">{{ post.post_time }}</p>
-          </div>
-        </template>
-        <template #footer>
-          <div class="btn-box">
-            <van-button
-              v-if="!ifCollect"
-              size="mini"
-              @click="debouncedCollect(ifCollect)"
-              ><van-icon name="star-o" /><span>{{
-                collectAmount
-              }}</span></van-button
-            >
-            <van-button v-else size="mini" @click="debouncedCollect(ifCollect)"
-              ><van-icon name="star" color="#3371d3" /><span
-                style="color: #3371d3"
-                >{{ collectAmount }}</span
-              ></van-button
-            >
-            <van-button size="mini" icon="comment-o" @click="commentBtn()">{{
-              post.comment_amount
-            }}</van-button>
-            <van-action-sheet v-model:show="showCommentTable" title="发布评论">
-              <div class="content">
-                <van-cell-group inset>
-                  <van-form ref="commentRef">
-                    <van-field
-                      v-model="comment"
-                      rows="2"
-                      autosize
-                      type="textarea"
-                      maxlength="70"
-                      placeholder="请输入您的评论信息"
-                      show-word-limit
-                      :rules="[{ required: true, message: '评论信息不能为空' }]"
-                    />
-                  </van-form>
-                </van-cell-group>
-                <van-button round block type="primary" @click="submitComment()">
-                  提交
-                </van-button>
-              </div>
-            </van-action-sheet>
-            <van-button
-              v-if="!ifLike"
-              size="mini"
-              @click="debouncedLike(ifLike)"
-              ><van-icon name="good-job-o" /><span>{{
-                likeAmount
-              }}</span></van-button
-            >
-            <van-button v-else size="mini" @click="debouncedLike(ifLike)"
-              ><van-icon name="good-job" color="#3371d3" /><span
-                style="color: #3371d3"
-                >{{ likeAmount }}</span
-              ></van-button
-            >
-          </div>
-        </template>
-      </van-card>
-    </div>
-  </van-cell-group>
+          </van-action-sheet>
+          <van-button v-if="!ifLike" size="mini" @click="debouncedLike(ifLike)"
+            ><van-icon name="good-job-o" /><span>{{
+              likeAmount
+            }}</span></van-button
+          >
+          <van-button v-else size="mini" @click="debouncedLike(ifLike)"
+            ><van-icon name="good-job" color="#3371d3" /><span
+              style="color: #3371d3"
+              >{{ likeAmount }}</span
+            ></van-button
+          >
+        </div>
+      </template>
+    </van-card>
+  </div>
 
   <van-popup
     v-model:show="showReport"
@@ -455,8 +440,6 @@ const confirmDelete = async () => {
 
         .name {
           font-size: 16px;
-          line-height: 30px;
-          position: relative;
         }
 
         .grade {
@@ -511,8 +494,8 @@ const confirmDelete = async () => {
       margin-top: 20px;
     }
 
-    .time1 {
-      margin-left: 250px;
+    .time2 {
+      margin-left: 280px;
       font-size: 12px;
       color: rgba(166, 168, 173, 1);
     }
@@ -525,6 +508,7 @@ const confirmDelete = async () => {
 .content {
   padding: 16px 16px 160px;
 }
+
 .video-box {
   margin-bottom: 15px;
   .video {
@@ -534,8 +518,8 @@ const confirmDelete = async () => {
     li {
       height: 100px;
       display: flex;
-      align-items: center;
       border-radius: 8px;
+      align-items: center;
       overflow: hidden;
     }
   }

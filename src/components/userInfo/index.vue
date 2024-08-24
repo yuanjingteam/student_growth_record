@@ -137,9 +137,13 @@ if (routername) {
       <div class="my-name">
         {{ data.name }}
       </div>
+      <div v-if="userStore.ifTeacher" class="teacher">
+        <i-icon icon="ph:chalkboard-teacher" />
+        <span>教师</span>
+      </div>
     </div>
     <!-- 头部总组件 -->
-    <van-cell-group inset>
+    <van-cell-group>
       <div class="user-header">
         <div v-if="!own" name="other">
           <div class="my-attention" @click="concernChange">
@@ -162,11 +166,7 @@ if (routername) {
           </div>
         </div>
 
-        <div
-          v-if="(role === '1' || role === 'class') && !own"
-          name="ban"
-          class="user_ban"
-        >
+        <div v-if="role !== 'user' && !own" name="ban" class="user_ban">
           <van-popover
             v-if="!data.ban"
             v-model:show="showPopover"
@@ -185,7 +185,11 @@ if (routername) {
         <!-- 我的座右铭 -->
         <div class="my-motto">
           <i-icon icon="uil:edit-alt" />
-          <van-text-ellipsis :content="data.user_motto" class="my-motto" />
+          <van-text-ellipsis
+            rows="1"
+            :content="data.user_motto"
+            class="my-motto"
+          />
         </div>
         <!-- 我的个人信息 -->
         <div class="user-info">
@@ -208,6 +212,18 @@ if (routername) {
 </template>
 
 <style scoped>
+.teacher {
+  display: flex;
+  justify-content: center;
+  padding: 7px 0px 0px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #3762c1;
+  .i-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
 .my-self {
   position: relative;
   margin-top: 55px;
@@ -216,15 +232,18 @@ if (routername) {
 .van-image {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
 }
-
+.van-cell-group {
+  width: 340px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
 .user-header {
   position: relative;
   padding: 10vmin 3.6667vmin 15px;
-  border-radius: 7px;
   overflow: hidden;
 }
 .my-motto {
-  width: 240px;
+  height: 24px;
 }
 .my-motto .i-icon {
   margin-top: 3px;

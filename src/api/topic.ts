@@ -1,10 +1,10 @@
 import { http } from "@/utils/http";
 
-type ListResult = {
-  code: Number;
-  msg: string;
-  data: Object;
-};
+// type ListResult = {
+//   code: Number;
+//   msg: string;
+//   data: Object;
+// };
 type Register = {
   data: {
     plus_time: string;
@@ -12,12 +12,20 @@ type Register = {
   code: Number;
   msg: string;
 };
+type topicList = {
+  data: {
+    topic_list: Array<Object>;
+  };
+  code: Number;
+  msg: string;
+};
 
 //获取分类详情列表
-export function getTopicListService(): Promise<ListResult> {
+export function getTopicListService(data?: Object): Promise<topicList> {
   return http.request({
     url: "/publish/get_topic",
-    method: "post"
+    method: "post",
+    data
   });
 }
 

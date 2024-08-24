@@ -2,10 +2,15 @@
 import { onMounted, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { getClassStar, getGradeStar, getSchoolStar } from "@/api/star";
+
+const router = useRouter();
+
 //成长之星列表
 const starList = ref([]);
-const router = useRouter();
-const activeName = ref("班级");
+//获取当前存储的tab
+const currentName = localStorage.getItem("currentTabStar") || "班级";
+//tab内容
+const activeName = ref(currentName);
 
 //获取班级成长之星
 const getClassStarList = async () => {
@@ -32,6 +37,7 @@ const getSchoolStarList = async () => {
 
 watch(activeName, (newValue, oldValue) => {
   // 监听activeName,触发不同的接口请求,更新数据
+  localStorage.setItem("currentTabStar", newValue);
   if (newValue == "班级") {
     getClassStarList();
   } else if (newValue == "年级") {
@@ -79,10 +85,10 @@ const list = reactive([
       :title="item.title"
       :name="item.name"
     >
-      <van-grid :gutter="10">
+      <van-grid v-if="starList" :gutter="10">
         <van-grid-item
           v-for="item in starList"
-          :key="item.username"
+          :key="item"
           @click="router.push(`/otherInfo/${item.username}`)"
         >
           <div class="star-box">
@@ -99,6 +105,7 @@ const list = reactive([
           </div>
         </van-grid-item>
       </van-grid>
+      <van-empty v-else description="暂时还没有符合的人选哦" />
     </van-tab>
   </van-tabs>
 </template>
@@ -119,5 +126,13 @@ const list = reactive([
   p {
     margin-top: 10px;
   }
+}
+
+.van-tabs {
+  height: 100%;
+}
+.van-tabs >>> .van-tabs__content {
+  height: 100%;
+  background-color: #f0f1f5;
 }
 </style>

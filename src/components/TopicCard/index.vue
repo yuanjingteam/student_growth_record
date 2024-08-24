@@ -3,7 +3,7 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-defineProps({
+const props = defineProps({
   //头部信息
   message: String,
   //渲染数据
@@ -11,6 +11,7 @@ defineProps({
   //是否显示头部（在详情页外或者在详情页内）
   ifNeed: Boolean
 });
+console.log(props.list);
 
 const getAll = () => {
   router.push("/topics");
@@ -43,7 +44,7 @@ const gotoDetail = id => {
     </van-cell>
     <van-cell v-for="item in list" :key="item">
       <template #title>
-        <div style="display: flex" @click="gotoDetail(item.topic_id)">
+        <div style="display: flex" @click="gotoDetail(item.ID)">
           <i-icon icon="icon-park:message" />
           <div class="content">
             <p class="topic-top">{{ item.topic_name }}</p>

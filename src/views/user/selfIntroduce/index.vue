@@ -78,6 +78,7 @@ const returnBack = () => {
   isNav.value = true;
   // 失去焦点
   fieldText.value.blur();
+  getSelf();
 };
 
 // 获取自述
@@ -122,15 +123,15 @@ const changeContent = async () => {
   try {
     const { data } = await changeSelfCotnent({
       username: username,
-      self_content111: content.value
+      self_content: content.value
     });
     // 更新
     // 修改成功弹窗
     loading.value = false;
-    // content.value = data.result;
     isEditing.value = false;
     isNav.value = true;
     fieldText.value.blur();
+    showToast("修改成功");
   } catch {
     // 修改失败弹窗
     loading.value = false;
@@ -190,7 +191,7 @@ const changeContent = async () => {
             v-if="isEditing"
             type="primary"
             size="small"
-            color="linear-gradient(to right, #ff6034, #ee0a24)"
+            color="#4580ff"
             @click="returnBack"
             >退出编辑</van-button
           >
@@ -198,7 +199,7 @@ const changeContent = async () => {
             v-else
             type="primary"
             size="small"
-            color="linear-gradient(to right, #ff6034, #ee0a24)"
+            color="#4580ff"
             @click="changeState"
             >编辑/修改</van-button
           >
@@ -270,5 +271,6 @@ const changeContent = async () => {
 } */
 .self-title {
   line-height: 32px;
+  font-size: 16px;
 }
 </style>

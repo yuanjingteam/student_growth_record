@@ -1,5 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
+
 import { showConfirmDialog, showSuccessToast, showToast } from "vant";
 import {
   reactive,
@@ -7,13 +8,13 @@ import {
   nextTick,
   computed,
   onMounted,
-  onUpdated,
   onBeforeUpdate
 } from "vue";
 import { newArticlePublish, getLittleTags } from "@/api/article";
 import { getTopicListService } from "@/api/topic";
 import { useUserStore } from "@/store";
 const userStore = useUserStore();
+
 // 获取用户id
 const username = userStore.username;
 
@@ -35,6 +36,7 @@ const small_show = ref(false);
 // 文章状态弹窗
 const article_show = ref(false);
 
+const showState = ref(false);
 // 获取小话题
 const refs = ref([]);
 const setRef = (id, el) => {
@@ -242,6 +244,26 @@ const handleSubmit = async () => {
   });
 };
 
+const showConfirm = () => {
+  loading.value = true; // 开启 loading 效果
+  // 调用发布文章
+  // 20221544308
+  assetsFormData.append("username", username);
+  assetsFormData.append(
+    "article_content",
+    data.article_content.replace(/\n+/g, "<br/>")
+  );
+  assetsFormData.append("word_count", data.word_count);
+  assetsFormData.append("article_topic", data.article_topic);
+  for (const tag of data.article_tags) {
+    assetsFormData.append("article_tags", tag);
+  }
+  assetsFormData.append("article_status", data.article_status);
+  isPublished(assetsFormData);
+};
+const showCancel = () => {
+  fileList.value = [];
+};
 // 点击发布文章
 const onSubmit = async () => {
   try {
@@ -265,31 +287,7 @@ const onSubmit = async () => {
       return;
     }
     litTag.value = littleTag.value.map(tag => tag.name);
-
-    showConfirmDialog({
-      title: "发布文章",
-      message: "确认要发布文章吗?\n温馨提示:同种类型的文章一天只能发布两篇哦~"
-    })
-      .then(async () => {
-        loading.value = true; // 开启 loading 效果
-        // 调用发布文章
-        // 20221544308
-        assetsFormData.append("username", username);
-        assetsFormData.append(
-          "article_content",
-          data.article_content.replace(/\n+/g, "<br/>")
-        );
-        assetsFormData.append("word_count", data.word_count);
-        assetsFormData.append("article_topic", data.article_topic);
-        for (const tag of data.article_tags) {
-          assetsFormData.append("article_tags", tag);
-        }
-        assetsFormData.append("article_status", data.article_status);
-        isPublished(assetsFormData);
-      })
-      .catch(() => {
-        fileList.value = [];
-      });
+    showState.value = true;
   } catch (error) {
     console.log("validate failed", error);
   }
@@ -297,10 +295,13 @@ const onSubmit = async () => {
 
 // 发布文章请求
 const isPublished = async baseData => {
-  const { code } = await newArticlePublish(baseData);
-  if (code === 200) {
+  try {
+    await newArticlePublish(baseData);
     loading.value = false; // 关闭 loading 效果
+    showToast("发布成功");
     router.push("./demo");
+  } catch {
+    showToast("发布失败，请稍后重试");
   }
 };
 
@@ -436,6 +437,16 @@ getLittleTag();
       />
     </van-form>
   </div>
+  <van-dialog
+    v-model:show="showState"
+    title="发布文章"
+    message="确认要发布文章吗?
+    温馨提示:同种类型的文章一天只能发布两篇哦~"
+    show-cancel-button
+    showConfirmButton
+    @confirm="showConfirm"
+    @cancel="showCancel"
+  />
 </template>
 
 <style scoped>
