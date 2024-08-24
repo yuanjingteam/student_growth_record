@@ -181,7 +181,11 @@ if (routername) {
         <!-- 我的座右铭 -->
         <div class="my-motto">
           <i-icon icon="uil:edit-alt" />
-          <van-text-ellipsis :content="data.user_motto" class="my-motto" />
+          <van-text-ellipsis
+            rows="1"
+            :content="data.user_motto"
+            class="my-motto"
+          />
         </div>
         <!-- 我的个人信息 -->
         <div class="user-info">
@@ -197,6 +201,9 @@ if (routername) {
         <!-- 职位 -->
         <div v-if="!own" name="office">
           <span class="other">{{ data.user_class }}</span>
+          <span v-if="data.user_class" class="other">
+            {{ data.user_class }}
+          </span>
         </div>
       </div>
     </van-cell-group>
@@ -223,7 +230,7 @@ if (routername) {
   overflow: hidden;
 }
 .my-motto {
-  width: 240px;
+  height: 24px;
 }
 .my-motto .i-icon {
   margin-top: 3px;
