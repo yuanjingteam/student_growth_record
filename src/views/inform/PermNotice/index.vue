@@ -78,5 +78,6 @@ const onLoad = async () => {
 .van-list {
   background-color: #f0f1f5;
   overflow: hidden;
+  min-height: 100vh;
 }
 </style>

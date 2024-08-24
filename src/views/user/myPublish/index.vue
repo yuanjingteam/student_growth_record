@@ -69,6 +69,7 @@ const refresh = async () => {
       <van-pull-refresh
         v-if="list.length > 0"
         v-model="refreshing"
+        style="min-height: 100vh"
         pull-distance
         @refresh="onRefresh"
       >
@@ -92,7 +93,6 @@ const refresh = async () => {
         image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
         :image-size="80"
         description="这里空空如也~"
-        style="width: 100%; height: 100%"
       />
     </div>
   </div>
@@ -107,5 +107,9 @@ const refresh = async () => {
 .my-w {
   overflow: hidden;
   margin: 0 10px;
+}
+.van-empty {
+  width: 100vw;
+  height: 100vh;
 }
 </style>
