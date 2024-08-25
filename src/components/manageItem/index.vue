@@ -4,7 +4,7 @@ import { ref } from "vue";
 const props = defineProps({
   data: Object
 });
-let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
+// let userImg = "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg";
 const formattedContent = content => {
   // 使用正则表达式替换 <br/> 标签为换行符
   return content.replace(/<br\s*\/?>/g, "\n");
@@ -14,13 +14,7 @@ const formattedContent = content => {
   <van-cell-group inset>
     <van-cell is-link>
       <template #icon>
-        <van-image
-          v-if="userImg"
-          round
-          width="3rem"
-          height="3rem"
-          :src="userImg"
-        />
+        <van-image round width="3rem" height="3rem" :src="data.user_headshot" />
       </template>
       <template #title>
         {{ data.ID }}
