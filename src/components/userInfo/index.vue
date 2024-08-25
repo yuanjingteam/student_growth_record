@@ -161,8 +161,8 @@ if (routername) {
 
         <div v-else name="self">
           <div class="my-inside" />
-          <div class="change-info" @click="router.push('./editData')">
-            <button>编辑资料</button>
+          <div class="change-info">
+            <button @click="router.push('/editData')">编辑资料</button>
           </div>
         </div>
 

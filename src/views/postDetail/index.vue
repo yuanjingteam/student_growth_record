@@ -109,7 +109,7 @@ const onRefresh = () => {
         <van-icon name="ellipsis" />
       </template>
     </van-nav-bar>
-    <!-- <van-empty
+    <van-empty
       v-if="articleData.ban"
       image="error"
       description="该文章已被封禁"
@@ -118,8 +118,8 @@ const onRefresh = () => {
       v-else-if="!articleData.status"
       image="error"
       description="该文章已被私密"
-    /> -->
-    <div>
+    />
+    <div v-else>
       <div class="detailSke">
         <van-skeleton title avatar :row="4" :loading="loadingSke">
           <postdetail-more
