@@ -7,10 +7,9 @@ const router = useRouter();
 
 //成长之星列表
 const starList = ref([]);
-//获取当前存储的tab
-const currentName = localStorage.getItem("currentTabStar") || "班级";
+
 //tab内容
-const activeName = ref(currentName);
+const activeName = ref("班级");
 
 //获取班级成长之星
 const getClassStarList = async () => {
@@ -37,7 +36,6 @@ const getSchoolStarList = async () => {
 
 watch(activeName, (newValue, oldValue) => {
   // 监听activeName,触发不同的接口请求,更新数据
-  localStorage.setItem("currentTabStar", newValue);
   if (newValue == "班级") {
     getClassStarList();
   } else if (newValue == "年级") {

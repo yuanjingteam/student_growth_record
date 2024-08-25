@@ -34,7 +34,7 @@ const dealReport = msg => {
 
 // 已处理帖子
 const checkEmaill = async () => {
-  await readEmailNotice({ article_id: articleBan.article_id });
+  await readEmailNotice({ article_id: props.articleBan.article_id });
 };
 //处理帖子
 const confirmDeal = async () => {
