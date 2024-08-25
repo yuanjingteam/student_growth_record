@@ -51,6 +51,7 @@ const confirmDeal = async () => {
     }
     checkEmaill();
     emit("report");
+    location.reload();
   } catch {
     showToast("修改失败,请稍后重试");
   }
