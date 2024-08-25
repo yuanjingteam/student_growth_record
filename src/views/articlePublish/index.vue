@@ -301,6 +301,7 @@ const isPublished = async baseData => {
     showToast("发布成功");
     router.push("./demo");
   } catch {
+    loading.value = false; // 关闭 loading 效果
     showToast("发布失败，请稍后重试");
   }
 };
