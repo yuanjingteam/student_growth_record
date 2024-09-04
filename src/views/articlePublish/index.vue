@@ -166,7 +166,7 @@ const onSelect = item => {
   data.article_topic = actions[defaultIndex].name;
   littleTag.value = [];
   setRef.value = [];
-  data.article_content = "";
+  // data.article_content = "";
 
   // 移除所有带有 "active" 类的元素
   refs.value.forEach(ref => {
