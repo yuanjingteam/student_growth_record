@@ -65,16 +65,9 @@ const getType = async state => {
 const loading = ref(false);
 //绑定了 finished 变量，用于标记是否加载完成
 const finished = ref(false);
-//控制刷新状态的显示和隐藏
-const refreshing = ref(false);
 
 //当用户滚动到底部时会触发加载更多数据的事件
 const onLoad = async () => {
-  if (refreshing.value) {
-    commentData.comment_page = 0;
-    commentList.value = [];
-    refreshing.value = false;
-  }
   commentData.comment_page += 1;
 
   const {
@@ -91,16 +84,6 @@ const onLoad = async () => {
 const onRefreshCommentData = () => {
   getCommentsList();
 };
-
-//监听了刷新事件
-const onRefresh = () => {
-  // 清空列表数据
-  finished.value = false;
-  // 重新加载数据
-  // 将 loading 设置为 true，表示处于加载状态
-  loading.value = true;
-  onLoad();
-};
 </script>
 <template>
   <div class="detail">
@@ -109,17 +92,17 @@ const onRefresh = () => {
         <van-icon name="ellipsis" />
       </template>
     </van-nav-bar>
-    <!-- <van-empty
+    <van-empty
       v-if="articleData.ban"
       image="error"
       description="该文章已被封禁"
     />
     <van-empty
-      v-else-if="!articleData.status"
+      v-else-if="articleData.status == false"
       image="error"
       description="该文章已被私密"
-    /> -->
-    <div>
+    />
+    <div v-else>
       <div class="detailSke">
         <van-skeleton title avatar :row="4" :loading="loadingSke">
           <postdetail-more
@@ -140,25 +123,20 @@ const onRefresh = () => {
           <change-btn style="float: right" @get_type="getType" />
         </template>
       </van-cell>
-      <van-pull-refresh
+      <van-list
         v-if="comment_total != 0"
-        v-model="refreshing"
-        @refresh="onRefresh"
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
       >
-        <van-list
-          v-model:loading="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-        >
-          <comment-detail
-            v-for="item in commentList"
-            :key="item.id"
-            :data="item"
-            @refresh="onRefreshCommentData"
-          />
-        </van-list>
-      </van-pull-refresh>
+        <comment-detail
+          v-for="item in commentList"
+          :key="item.id"
+          :data="item"
+          @refresh="onRefreshCommentData"
+        />
+      </van-list>
       <van-empty v-else description="还没有人评论，快来抢沙发吧~" />
     </div>
   </div>

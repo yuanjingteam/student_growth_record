@@ -14,6 +14,7 @@ const articleBan = ref([]);
 
 //刷新举报数据
 const reportRefresh = async () => {
+  reportData.page = 1;
   const {
     data: { article_ban }
   } = await getreportEmail(reportData);
