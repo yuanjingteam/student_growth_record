@@ -59,12 +59,16 @@ const formattedContent = content => {
     left-text="返回"
     title="浏览记录"
     left-arrow
+    fixed
+    placeholder
+    z-index="3"
     @click-left="router.go(-1)"
   />
   <div class="main">
     <van-pull-refresh
       v-if="userHistory.length > 0"
       v-model="refreshing"
+      style="min-height: 100vh"
       @refresh="onRefresh"
     >
       <van-list
@@ -106,8 +110,6 @@ const formattedContent = content => {
             <template #right-icon>
               <van-image
                 v-if="item.article_pic"
-                width="8rem"
-                height="6rem"
                 :src="item.article_pic"
                 class="right"
               />
@@ -121,7 +123,6 @@ const formattedContent = content => {
       image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
       :image-size="80"
       description="暂无浏览记录"
-      style="width: 100%; height: 100%"
     />
   </div>
   <van-back-top bottom="100px" />
@@ -131,7 +132,11 @@ const formattedContent = content => {
   background-color: #f0f1f5;
   height: 100%;
 }
-
+.right {
+  width: 110px;
+  height: 90px;
+  object-fit: cover;
+}
 .van-image {
   margin: 0 10px 0 5px;
 }
@@ -142,5 +147,9 @@ const formattedContent = content => {
   span {
     margin: 0 2px;
   }
+}
+.van-empty {
+  width: 100vw;
+  height: 100vh;
 }
 </style>

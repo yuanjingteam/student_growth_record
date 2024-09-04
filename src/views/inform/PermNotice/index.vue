@@ -14,6 +14,7 @@ const articleBan = ref([]);
 
 //刷新举报数据
 const reportRefresh = async () => {
+  reportData.page = 1;
   const {
     data: { article_ban }
   } = await getreportEmail(reportData);
@@ -58,6 +59,9 @@ const onLoad = async () => {
     title="举报邮箱"
     left-text="返回"
     left-arrow
+    fixed
+    placeholder
+    z-index="3"
     @click-left="router.go(-1)"
   />
   <van-list
@@ -78,5 +82,6 @@ const onLoad = async () => {
 .van-list {
   background-color: #f0f1f5;
   overflow: hidden;
+  min-height: 100vh;
 }
 </style>

@@ -3,7 +3,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useClassStore, useUserStore } from "@/store";
 import { showDialog } from "vant";
 import { reactive, ref, watch } from "vue";
-import { searchArticleService } from "@/api/article";
+import { getClassDetailService } from "@/api/class";
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
@@ -42,7 +42,7 @@ className.value = findClassName(classId);
 //获取文章列表的数据
 const classData = reactive({
   key_word: "",
-  class_id: classId,
+  class_name: className.value,
   article_sort: "hot",
   article_count: 8,
   article_page: 0,
@@ -54,7 +54,7 @@ const articleList = ref([]);
 const getArticleList = async () => {
   const {
     data: { content }
-  } = await searchArticleService(classData);
+  } = await getClassDetailService(classData);
   articleList.value = content;
 };
 //监听切换排序方式
@@ -88,7 +88,7 @@ const onLoad = async () => {
 
   const {
     data: { content }
-  } = await searchArticleService(classData);
+  } = await getClassDetailService(classData);
   if (content.length > 0) {
     articleList.value = [...articleList.value, ...content];
     loading.value = false;

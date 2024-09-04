@@ -59,13 +59,18 @@ const refresh = async () => {
     <van-nav-bar
       left-text="返回"
       left-arrow
-      @click-left="router.push('/user')"
+      fixed
+      placeholder
+      z-index="3"
+      @click-left="router.go(-1)"
     />
     <div class="my-w">
       <user-info />
       <van-pull-refresh
         v-if="list.length > 0"
         v-model="refreshing"
+        style="min-height: 100vh"
+        pull-distance
         @refresh="onRefresh"
       >
         <van-list
@@ -79,6 +84,7 @@ const refresh = async () => {
             :key="index"
             :article="item"
             :state="item.article_status"
+            :isban="item.ban"
             @informRefresh="refresh"
           />
         </van-list>
@@ -88,11 +94,9 @@ const refresh = async () => {
         image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
         :image-size="80"
         description="这里空空如也~"
-        style="width: 100%; height: 100%"
       />
     </div>
   </div>
-
   <van-back-top bottom="100px" />
 </template>
 
@@ -103,5 +107,9 @@ const refresh = async () => {
 .my-w {
   overflow: hidden;
   margin: 0 10px;
+}
+.van-empty {
+  width: 100vw;
+  height: 100vh;
 }
 </style>

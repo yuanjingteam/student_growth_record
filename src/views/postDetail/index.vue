@@ -7,6 +7,8 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 
+//控制详情信息骨架屏
+const loadingSke = ref(false);
 //评论总数
 const comment_total = ref(0);
 //从路由中获取文章id
@@ -39,17 +41,20 @@ getCommentsList();
 
 //获取帖子详情列表
 const getArticleDetailList = async () => {
+  loadingSke.value = true;
   const { data } = await getArticlesService({
     article_id: articleId,
     username: userStore.username
   });
   articleData.value = data;
+  loadingSke.value = false;
 };
 
 getArticleDetailList();
 
 //切换状态获取类型信息
 const getType = async state => {
+  commentData.comment_page = 1;
   commentData.comment_sort = state;
   const { data } = await getCommentsService(commentData);
   commentList.value = data.comment_list;
@@ -60,16 +65,9 @@ const getType = async state => {
 const loading = ref(false);
 //绑定了 finished 变量，用于标记是否加载完成
 const finished = ref(false);
-//控制刷新状态的显示和隐藏
-const refreshing = ref(false);
 
 //当用户滚动到底部时会触发加载更多数据的事件
 const onLoad = async () => {
-  if (refreshing.value) {
-    commentData.comment_page = 0;
-    commentList.value = [];
-    refreshing.value = false;
-  }
   commentData.comment_page += 1;
 
   const {
@@ -86,16 +84,6 @@ const onLoad = async () => {
 const onRefreshCommentData = () => {
   getCommentsList();
 };
-
-//监听了刷新事件
-const onRefresh = () => {
-  // 清空列表数据
-  finished.value = false;
-  // 重新加载数据
-  // 将 loading 设置为 true，表示处于加载状态
-  loading.value = true;
-  onLoad();
-};
 </script>
 <template>
   <div class="detail">
@@ -104,30 +92,39 @@ const onRefresh = () => {
         <van-icon name="ellipsis" />
       </template>
     </van-nav-bar>
-
-    <postdetail-more
-      v-if="articleData.article_content.article_text != ''"
-      :post="articleData"
-      :articleId="articleId"
-      @refreshComment="onRefreshCommentData"
+    <van-empty
+      v-if="articleData.ban"
+      image="error"
+      description="该文章已被封禁"
     />
+    <van-empty
+      v-else-if="articleData.status == false"
+      image="error"
+      description="该文章已被私密"
+    />
+    <div v-else>
+      <div class="detailSke">
+        <van-skeleton title avatar :row="4" :loading="loadingSke">
+          <postdetail-more
+            :post="articleData"
+            :articleId="articleId"
+            @refreshComment="onRefreshCommentData"
+          />
+        </van-skeleton>
+      </div>
 
-    <van-cell>
-      <!-- 使用 title 插槽来自定义标题 -->
-      <template #title>
-        <span class="custom-title">评论</span>
-        <span class="comment_count">{{ comment_total }}</span>
-      </template>
-      <template v-if="comment_total != 0" #value>
-        <change-btn style="float: right" @get_type="getType" />
-      </template>
-    </van-cell>
-    <van-pull-refresh
-      v-if="comment_total != 0"
-      v-model="refreshing"
-      @refresh="onRefresh"
-    >
+      <van-cell>
+        <!-- 使用 title 插槽来自定义标题 -->
+        <template #title>
+          <span class="custom-title">评论</span>
+          <span class="comment_count">{{ comment_total }}</span>
+        </template>
+        <template v-if="comment_total != 0" #value>
+          <change-btn style="float: right" @get_type="getType" />
+        </template>
+      </van-cell>
       <van-list
+        v-if="comment_total != 0"
         v-model:loading="loading"
         :finished="finished"
         finished-text="没有更多了"
@@ -140,8 +137,8 @@ const onRefresh = () => {
           @refresh="onRefreshCommentData"
         />
       </van-list>
-    </van-pull-refresh>
-    <van-empty v-else description="还没有人评论，快来抢沙发吧~" />
+      <van-empty v-else description="还没有人评论，快来抢沙发吧~" />
+    </div>
   </div>
 </template>
 
@@ -168,5 +165,11 @@ const onRefresh = () => {
     margin-right: 4px;
     vertical-align: middle;
   }
+}
+.detailSke {
+  background-color: #fff;
+}
+.van-skeleton {
+  padding: 20px 0;
 }
 </style>

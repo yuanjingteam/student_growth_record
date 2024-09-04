@@ -18,13 +18,14 @@ console.log(myPoints.value);
 const sum = computed(() => {
   let total = 0;
   total =
-    myPoints.value.study_point * 0.25 +
-    (myPoints.value.honor_point + myPoints.value.work_point) * 0.2 +
-    (myPoints.value.social_point +
-      myPoints.value.volunteer_point +
-      myPoints.value.sport_point) *
+    Number(myPoints.value.study_point) * 0.25 +
+    (Number(myPoints.value.honor_point) + Number(myPoints.value.work_point)) *
+      0.2 +
+    (Number(myPoints.value.social_point) +
+      Number(myPoints.value.volunteer_point) +
+      Number(myPoints.value.sport_point)) *
       0.1 +
-    myPoints.value.life_point * 0.05;
+    Number(myPoints.value.life_point) * 0.05;
   return Number(total.toFixed(2)); // 保留小数点后两位
 });
 const getPoints = async () => {
@@ -80,6 +81,8 @@ getPoints();
           v-model="myPoints.honor_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
         />
       </van-cell>
       <van-cell title="工作履历">
@@ -87,6 +90,8 @@ getPoints();
           v-model="myPoints.work_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
         />
       </van-cell>
       <van-cell title="社会实践">
@@ -94,24 +99,32 @@ getPoints();
           v-model="myPoints.social_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
       /></van-cell>
       <van-cell title="志愿公益">
         <van-field
           v-model="myPoints.volunteer_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
       /></van-cell>
       <van-cell title="文体活动">
         <van-field
           v-model="myPoints.sport_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
       /></van-cell>
       <van-cell title="生活日常">
         <van-field
           v-model="myPoints.life_point"
           type="number"
           input-align="right"
+          :formatter="formatter"
+          autocomplete="off"
         />
       </van-cell>
     </van-cell-group>

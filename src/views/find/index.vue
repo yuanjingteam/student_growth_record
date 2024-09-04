@@ -132,7 +132,7 @@ function numberToEnglish(number) {
     <topic-card
       v-if="topicData.topicList"
       :message="topicData.message"
-      :list="topicData.topicList.slice(0, 2)"
+      :list="topicData.topicList.slice(1, 3)"
     />
     <class-card
       :message="classData.message"

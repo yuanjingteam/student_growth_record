@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref, computed } from "vue";
-import { showConfirmDialog, showDialog } from "vant";
+import { showConfirmDialog, showDialog, showToast } from "vant";
 import { useDarkModeStore, useUserStore, useInformation } from "@/store";
 
 const router = new useRouter();
@@ -10,6 +10,29 @@ const show = ref(false);
 const useStore = useUserStore();
 const userInfo = useInformation();
 const darkModeStore = useDarkModeStore();
+const showState = ref(false);
+const clearAll = () => {
+  try {
+    useStore.removeUserInfo();
+    userInfo.activeTab = 0;
+    userInfo.userData = ref({});
+
+    // 清空本地存储
+    localStorage.clear();
+    sessionStorage.clear();
+    // 删除 Cookie
+    document.cookie.split(";").forEach(function (c) {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    showToast("登出成功");
+    router.push("./login");
+  } catch {
+    showToast("退出失败，请稍后重试");
+  }
+};
+
 const checked = computed({
   get() {
     return darkModeStore.darkMode;
@@ -19,37 +42,7 @@ const checked = computed({
   }
 });
 const loginOut = () => {
-  showConfirmDialog({
-    // title: "退出登录",
-    message: "确认退出登录吗?"
-  })
-    .then(() => {
-      // useStore.$reset();
-      // userInfo.$reset();
-      useStore.token = "";
-      useStore.username = "";
-      useStore.role = 0;
-      userInfo.activeTab = 0;
-      userInfo.userData = ref({});
-
-      // 清空本地存储
-      localStorage.clear();
-      sessionStorage.clear();
-
-      // 删除 Cookie
-      document.cookie.split(";").forEach(function (c) {
-        document.cookie = c
-          .replace(/^ +/, "")
-          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
-
-      // 重定向到login
-      router.push("./login");
-    })
-    .catch(() => {
-      // on cancel
-      // showDialog("退出异常,请稍后重试");
-    });
+  showState.value = true;
 };
 </script>
 <template>
@@ -80,4 +73,12 @@ const loginOut = () => {
   </van-cell>
 
   <van-button type="primary" block @click="loginOut">退出登录</van-button>
+  <van-dialog
+    v-model:show="showState"
+    title="退出登录"
+    message="确认退出登录吗?"
+    show-cancel-button
+    showConfirmButton
+    @confirm="clearAll"
+  />
 </template>

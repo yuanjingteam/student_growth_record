@@ -137,6 +137,10 @@ if (routername) {
       <div class="my-name">
         {{ data.name }}
       </div>
+      <div v-if="userStore.ifTeacher" class="teacher">
+        <i-icon icon="ph:chalkboard-teacher" />
+        <span>教师</span>
+      </div>
     </div>
     <!-- 头部总组件 -->
     <van-cell-group>
@@ -157,8 +161,8 @@ if (routername) {
 
         <div v-else name="self">
           <div class="my-inside" />
-          <div class="change-info" @click="router.push('./editData')">
-            <button>编辑资料</button>
+          <div class="change-info">
+            <button @click="router.push('/editData')">编辑资料</button>
           </div>
         </div>
 
@@ -201,9 +205,6 @@ if (routername) {
         <!-- 职位 -->
         <div v-if="!own" name="office">
           <span class="other">{{ data.user_class }}</span>
-          <span v-if="data.user_class" class="other">
-            {{ data.user_class }}
-          </span>
         </div>
       </div>
     </van-cell-group>
@@ -211,6 +212,18 @@ if (routername) {
 </template>
 
 <style scoped>
+.teacher {
+  display: flex;
+  justify-content: center;
+  padding: 7px 0px 0px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #3762c1;
+  .i-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
 .my-self {
   position: relative;
   margin-top: 55px;
