@@ -73,7 +73,7 @@ const onLoad = async () => {
   const {
     data: { comment_list }
   } = await getCommentsService(commentData);
-  if (comment_list.length > 0) {
+  if (comment_list?.length > 0) {
     commentList.value = [...commentList.value, ...comment_list];
     loading.value = false;
   } else {
