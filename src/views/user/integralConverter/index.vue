@@ -26,7 +26,7 @@ const sum = computed(() => {
       Number(myPoints.value.sport_point)) *
       0.1 +
     Number(myPoints.value.life_point) * 0.05;
-  return Number(total.toFixed(2)); // 保留小数点后两位
+  return Number(total.toFixed(1)); // 保留小数点后一位
 });
 const getPoints = async () => {
   try {
