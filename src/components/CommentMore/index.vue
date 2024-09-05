@@ -9,6 +9,8 @@ const props = defineProps({
   comment_com: Object,
   commentId: Number
 });
+console.log(props.comment_com);
+
 const showToLogin = ref(false);
 const emit = defineEmits(["reload"]);
 

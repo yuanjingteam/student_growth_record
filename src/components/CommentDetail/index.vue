@@ -150,7 +150,9 @@ const gotoUser = () => {
 };
 //重新获取一级评论
 const again = () => {
+  showCommentDetail.value = false;
   emit("refresh");
+  reloadCommentSec();
 };
 </script>
 
@@ -237,7 +239,7 @@ const again = () => {
         v-for="(item, index) in commentSeList"
         :key="index"
         :comment_com="item"
-        :commentId="data.id"
+        :commentId="item.id"
         @reload="again"
       />
     </div>
