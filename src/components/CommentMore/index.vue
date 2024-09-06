@@ -16,9 +16,9 @@ const emit = defineEmits(["reload"]);
 
 const showPopover = ref(false);
 let actions = [];
-// if (userStore.role != "user") {
-//   actions = [{ text: "删除" }];
-// }
+if (userStore.role != "user") {
+  actions = [{ text: "删除" }];
+}
 
 const select = (action, index) => {
   if (action.text == "删除") {
