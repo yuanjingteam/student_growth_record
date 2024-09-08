@@ -166,7 +166,9 @@ if (routername) {
         round
         width="4rem"
         height="4rem"
+        fit="cover"
         :src="data.user_headshot"
+        class="avatar"
         @click="handleImagePreview(data.user_headshot)"
       />
       <!-- 昵称 -->
@@ -264,7 +266,11 @@ if (routername) {
   position: relative;
   margin-top: 55px;
 }
-
+.avatar {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
 .van-image {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
 }

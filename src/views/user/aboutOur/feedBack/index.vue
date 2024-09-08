@@ -33,7 +33,10 @@ const Feedback = async () => {
       <van-field
         v-model="feedback"
         type="textarea"
+        autosize
         label="意见反馈"
+        maxlength="100"
+        show-word-limit
         placeholder="留下您宝贵的意见,您的反馈是我们不断成长的动力..."
         :rules="[{ required: true, message: '请填写反馈内容' }]"
       />
