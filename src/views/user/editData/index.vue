@@ -98,19 +98,30 @@ baseUserData();
     <van-image src="https://www.logo9.net/userfiles/images/9HENANIOSAT.jpg" />
   </div>
   <van-floating-panel v-model:height="height" :anchors="anchors">
-    <div class="camera">
-      <i-icon icon="icon-park:camera" />
-    </div>
-    <div class="userImg">
-      <van-uploader
-        v-model="files"
-        :after-read="afterRead"
-        reupload
-        max-count="1"
-        :deletable="false"
-        accept="image/*"
-      />
-    </div>
+    <van-uploader
+      :files="files"
+      :after-read="afterRead"
+      reupload
+      max-count="1"
+      :deletable="false"
+      accept="image/*"
+      class="userImg"
+    >
+      <template #default>
+        <div class="avatar">
+          <van-image
+            fit="cover"
+            round
+            width="6.3rem"
+            height="6.3rem"
+            :src="userStore.userData.user_headshot"
+          />
+        </div>
+        <div class="camera">
+          <i-icon icon="icon-park:camera" />
+        </div>
+      </template>
+    </van-uploader>
     <div>
       <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
       <van-cell-group inset>
@@ -196,28 +207,33 @@ baseUserData();
   justify-content: center;
   height: 100%;
 }
+.userImg {
+  position: absolute;
+  top: -47px;
+  left: 146px;
+  z-index: 4;
+}
+.avatar {
+  display: flex; /* 使用 Flexbox */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+
+  border-radius: 50px;
+  overflow: hidden;
+}
 .camera {
   position: absolute;
-  top: 5px;
-  left: 205px;
-  z-index: 5;
+  top: 58px;
+  left: 60px;
   background: rgba(216, 214, 214, 0.6);
-  padding: 5px 5px 3px;
+  padding: 5px 4px 2px;
   border-radius: 20px;
 }
 .camera .i-icon {
   width: 20px;
   height: 20px;
 }
-.userImg {
-  position: absolute;
-  top: -45px;
-  left: 146px;
-  z-index: 4;
-}
-.van-uploader >>> .van-uploader__preview-image {
-  border-radius: 50px;
-}
+
 .custom-title {
   width: 10px;
 }
@@ -238,8 +254,6 @@ baseUserData();
   height: 100%;
   background-size: cover;
   background-position: center;
-  /* 模糊背景图片 */
-  /* filter: blur(2px); */
 }
 
 .van-cell {

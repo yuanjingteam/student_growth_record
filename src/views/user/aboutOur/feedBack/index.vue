@@ -1,17 +1,19 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { showToast } from "vant";
+import { ref } from "vue";
 import { toFeedBack } from "@/api/user";
 const router = new useRouter();
 
-let feedback = "";
+let feedback = ref("");
 const Feedback = async () => {
-  if (feedback.trim()) {
+  if (feedback.value.trim()) {
     // 处理反馈提交逻辑
     try {
-      const { msg } = await toFeedBack({ advice: feedback.trim() });
+      console.log(feedback.value);
+      const { msg } = await toFeedBack({ advice: "111" });
       showToast("反馈提交成功！");
-      feedback = "";
+      feedback.value = "";
     } catch {
       showToast("msg");
     }
@@ -32,9 +34,12 @@ const Feedback = async () => {
     <div class="feedback-content">
       <van-field
         v-model="feedback"
-        type="textarea"
-        label="意见反馈"
         placeholder="留下您宝贵的意见,您的反馈是我们不断成长的动力..."
+        label-align="top"
+        :autosize="{ minHeight: 80, maxHeight: 260 }"
+        type="textarea"
+        maxlength="100"
+        show-word-limit
         :rules="[{ required: true, message: '请填写反馈内容' }]"
       />
     </div>
