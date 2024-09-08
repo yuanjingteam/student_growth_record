@@ -414,9 +414,10 @@ export function toFeedBack(): Promise<ListResult> {
 }
 
 // 修改密码
-export function toChangePwd(): Promise<ListResult> {
+export function toChangePwd(data?: Object): Promise<ListResult> {
   return http.request({
     url: "user/pwd_update",
-    method: "post"
+    method: "post",
+    data: JSON.stringify(data)
   });
 }
