@@ -404,3 +404,19 @@ export function publishManagerMsg(data?: Object): Promise<ListResult> {
     data: JSON.stringify(data)
   });
 }
+
+// 意见反馈
+export function toFeedBack(): Promise<ListResult> {
+  return http.request({
+    url: "user/advice_get",
+    method: "post"
+  });
+}
+
+// 修改密码
+export function toChangePwd(): Promise<ListResult> {
+  return http.request({
+    url: "user/pwd_update",
+    method: "post"
+  });
+}

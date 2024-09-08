@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 
-import { showConfirmDialog, showSuccessToast, showToast } from "vant";
+import { showToast } from "vant";
 import {
   reactive,
   ref,
@@ -262,7 +262,9 @@ const showConfirm = () => {
   isPublished(assetsFormData);
 };
 const showCancel = () => {
+  // 清空提交
   fileList.value = [];
+  assetsFormData = new FormData();
 };
 // 点击发布文章
 const onSubmit = async () => {
@@ -303,6 +305,7 @@ const isPublished = async baseData => {
   } catch {
     loading.value = false; // 关闭 loading 效果
     showToast("发布失败，请稍后重试");
+  } finally {
   }
 };
 

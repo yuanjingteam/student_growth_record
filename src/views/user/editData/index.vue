@@ -19,33 +19,12 @@ const userId = userStore.username;
 // 取出初始化的数据
 const files = ref([{ url: userStore.userData.user_headshot }]);
 
-const beforeRead = async (file, event) => {
-  // 检查文件类型是否为图片
-  // 检查文件大小是否超过 2MB
-  // if (file.size > 2 * 1024 * 1024) {
-  //   showToast("图片大小不能超过 2MB");
-  //   return false;
-  // }
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const res = await changeUserHeadshot(formData);
-    files.value[0].url = res.data.user_headshot;
-    userStore.userData.user_headshot = res.data.user_headshot;
-    showToast("修改成功");
-    return true;
-  } catch (error) {
-    showToast("修改失败");
-    event.preventDefault();
-    return false;
-  }
-};
+// Loading效果
+const loading = ref(false);
 
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
 
-// Loading效果
-const loading = ref(false);
 // 初始化数据
 const data = ref({
   name: "",
@@ -54,10 +33,41 @@ const data = ref({
   user_gender: "",
   user_Identity: "",
   user_motto: "",
-  phone_number: "",
+  phone_number: 0,
   user_email: "",
   user_year: currentDate.value.join("-")
 });
+
+// 检查文件类型是否为图片
+// 检查文件大小是否超过 2MB
+// if (file.size > 2 * 1024 * 1024) {
+//   showToast("图片大小不能超过 2MB");
+//   return false;
+// }
+const afterRead = async (file, event) => {
+  // 确保 file 是有效的 File 对象
+  if (!(file.file instanceof File)) {
+    showToast("无效的文件");
+    return false;
+  }
+  try {
+    loading.value = true;
+    const formData = new FormData();
+    formData.append("file", file.file);
+    const res = await changeUserHeadshot(formData);
+    // 更新
+    files.value[0].url = res.data.user_headshot;
+    userStore.userData.user_headshot = res.data.user_headshot;
+    showToast("修改成功");
+    return true;
+  } catch (error) {
+    showToast("修改失败,请稍后重试");
+    event.preventDefault();
+    return false;
+  } finally {
+    loading.value = false; // 上传完成，结束加载
+  }
+};
 
 // 初始化页面
 // 获取用户详细信息
@@ -70,7 +80,7 @@ const baseUserData = async () => {
 baseUserData();
 </script>
 <template>
-  <van-overlay :show="loading">
+  <van-overlay :show="loading" z-index="1000">
     <van-loading vertical>
       <template #icon>
         <van-icon name="star-o" size="30" />
@@ -94,7 +104,7 @@ baseUserData();
     <div class="userImg">
       <van-uploader
         v-model="files"
-        :before-read="beforeRead"
+        :after-read="afterRead"
         reupload
         max-count="1"
         :deletable="false"
