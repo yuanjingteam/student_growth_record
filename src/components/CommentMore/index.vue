@@ -2,6 +2,7 @@
 import { ref, defineProps, reactive } from "vue";
 import { deleteCommentsService, articleUpvoteService } from "@/api/article";
 import { useUserStore } from "@/store";
+import { showFailToast } from "vant/es";
 
 const userStore = useUserStore();
 let token = userStore.token;
@@ -14,11 +15,12 @@ console.log(props.comment_com);
 const showToLogin = ref(false);
 const emit = defineEmits(["reload"]);
 
+//是否点赞
+const ifLike = ref(false);
+ifLike.value = props.comment_com.comment_if_like;
+
 const showPopover = ref(false);
-let actions = [];
-if (userStore.role != "user") {
-  actions = [{ text: "删除" }];
-}
+let actions = [{ text: "删除" }];
 
 const select = (action, index) => {
   if (action.text == "删除") {
@@ -30,16 +32,17 @@ const select = (action, index) => {
 const showDelete = ref(false);
 //确认删除
 const confirmDelete = async () => {
-  const res = await deleteCommentsService({
-    comment_id: props.commentId
-  });
-  console.log(res);
-  emit("reload");
+  try {
+    const res = await deleteCommentsService({
+      comment_id: props.commentId
+    });
+    console.log(res);
+    emit("reload");
+  } catch {
+    showFailToast("没有该权限");
+  }
 };
 
-//是否点赞
-const ifLike = ref(false);
-ifLike.value = props.comment_com.comment_if_like;
 //点赞数量
 const likeAmount = ref();
 likeAmount.value = props.comment_com.comment_like_num;

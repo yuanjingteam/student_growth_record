@@ -65,7 +65,7 @@ const commentSeData = reactive({
   username: userStore.username,
   comment_id: props.data.id,
   page: 1,
-  limit: 3
+  limit: 500
 });
 //控制当前哪个下拉框展开
 const activeNames = ref(["0"]);
@@ -151,6 +151,8 @@ const gotoUser = () => {
 //重新获取一级评论
 const again = () => {
   showCommentDetail.value = false;
+  activeNames.value = ["0"];
+  commentFold.value = !commentFold.value;
   emit("refresh");
   reloadCommentSec();
 };
