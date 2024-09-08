@@ -89,7 +89,9 @@ const formattedContent = content => {
                 <p class="remark">
                   <!-- <span>{{ item.name }}</span> -->
                   <span
-                    ><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span
+                    ><i-icon icon="mage:thumbs-up" />{{
+                      item.like_amount
+                    }}</span
                   >
                   <span
                     ><i-icon icon="lets-icons:comment" />{{
