@@ -11,6 +11,7 @@ const useStore = useUserStore();
 const userInfo = useInformation();
 const darkModeStore = useDarkModeStore();
 const showState = ref(false);
+
 const clearAll = () => {
   try {
     useStore.removeUserInfo();
@@ -48,31 +49,39 @@ const loginOut = () => {
 <template>
   <van-dialog v-model:show="show" title="标题" show-cancel-button />
 
-  <van-nav-bar
-    left-text="返回"
-    title="设置"
-    left-arrow
-    @click-left="router.push('/user')"
-  />
+  <div class="main">
+    <div class="top">
+      <van-nav-bar
+        left-text="返回"
+        title="设置"
+        left-arrow
+        @click-left="router.push('/user')"
+      />
+      <van-cell is-link>
+        <template #title>用户协议 </template>
+      </van-cell>
+      <van-cell>
+        <template #title>深色模式</template>
+        <template #value>
+          <van-switch v-model="checked" />
+        </template>
+      </van-cell>
+      <van-cell title="推荐好友" is-link />
+      <van-cell is-link>
+        <template #title>隐私政策</template>
+      </van-cell>
+      <van-cell is-link>
+        <template #title>个人信息收集清单</template>
+      </van-cell>
+    </div>
 
-  <van-cell is-link>
-    <template #title>用户协议 </template>
-  </van-cell>
-  <van-cell>
-    <template #title>深色模式</template>
-    <template #value>
-      <van-switch v-model="checked" />
-    </template>
-  </van-cell>
-  <van-cell title="推荐好友" is-link />
-  <van-cell is-link>
-    <template #title>隐私政策</template>
-  </van-cell>
-  <van-cell is-link>
-    <template #title>个人信息收集清单</template>
-  </van-cell>
-
-  <van-button type="primary" block @click="loginOut">退出登录</van-button>
+    <div class="bottom">
+      <van-button type="primary" block @click="router.push('./changePwd')"
+        >修改密码</van-button
+      >
+      <van-button type="primary" block @click="loginOut">退出登录</van-button>
+    </div>
+  </div>
   <van-dialog
     v-model:show="showState"
     title="退出登录"
@@ -82,3 +91,14 @@ const loginOut = () => {
     @confirm="clearAll"
   />
 </template>
+<style scoped>
+.main {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.van-button {
+  margin: 10px 0 20px;
+}
+</style>
