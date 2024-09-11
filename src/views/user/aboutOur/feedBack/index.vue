@@ -9,14 +9,15 @@ let feedback = ref("");
 const Feedback = async () => {
   if (feedback.value.trim()) {
     // 处理反馈提交逻辑
-    try {
-      console.log(feedback.value);
-      const { msg } = await toFeedBack({ advice: feedback });
-      showToast("反馈提交成功！");
-      feedback.value = "";
-    } catch {
-      showToast("msg");
-    }
+    // try {
+    console.log(feedback.value);
+    const { msg } = await toFeedBack({ advice: feedback.value });
+    showToast("反馈提交成功！");
+    feedback.value = "";
+    console.log(msg);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   } else {
     showToast("请填写反馈内容");
   }
