@@ -406,10 +406,11 @@ export function publishManagerMsg(data?: Object): Promise<ListResult> {
 }
 
 // 意见反馈
-export function toFeedBack(): Promise<ListResult> {
+export function toFeedBack(data?: Object): Promise<ListResult> {
   return http.request({
     url: "user/advice_get",
-    method: "post"
+    method: "post",
+    data: JSON.stringify(data)
   });
 }
 

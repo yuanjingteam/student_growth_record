@@ -11,7 +11,7 @@ const Feedback = async () => {
     // 处理反馈提交逻辑
     try {
       console.log(feedback.value);
-      const { msg } = await toFeedBack({ advice: "111" });
+      const { msg } = await toFeedBack({ advice: feedback });
       showToast("反馈提交成功！");
       feedback.value = "";
     } catch {
