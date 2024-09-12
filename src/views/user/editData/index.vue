@@ -159,7 +159,7 @@ baseUserData();
         </van-cell>
         <van-cell is-link @click="router.push('/editData/motto')">
           <template #title>
-            <span class="custom-title both over">个性签名</span>
+            <span class="custom-title">个性签名</span>
           </template>
           <template #value>
             <div class="both over">{{ data.user_motto }}</div>
@@ -167,15 +167,15 @@ baseUserData();
         </van-cell>
         <van-cell is-link @click="router.push('/editData/phone')">
           <template #title>
-            <span class="custom-title both">电话</span>
+            <span class="custom-title">电话</span>
           </template>
           <template #value>
-            <div class="both">{{ data.phone_number }}</div>
+            <div class="both over">{{ data.phone_number }}</div>
           </template>
         </van-cell>
         <van-cell is-link @click="router.push('/editData/email')">
           <template #title>
-            <span class="custom-title both">电子邮箱</span>
+            <span class="custom-title">电子邮箱</span>
           </template>
           <template #value>
             <div class="both over">{{ data.user_email }}</div>
@@ -242,6 +242,7 @@ baseUserData();
 }
 .over {
   width: 100%;
+  padding-left: 9px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
