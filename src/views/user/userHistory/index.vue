@@ -3,6 +3,7 @@ import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { getUserHistory } from "@/api/user";
 import { ref } from "vue";
+import { showToast } from "vant";
 const userStore = useUserStore();
 const router = useRouter();
 const myname = userStore.userData.username;
@@ -12,7 +13,7 @@ const refreshing = ref(false);
 const page = ref(1);
 
 const userHistory = ref([]);
-const mystar = async () => {
+const myHistory = async () => {
   try {
     const { data } = await getUserHistory({
       username: myname,
@@ -23,27 +24,27 @@ const mystar = async () => {
     if (data.history.length == 0) {
       finished.value = true;
     }
-  } catch {
+  } catch (error) {
+    console.log(error);
+
     finished.value = true;
   }
 };
-mystar();
+myHistory();
 const onLoad = async () => {
   if (refreshing.value) {
     userHistory.value = [];
-    page.value = 0;
+    page.value = 1;
     refreshing.value = false;
   }
-  await mystar();
+  await myHistory();
   console.log(page.value, 31313);
-
   loading.value = false;
 };
 // 刷新列表
 const onRefresh = () => {
   // 清空列表数据
   finished.value = false;
-
   // 重新加载数据
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;
