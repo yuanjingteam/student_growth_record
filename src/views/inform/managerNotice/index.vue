@@ -29,7 +29,7 @@ const loadData = async () => {
 const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];
-    page.value = 0;
+    page.value = 1;
     refreshing.value = false;
   }
   await loadData();

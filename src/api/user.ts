@@ -329,8 +329,8 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
 export function getArticlePublish(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/article_get",
-    method: "post",
-    data: JSON.stringify(data)
+    method: "get",
+    params: data
   });
 }
 // 获取用户收藏
