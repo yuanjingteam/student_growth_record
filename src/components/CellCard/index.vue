@@ -37,14 +37,12 @@ const gotoArticleDetail = () => {
             "
           />
           <div class="info">
-            <div style="display: flex; align-items: center; position: relative">
+            <div style="display: flex; align-items: center">
               <p class="name">
                 {{ article.name ? article.name : "用户已被删除" }}
               </p>
               <van-tag v-if="ifTeacher" plain type="primary">教师</van-tag>
             </div>
-            <span class="standout">校级</span>
-
             <p v-if="article.username != ''" class="grade">
               {{ article.user_class }}
             </p>
@@ -140,10 +138,5 @@ const gotoArticleDetail = () => {
 }
 .van-tag {
   margin-left: 3px;
-}
-.standout {
-  position: absolute;
-  top: 2px;
-  right: 20px;
 }
 </style>
