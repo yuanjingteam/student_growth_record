@@ -9,8 +9,6 @@ export const useUserStore = defineStore(
     const token = ref("");
     const role = ref("user");
     const ifTeacher = ref(false);
-    const className = ref([]);
-    const grade = ref(0);
     const router = useRouter();
     // https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg
     // 用户详细资料
@@ -31,16 +29,12 @@ export const useUserStore = defineStore(
       token.value = obj.token;
       role.value = obj.role;
       ifTeacher.value = obj.ifTeacher;
-      className.value = obj.class;
-      grade.value = obj.grade;
     };
     const removeUserInfo = () => {
       username.value = "passenger";
       token.value = "";
       role.value = "user";
       ifTeacher.value = false;
-      className.value = [];
-      grade.value = 0;
     };
 
     // 区分身份信息
@@ -60,8 +54,6 @@ export const useUserStore = defineStore(
       role,
       ifTeacher,
       userData,
-      className,
-      grade,
       setUserInfo,
       removeUserInfo,
       otherSwitch
