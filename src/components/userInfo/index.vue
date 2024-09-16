@@ -95,14 +95,14 @@ const data = ref({
 });
 
 // 默认头像
-const defaultAvatars = [
-  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_1.png",
-  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_2.png",
-  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_3.png",
-  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_4.png",
-  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_5.png",
-  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_6.png"
-];
+// const defaultAvatars = [
+//   "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_1.png",
+//   "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_2.png",
+//   "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_3.png",
+//   "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_4.png",
+//   "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_5.png",
+//   "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_6.png"
+// ];
 
 // 获取关注状态
 const concernGet = async () => {
@@ -125,29 +125,29 @@ const UerInfo = async () => {
   // 存储/更新
   userStore.userData.user_headshot = res.data.user_headshot;
 
-  // 当前获取没有默认头像
-  if (userStore.userData.user_headshot === "") {
-    try {
-      // 获取图片文件
-      const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
-      const response = await fetch(defaultAvatars[randomIndex]);
-      // 将其转换为 Blob
-      const blob = await response.blob();
-      const file = new File([blob], "user_headshot.png", { type: blob.type }); // 创建 File 对象
-      const formData = new FormData();
-      formData.append("file", file);
-      // 上传用户头像
-      const res = await changeUserHeadshot(formData);
-      // 赋值默认头像
-      data.value.user_headshot = res.data.user_headshot;
-      // 存储
-      userStore.userData.user_headshot = res.data.user_headshot;
-    } catch {
-      data.value.user_headshot = "";
-      userStore.userData.user_headshot = "";
-      // showToast("获取头像失败,请稍后重试");
-    }
-  }
+  // // 当前获取没有默认头像
+  // if (userStore.userData.user_headshot === "") {
+  //   try {
+  //     // 获取图片文件
+  //     const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
+  //     const response = await fetch(defaultAvatars[randomIndex]);
+  //     // 将其转换为 Blob
+  //     const blob = await response.blob();
+  //     const file = new File([blob], "user_headshot.png", { type: blob.type }); // 创建 File 对象
+  //     const formData = new FormData();
+  //     formData.append("file", file);
+  //     // 上传用户头像
+  //     const res = await changeUserHeadshot(formData);
+  //     // 赋值默认头像
+  //     data.value.user_headshot = res.data.user_headshot;
+  //     // 存储
+  //     userStore.userData.user_headshot = res.data.user_headshot;
+  //   } catch {
+  //     data.value.user_headshot = "";
+  //     userStore.userData.user_headshot = "";
+  //     // showToast("获取头像失败,请稍后重试");
+  //   }
+  // }
 };
 UerInfo();
 if (routername) {
