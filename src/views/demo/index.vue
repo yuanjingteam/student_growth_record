@@ -8,7 +8,6 @@ import { highSearchArticleService } from "@/api/article";
 import { getClassByGradeService } from "@/api/class";
 import { useTopicStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
-import { e } from "vite-plugin-cdn2/dist/interface-24a47269.js";
 
 const userStore = useUserStore();
 //获取pinia的token
@@ -207,14 +206,36 @@ const items = [
   }
 ];
 
-const date = ref("");
+//可供选择的开始时间
+const minDate = new Date(2024, 5, 1);
+//可供选择的结束时间
+const maxDate = new Date(2025, 6, 1);
+//记录开始时间
+const startDate = ref("" || "2024-05-01");
+//记录结束时间
+const endDate = ref("" || "2025-06-01");
+//控制日历框是否弹出
+
 const show = ref(false);
 
-const formatDate = date => `${date.getMonth() + 1}/${date.getDate()}`;
+//格式化时间
+const formatDate = date => {
+  console.log(date);
+
+  const month =
+    date.getMonth() + 1 > 10
+      ? date.getMonth() + 1
+      : "0" + (date.getMonth() + 1);
+  const day = date.getDate() >= 10 ? date.getDate() : "0" + date.getDate();
+  return `${date.getFullYear()}-${month}-${day}`;
+};
+//点击确认时间
+
 const onConfirm = values => {
   const [start, end] = values;
   show.value = false;
-  date.value = `${formatDate(start)} - ${formatDate(end)}`;
+  startDate.value = formatDate(start);
+  endDate.value = formatDate(end);
 };
 
 //打开日历框
@@ -264,6 +285,7 @@ const openMenu = () => {
   checked3.value = className || searchData.class;
 };
 
+//多选框相关逻辑
 const checkboxRefs = ref([]);
 const toggle = index => {
   checkboxRefs.value[index].toggle();
@@ -292,6 +314,9 @@ const confirmChoice = async () => {
   searchData.order = checked1.value;
   searchData.sort = checked2.value;
   searchData.class = checked3.value;
+  searchData.start_at = startDate.value;
+  searchData.end_at = endDate.value;
+
   highSearch();
   itemRef.value.toggle();
 };
@@ -300,6 +325,8 @@ const resetChoice = () => {
   checked1.value = "asc";
   checked2.value = "created_at";
   checked3.value = className;
+  startDate.value = "2024-05-01";
+  endDate.value = "2025-06-01";
 };
 </script>
 <template>
@@ -439,9 +466,9 @@ const resetChoice = () => {
           </van-checkbox-group>
           <div v-if="activeIndex === 3" class="showTime" @click="showcalendar">
             <h2>开始时间:</h2>
-            <span class="time">2022-09-20</span>
+            <span class="time">{{ startDate }}</span>
             <h2>结束时间:</h2>
-            <span class="time">2024-09-15</span>
+            <span class="time">{{ endDate }}</span>
           </div>
         </template></van-tree-select
       >
@@ -492,7 +519,13 @@ const resetChoice = () => {
     </van-tab>
   </van-tabs>
   <van-back-top bottom="100px" />
-  <van-calendar v-model:show="show" type="range" @confirm="onConfirm" />
+  <van-calendar
+    v-model:show="show"
+    :min-date="minDate"
+    :max-date="maxDate"
+    type="range"
+    @confirm="onConfirm"
+  />
 </template>
 
 <style scoped>
