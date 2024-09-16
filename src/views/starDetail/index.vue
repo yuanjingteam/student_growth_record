@@ -53,7 +53,7 @@ const dateEndShow = ref("");
 const starData = reactive({
   startTime: "",
   endTime: "",
-  page: 1,
+  page: page,
   limit: 500
 });
 
@@ -68,10 +68,11 @@ const getClassStarList = async () => {
   try {
     const { data } = await getClassStar(starData);
     starList.value = [...starList.value, ...data.starlist];
-    page.value++;
+    console.log(page.value, "page");
     if (data.starlist.length == 0) {
       finished.value = true;
     }
+    page.value++;
   } catch (error) {
     console.log(error);
     finished.value = true;
@@ -83,10 +84,10 @@ const getGradeStarList = async () => {
   try {
     const { data } = await getGradeStar(starData);
     starList.value = [...starList.value, ...data.starlist];
-    page.value++;
     if (data.starlist.length == 0) {
       finished.value = true;
     }
+    page.value++;
   } catch {
     finished.value = true;
   }
@@ -96,11 +97,10 @@ const getSchoolStarList = async () => {
   try {
     const { data } = await getSchoolStar(starData);
     starList.value = [...starList.value, ...data.starlist];
-    page.value++;
-
     if (data.starlist.length == 0) {
       finished.value = true;
     }
+    page.value++;
   } catch {
     finished.value = true;
   }
@@ -137,15 +137,8 @@ const onConfirm = () => {
 
   starData.startTime = formatDate2(calendarRef.value.getSelectedDate()[0]);
   starData.endTime = formatDate2(calendarRef.value.getSelectedDate()[1]);
-  starData.page = 1;
   //根据当前重新发送请求
-  // if (activeName.value == "班级") {
-  //   getClassStarList();
-  // } else if (activeName.value == "年级") {
-  //   getGradeStarList();
-  // } else {
-  //   getSchoolStarList();
-  // }
+  onRefresh();
 };
 
 //xxxx年xx月xx日
@@ -180,13 +173,12 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   if (activeName.value == "班级") {
-    getClassStarList();
+    await getClassStarList();
   } else if (activeName.value == "年级") {
-    getGradeStarList();
+    await getGradeStarList();
   } else {
-    getSchoolStarList();
+    await getSchoolStarList();
   }
-  console.log(page.value, 31313);
   loading.value = false;
 };
 
@@ -194,7 +186,7 @@ const onLoad = async () => {
 const onRefresh = () => {
   // 清空列表数据
   finished.value = false;
-
+  refreshing.value = true;
   // 重新加载数据
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;

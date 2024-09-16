@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useInformation } from "@/store";
 import {
@@ -154,19 +154,21 @@ const onLoad = async () => {
       break;
   }
 };
-
+watch(active, (newValue, oldValue) => {
+  // 监听activeName,触发不同的接口请求,更新数据
+  console.log(1111);
+  onRefresh();
+});
 // 刷新列表
 const onRefresh = () => {
   // 清空列表数据
   finished.value = false;
+  refreshing.value = true;
   // 重新加载数据
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;
   onLoad();
 };
-loadData1();
-loadData2();
-loadData3();
 </script>
 <template>
   <!-- <van-empty
