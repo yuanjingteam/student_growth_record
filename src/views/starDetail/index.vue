@@ -13,6 +13,11 @@ const router = useRouter();
 //判断是否为最新展示
 const ifNewShow = ref(false);
 
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
+const page = ref(1);
+
 const list = reactive([
   {
     id: "1",
@@ -48,7 +53,7 @@ const dateEndShow = ref("");
 const starData = reactive({
   startTime: "",
   endTime: "",
-  page: 1,
+  page: page,
   limit: 500
 });
 
@@ -60,26 +65,45 @@ const activeName = ref("班级");
 
 //获取班级成长之星
 const getClassStarList = async () => {
-  const {
-    data: { starlist }
-  } = await getClassStar(starData);
-  starList.value = starlist;
+  try {
+    const { data } = await getClassStar(starData);
+    starList.value = [...starList.value, ...data.starlist];
+    console.log(page.value, "page");
+    if (data.starlist.length == 0) {
+      finished.value = true;
+    }
+    page.value++;
+  } catch (error) {
+    console.log(error);
+    finished.value = true;
+  }
 };
-getClassStarList();
 
 //获取年级成长之星
 const getGradeStarList = async () => {
-  const {
-    data: { starlist }
-  } = await getGradeStar(starData);
-  starList.value = starlist;
+  try {
+    const { data } = await getGradeStar(starData);
+    starList.value = [...starList.value, ...data.starlist];
+    if (data.starlist.length == 0) {
+      finished.value = true;
+    }
+    page.value++;
+  } catch {
+    finished.value = true;
+  }
 };
 //获取校级成长之星
 const getSchoolStarList = async () => {
-  const {
-    data: { starlist }
-  } = await getSchoolStar(starData);
-  starList.value = starlist;
+  try {
+    const { data } = await getSchoolStar(starData);
+    starList.value = [...starList.value, ...data.starlist];
+    if (data.starlist.length == 0) {
+      finished.value = true;
+    }
+    page.value++;
+  } catch {
+    finished.value = true;
+  }
 };
 
 watch(activeName, (newValue, oldValue) => {
@@ -87,13 +111,10 @@ watch(activeName, (newValue, oldValue) => {
   starData.startTime = "";
   starData.endTime = "";
   // 监听activeName,触发不同的接口请求,更新数据
-  if (newValue == "班级") {
-    getClassStarList();
-  } else if (newValue == "年级") {
-    getGradeStarList();
-  } else {
-    getSchoolStarList();
-  }
+  // 监听activeName,触发不同的接口请求,更新数据
+  finished.value = false;
+  page.value = 1;
+  starList.value = [];
 });
 
 //绑定日历组件
@@ -116,15 +137,8 @@ const onConfirm = () => {
 
   starData.startTime = formatDate2(calendarRef.value.getSelectedDate()[0]);
   starData.endTime = formatDate2(calendarRef.value.getSelectedDate()[1]);
-  starData.page = 1;
   //根据当前重新发送请求
-  if (activeName.value == "班级") {
-    getClassStarList();
-  } else if (activeName.value == "年级") {
-    getGradeStarList();
-  } else {
-    getSchoolStarList();
-  }
+  onRefresh();
 };
 
 //xxxx年xx月xx日
@@ -151,6 +165,33 @@ function formatDate2(date) {
 
   return `${year}-${month}-${day}`;
 }
+
+const onLoad = async () => {
+  if (refreshing.value) {
+    starList.value = [];
+    page.value = 1;
+    refreshing.value = false;
+  }
+  if (activeName.value == "班级") {
+    await getClassStarList();
+  } else if (activeName.value == "年级") {
+    await getGradeStarList();
+  } else {
+    await getSchoolStarList();
+  }
+  loading.value = false;
+};
+
+// 刷新列表
+const onRefresh = () => {
+  // 清空列表数据
+  finished.value = false;
+  refreshing.value = true;
+  // 重新加载数据
+  // 将 loading 设置为 true，表示处于加载状态
+  loading.value = true;
+  onLoad();
+};
 </script>
 
 <template>
@@ -180,28 +221,41 @@ function formatDate2(date) {
       :title="item.title"
       :name="item.name"
     >
-      <van-grid v-if="starList" :gutter="10">
-        <van-grid-item
-          v-for="item in starList"
-          :key="item"
-          @click="router.push(`/otherInfo/${item.username}`)"
+      <van-pull-refresh
+        v-model="refreshing"
+        style="min-height: 100vh"
+        @refresh="onRefresh"
+      >
+        <van-list
+          v-model:loading="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
         >
-          <div class="star-box">
-            <van-image
-              fit="cover"
-              round
-              :lazy-load="true"
-              :src="
-                item.user_headshot ||
-                'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
-              "
-            />
-            <p>{{ item.name }}</p>
-          </div>
-        </van-grid-item>
-      </van-grid>
+          <van-grid v-if="starList" :gutter="10">
+            <van-grid-item
+              v-for="item in starList"
+              :key="item"
+              @click="router.push(`/otherInfo/${item.username}`)"
+            >
+              <div class="star-box">
+                <van-image
+                  fit="cover"
+                  round
+                  :lazy-load="true"
+                  :src="
+                    item.user_headshot ||
+                    'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
+                  "
+                />
+                <p>{{ item.name }}</p>
+              </div>
+            </van-grid-item>
+          </van-grid>
 
-      <van-empty v-else description="暂时还没有符合的人选哦" />
+          <van-empty v-else description="暂时还没有符合的人选哦" />
+        </van-list>
+      </van-pull-refresh>
     </van-tab>
   </van-tabs>
 </template>
@@ -225,7 +279,7 @@ function formatDate2(date) {
 }
 
 .van-tabs {
-  height: 100%;
+  min-height: 100%;
 }
 .van-tabs >>> .van-tabs__content {
   height: 100%;

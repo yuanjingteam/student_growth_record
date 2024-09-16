@@ -65,7 +65,7 @@ const username = userStore.username;
         @click="router.push('./selfIntroduce')"
       />
       <!-- <van-cell title="意见反馈" is-link @click="router.push('./feedBack')" /> -->
-      <van-cell title="关于我们" is-link @click="router.push('./feedBack')" />
+      <van-cell title="关于我们" is-link @click="router.push('./aboutOur')" />
       <van-cell title="设置" is-link @click="router.push('./sets')" />
     </van-cell-group>
   </div>

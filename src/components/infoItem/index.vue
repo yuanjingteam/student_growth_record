@@ -28,6 +28,10 @@ const goto = () => {
     router.push(`/otherInfo/${props.data.username}`);
   }
 };
+const formattedContent = st => {
+  // 使用正则表达式替换 <br/> 标签为换行符
+  return st.replace(/<br\s*\/?>/g, "\n");
+};
 </script>
 <template>
   <van-badge :dot="data.is_read == false" :offset="[-12, 20]">
@@ -44,7 +48,12 @@ const goto = () => {
           <div v-else>
             <span>{{ state1 }}</span>
           </div>
-          <van-text-ellipsis :content="data.content" />
+          <div v-if="data.content">
+            <van-text-ellipsis :content="formattedContent(data.content)" />
+          </div>
+          <div v-else>
+            <van-text-ellipsis content="" />
+          </div>
         </div>
       </template>
       <template #value>

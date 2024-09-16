@@ -185,9 +185,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/feedBack",
     name: "feedBack",
-    component: () => import("@/views/user/feedBack/index.vue"),
+    component: () => import("@/views/user/aboutOur/feedBack/index.vue"),
     meta: {
       title: "意见反馈"
+    }
+  },
+  {
+    path: "/aboutOur",
+    name: "aboutOur",
+    component: () => import("@/views/user/aboutOur/index.vue"),
+    meta: {
+      title: "关于我们"
     }
   },
   {
@@ -196,6 +204,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/user/sets/index.vue"),
     meta: {
       title: "设置"
+    }
+  },
+  {
+    path: "/changePwd",
+    name: "changePwd",
+    component: () => import("@/views/user/sets/changPassword/index.vue"),
+    meta: {
+      title: "修改密码"
     }
   },
   {

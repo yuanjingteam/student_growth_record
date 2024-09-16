@@ -472,6 +472,7 @@ const resetChoice = () => {
       <van-pull-refresh
         v-if="articleList.length > 0"
         v-model="refreshing"
+        style="min-height: 100vh"
         @refresh="onRefresh"
       >
         <van-list
