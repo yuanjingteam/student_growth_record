@@ -2,6 +2,7 @@
 import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getVerifyImg, userLogin } from "@/api/user";
+import { getClassByGradeService } from "@/api/class";
 import { useUserStore } from "@/store";
 import { showFailToast, showSuccessToast } from "vant";
 
@@ -72,15 +73,30 @@ const onsubmit = async () => {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
       localStorage.setItem("ifTeacher", res.data.ifTeacher);
+      // if (res.data.grade == 0) {
+      //   res.data.grade = 2;
+      //   const { data } = getClassByGradeService({ grade: "2" });
+      //   const list = data.grade_list;
+      //   res.data.class = list;
+      // }
+      localStorage.setItem("grade", res.data.grade);
+      localStorage.setItem("class", res.data.class);
+
       userStore.setUserInfo(res.data);
       showSuccessToast("登录成功");
       router.push("/demo");
     } catch (error) {
       showFailToast(`${error.msg}`);
-      userForm.username = "";
-      userForm.password = "";
-      userForm.verify = "";
-      checked.value = false;
+      if (error.code == 500) {
+        userForm.username = "";
+        userForm.password = "";
+        userForm.verify = "";
+      } else if (error.code == 400) {
+        userForm.password = "";
+        userForm.verify = "";
+      } else {
+        userForm.verify = "";
+      }
     }
   } else {
     showTip.value = true;

@@ -1,16 +1,23 @@
 <script setup lang="ts" name="Demo">
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref, watch, onBeforeUpdate } from "vue";
 import CellCard from "@/components/CellCard/index.vue";
 import { getRegisterDay } from "@/api/topic";
 import { showDialog } from "vant";
 
-import { searchArticleService } from "@/api/article";
+import { highSearchArticleService } from "@/api/article";
+import { getClassByGradeService } from "@/api/class";
 import { useTopicStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
+import { e } from "vite-plugin-cdn2/dist/interface-24a47269.js";
 
 const userStore = useUserStore();
 //获取pinia的token
 const token = userStore.token;
+//获取存储的grade
+const gradeDetail = userStore.grade;
+//获取存储的class
+const className = userStore.className;
+
 const topicStore = useTopicStore();
 const router = useRouter();
 
@@ -31,13 +38,35 @@ const activeName = ref(currentName);
 const registerTime = ref("");
 //搜索框数据
 const searchData = reactive({
-  key_word: "",
+  key_words: "",
   topic_name: "",
-  article_sort: "new",
   article_count: 8,
   article_page: 0,
-  username: userStore.username
+  username: userStore.username,
+  sort: "",
+  order: "",
+  start_at: "",
+  end_at: "",
+  class: [],
+  name: "",
+  grade: 0
 });
+searchData.class = className;
+searchData.grade = gradeDetail;
+//对象下拉选项内容
+const object = ref("word");
+const objectOption = [
+  { text: "内容", value: "word" },
+  { text: "用户", value: "user" }
+];
+//年级下拉框内容
+const grade = ref(`${gradeDetail}`);
+const gradeOption = [
+  { text: "大一", value: "1" },
+  { text: "大二", value: "2" },
+  { text: "大三", value: "3" },
+  { text: "大四", value: "4" }
+];
 
 // 防抖函数
 function debounce(func, delay) {
@@ -56,15 +85,34 @@ const registerDay = async () => {
 if (token != "") {
   registerDay();
 }
+//存当前年级的班级列表
+const list = ref([]);
+//获取当前年级的所有班级并存储
+const getClassByGrade = async () => {
+  const { data } = await getClassByGradeService({
+    grade: gradeDetail
+  });
+  list.value = data.grade_list;
+};
+getClassByGrade();
 
 //搜索框事件
 const onSearch = async () => {
+  if (object.value == "user") {
+    searchData.key_words = "";
+    searchData.name = inputValue.value;
+  } else {
+    searchData.name = "";
+    searchData.key_words = inputValue.value;
+  }
+  searchData.order = "asc";
+  searchData.sort = "created_at";
   searchData.article_page = 1;
-  searchData.key_word = inputValue.value;
   searchData.topic_name = activeName.value;
+  // searchData.class = [];
   const {
     data: { content }
-  } = await searchArticleService(searchData);
+  } = await highSearchArticleService(searchData);
   articleList.value = content;
 };
 onSearch();
@@ -75,12 +123,18 @@ const debouncedSearch = debounce(onSearch, 300);
 watch(activeName, async (newValue, oldValue) => {
   localStorage.setItem("currentTabName", newValue);
   searchData.article_page = 1;
-  searchData.key_word = inputValue.value;
+  if (object.value == "user") {
+    searchData.key_words = "";
+    searchData.name = inputValue.value;
+  } else {
+    searchData.name = "";
+    searchData.key_words = inputValue.value;
+  }
   searchData.topic_name = newValue;
 
   const {
     data: { content }
-  } = await searchArticleService(searchData);
+  } = await highSearchArticleService(searchData);
   articleList.value = content;
 });
 
@@ -98,13 +152,19 @@ const onLoad = async () => {
     articleList.value = [];
     refreshing.value = false;
   }
-  searchData.key_word = inputValue.value;
+  if (object.value == "user") {
+    searchData.key_words = "";
+    searchData.name = inputValue.value;
+  } else {
+    searchData.name = "";
+    searchData.key_words = inputValue.value;
+  }
   searchData.topic_name = activeName.value;
   searchData.article_page += 1;
 
   const {
     data: { content }
-  } = await searchArticleService(searchData);
+  } = await highSearchArticleService(searchData);
   if (content.length > 0) {
     articleList.value = [...articleList.value, ...content];
     loading.value = false;
@@ -129,11 +189,117 @@ const onRefresh = () => {
   onLoad();
 };
 
-//是否展示搜索历史记录
-const showHistory = ref(false);
-//搜索框获取焦点
-const onFocus = () => {
-  showHistory.value = true;
+//左侧选中项索引
+const activeIndex = ref(0);
+//左侧筛选框中的数组
+const items = [
+  {
+    text: "排序方式"
+  },
+  {
+    text: "排序字段"
+  },
+  {
+    text: "班级"
+  },
+  {
+    text: "时间"
+  }
+];
+
+const date = ref("");
+const show = ref(false);
+
+const formatDate = date => `${date.getMonth() + 1}/${date.getDate()}`;
+const onConfirm = values => {
+  const [start, end] = values;
+  show.value = false;
+  date.value = `${formatDate(start)} - ${formatDate(end)}`;
+};
+
+//打开日历框
+const showcalendar = () => {
+  show.value = true;
+};
+//绑定筛选下拉框
+const itemRef = ref(null);
+
+//点击改变当前选中的年级
+const gradeChange = async grade => {
+  //一旦修改选中年级则每一次请求都获取全体
+  //清空关键字
+  searchData.key_words = "";
+  searchData.name = "";
+  inputValue.value = "";
+  //清空存储班级的数组
+  list.value = [];
+  //清空已选中的数组
+  checked3.value = [];
+  //修改传递年级数据
+  searchData.grade = Number(grade);
+  //获取当前年级的所有班级并存储
+  const { data } = await getClassByGradeService({
+    grade: searchData.grade
+  });
+  list.value = data.grade_list;
+  checked3.value = data.grade_list;
+  searchData.class = data.grade_list;
+  //修改当前页
+  searchData.article_page = 1;
+  //发送获取帖子请求
+  const {
+    data: { content }
+  } = await highSearchArticleService(searchData);
+  articleList.value = content;
+};
+
+const checked1 = ref("asc");
+const checked2 = ref("created_at");
+const checked3 = ref(className);
+const openMenu = () => {
+  //获取上次发请求时的值
+  //没有点击确定则再打开还是原来的值
+  checked1.value = "asc" || `${searchData.order}`;
+  checked2.value = "created_at" || `${searchData.sort}`;
+  checked3.value = className || searchData.class;
+};
+
+const checkboxRefs = ref([]);
+const toggle = index => {
+  checkboxRefs.value[index].toggle();
+};
+
+onBeforeUpdate(() => {
+  checkboxRefs.value = [];
+});
+//高级搜索
+const highSearch = async () => {
+  searchData.article_page = 1;
+  if (object.value == "user") {
+    searchData.key_words = "";
+    searchData.name = inputValue.value;
+  } else {
+    searchData.name = "";
+    searchData.key_words = inputValue.value;
+  }
+  const {
+    data: { content }
+  } = await highSearchArticleService(searchData);
+  articleList.value = content;
+};
+//确认筛选框中的筛选条件
+const confirmChoice = async () => {
+  searchData.order = checked1.value;
+  searchData.sort = checked2.value;
+  searchData.class = checked3.value;
+  highSearch();
+  itemRef.value.toggle();
+};
+//重置筛选框的选择
+const resetChoice = () => {
+  checked1.value = "asc";
+  checked2.value = "created_at";
+  checked3.value = className;
 };
 </script>
 <template>
@@ -157,7 +323,6 @@ const onFocus = () => {
     placeholder="请输入搜索关键词"
     background="#fff"
     class="search"
-    @focus="onFocus"
   >
     <template #action>
       <van-button
@@ -171,6 +336,126 @@ const onFocus = () => {
     </template>
   </van-search>
 
+  <van-dropdown-menu ref="menuRef" :close-on-click-outside="false">
+    <van-dropdown-item
+      v-model="grade"
+      :options="gradeOption"
+      @change="gradeChange"
+    />
+    <van-dropdown-item v-model="object" :options="objectOption" />
+    <van-dropdown-item ref="itemRef" title="筛选" @open="openMenu">
+      <van-tree-select v-model:main-active-index="activeIndex" :items="items">
+        <template #content>
+          <van-radio-group v-if="activeIndex === 0" v-model="checked1">
+            <van-cell title="正序" clickable @click="checked1 = 'asc'">
+              <template #right-icon>
+                <van-radio name="asc" />
+              </template>
+            </van-cell>
+            <van-cell title="倒序" clickable @click="checked1 = 'desc'">
+              <template #right-icon>
+                <van-radio name="desc" />
+              </template>
+            </van-cell>
+          </van-radio-group>
+
+          <van-radio-group v-if="activeIndex === 1" v-model="checked2">
+            <van-cell
+              title="创建时间"
+              clickable
+              @click="checked2 = 'created_at'"
+            >
+              <template #right-icon>
+                <van-radio name="created_at" />
+              </template>
+            </van-cell>
+            <van-cell
+              title="文章字数"
+              clickable
+              @click="checked2 = 'word_count'"
+            >
+              <template #right-icon>
+                <van-radio name="word_count" />
+              </template>
+            </van-cell>
+            <van-cell title="文章质量" clickable @click="checked2 = 'quality'">
+              <template #right-icon>
+                <van-radio name="quality" />
+              </template>
+            </van-cell>
+            <van-cell
+              title="浏览量"
+              clickable
+              @click="checked2 = 'read_amount'"
+            >
+              <template #right-icon>
+                <van-radio name="read_amount" />
+              </template>
+            </van-cell>
+            <van-cell
+              title="点赞量"
+              clickable
+              @click="checked2 = 'like_amount'"
+            >
+              <template #right-icon>
+                <van-radio name="like_amount" />
+              </template>
+            </van-cell>
+            <van-cell
+              title="收藏量"
+              clickable
+              @click="checked2 = 'collect_amount'"
+            >
+              <template #right-icon>
+                <van-radio name="collect_amount" />
+              </template>
+            </van-cell>
+            <van-cell
+              title="评论量"
+              clickable
+              @click="checked2 = 'comment_amount'"
+            >
+              <template #right-icon>
+                <van-radio name="comment_amount" />
+              </template>
+            </van-cell>
+          </van-radio-group>
+          <van-checkbox-group v-if="activeIndex === 2" v-model="checked3">
+            <van-cell
+              v-for="(item, index) in list"
+              :key="item"
+              clickable
+              :title="item"
+              @click="toggle(index)"
+            >
+              <template #right-icon>
+                <van-checkbox
+                  :ref="el => (checkboxRefs[index] = el)"
+                  :name="item"
+                  @click.stop
+                />
+              </template>
+            </van-cell>
+          </van-checkbox-group>
+          <div v-if="activeIndex === 3" class="showTime" @click="showcalendar">
+            <h2>开始时间:</h2>
+            <span class="time">2022-09-20</span>
+            <h2>结束时间:</h2>
+            <span class="time">2024-09-15</span>
+          </div>
+        </template></van-tree-select
+      >
+
+      <div class="choice-btn">
+        <van-button type="primary" size="small" @click="confirmChoice"
+          >确定</van-button
+        >
+        <van-button type="primary" size="small" @click="resetChoice"
+          >重置</van-button
+        >
+      </div>
+    </van-dropdown-item>
+  </van-dropdown-menu>
   <van-tabs
     v-model:active="activeName"
     background="#f0f1f5"
@@ -205,8 +490,8 @@ const onFocus = () => {
       <van-empty v-else image="search" description="没有符合该描述的帖子呢" />
     </van-tab>
   </van-tabs>
-  <!-- <div v-else class="history">历史记录</div> -->
   <van-back-top bottom="100px" />
+  <van-calendar v-model:show="show" type="range" @confirm="onConfirm" />
 </template>
 
 <style scoped>
@@ -251,5 +536,35 @@ span {
 .history {
   height: 100%;
   background-color: #fff;
+}
+
+.van-dropdown-menu >>> .van-dropdown-menu__bar {
+  background-color: #f0f1f5;
+  border-bottom: solid 2px #fff;
+}
+.van-dropdown-menu >>> .van-dropdown-menu__title:after {
+  border-color: transparent transparent #c1c1c1 #c1c1c1;
+}
+
+.showTime {
+  padding: 10px;
+  .time {
+    display: block;
+    background-color: #f0f1f5;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 18px;
+    margin-top: 5px;
+  }
+}
+.choice-btn {
+  display: flex;
+  justify-content: space-evenly;
+  .van-button {
+    margin: 10px 0;
+    width: 150px;
+    height: 30px;
+    font-size: 15px;
+  }
 }
 </style>

@@ -157,3 +157,11 @@ export function getLittleTags(data?: Object): Promise<ListResult> {
     data: JSON.stringify(data)
   });
 }
+//高级筛选文章
+export function highSearchArticleService(data?: object): Promise<Search> {
+  return http.request({
+    url: "/article/filter",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
