@@ -2,7 +2,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { articleBanService, articleIgnoreService } from "@/api/article";
-import { showToast } from "vant";
+import { readEmailNotice } from "@/api/user";
+import { showSuccessToast, showToast } from "vant";
 const props = defineProps({
   articleBan: Object
 });
@@ -26,12 +27,14 @@ const dealReport = msg => {
   showTip.value = true;
   if (msg == "封禁") {
     ban.value = true;
+  } else {
+    ban.value = false;
   }
 };
 
 // 已处理帖子
 const checkEmaill = async () => {
-  await readEmailNotice({ article_id: articleBan.article_id });
+  await readEmailNotice({ article_id: props.articleBan.article_id });
 };
 //处理帖子
 const confirmDeal = async () => {
@@ -41,8 +44,10 @@ const confirmDeal = async () => {
         article_id: articleId,
         article_ban: true
       });
+      showSuccessToast("封禁成功");
     } else {
       const res = await articleIgnoreService({ article_id: articleId });
+      showSuccessToast("不处理成功");
     }
     checkEmaill();
     emit("report");

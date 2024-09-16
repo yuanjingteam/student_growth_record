@@ -6,24 +6,27 @@ const router = useRouter();
 const userStore = useUserStore();
 const role = userStore.role;
 const username = userStore.username;
-console.log(role, 111111);
 
 // 当前页面默认渲染的数据
 const base = reactive([
   {
-    userImg: "src/assets/image/system.png",
+    userImg:
+      "https://student-grow.oss-cn-beijing.aliyuncs.com/image/system.png",
     userName: "系统通知"
   },
   {
-    userImg: "src/assets/image/manager.png",
+    userImg:
+      "https://student-grow.oss-cn-beijing.aliyuncs.com/image/manager.png",
     userName: "管理员消息"
   },
   {
-    userImg: "src/assets/image/user_1.png",
+    userImg:
+      "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_1.png",
     userName: "互动消息"
   },
   {
-    userImg: "src/assets/image/emaill.png",
+    userImg:
+      "https://student-grow.oss-cn-beijing.aliyuncs.com/image/emaill.png",
     userName: "举报邮箱"
   }
 ]);
@@ -42,7 +45,8 @@ const base = reactive([
       <inter-info :base="base[2]" />
 
       <!-- 举报邮箱 -->
-      <perm-notice :base="base[3]" />
+      <div v-if="role === 'user'" />
+      <perm-notice v-else :base="base[3]" />
 
       <div class="svg-bg-container">
         <div class="svg-bg">
@@ -65,16 +69,18 @@ const base = reactive([
   position: relative;
   height: 88vh;
   overflow: hidden;
+  background-color: #fff;
 }
 .svg-bg-container {
   position: absolute;
   width: 100%;
-  height: 200px; /* 设置容器高度 */
+  height: 200px;
+  /* 设置容器高度 */
 }
 
 .svg-bg {
   position: absolute;
-  top: 200px;
+  top: 130px;
   left: 0;
   width: 100%;
   height: 100%;

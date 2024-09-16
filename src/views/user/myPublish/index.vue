@@ -20,6 +20,9 @@ const loadData = async () => {
       limit: 10
     });
     list.value = [...list.value, ...data.content];
+    if (data.content.length == 0) {
+      finished.value = true;
+    }
   } catch (error) {
     finished.value = true;
   }
@@ -28,7 +31,7 @@ loadData();
 const onLoad = async () => {
   if (refreshing.value) {
     list.value = [];
-    page.value = 0;
+    page.value = 1;
     refreshing.value = false;
   }
   await loadData();
@@ -45,9 +48,9 @@ const onRefresh = () => {
   onLoad();
 };
 // 子传父重新获取数据
-const refresh = () => {
-  list.value = [];
-  onRefresh();
+const refresh = async () => {
+  refreshing.value = true;
+  onLoad();
 };
 </script>
 
@@ -56,13 +59,18 @@ const refresh = () => {
     <van-nav-bar
       left-text="返回"
       left-arrow
-      @click-left="router.push('/user')"
+      fixed
+      placeholder
+      z-index="3"
+      @click-left="router.go(-1)"
     />
     <div class="my-w">
       <user-info />
       <van-pull-refresh
         v-if="list.length > 0"
         v-model="refreshing"
+        style="min-height: 100vh"
+        pull-distance
         @refresh="onRefresh"
       >
         <van-list
@@ -76,6 +84,7 @@ const refresh = () => {
             :key="index"
             :article="item"
             :state="item.article_status"
+            :isban="item.ban"
             @informRefresh="refresh"
           />
         </van-list>
@@ -84,8 +93,7 @@ const refresh = () => {
         v-else
         image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
         :image-size="80"
-        description="您还没有发布文章哦"
-        style="width: 100%; height: 100%"
+        description="这里空空如也~"
       />
     </div>
   </div>
@@ -99,5 +107,9 @@ const refresh = () => {
 .my-w {
   overflow: hidden;
   margin: 0 10px;
+}
+.van-empty {
+  width: 100vw;
+  height: 100vh;
 }
 </style>

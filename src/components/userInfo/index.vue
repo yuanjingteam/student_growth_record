@@ -1,5 +1,6 @@
 <script setup>
 import { showImagePreview } from "vant";
+import { changeUserHeadshot } from "@/api/user";
 import { ref } from "vue";
 import {
   getUserInfo,
@@ -93,6 +94,16 @@ const data = ref({
   user_class: ""
 });
 
+// 默认头像
+const defaultAvatars = [
+  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_1.png",
+  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_2.png",
+  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_3.png",
+  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_4.png",
+  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_5.png",
+  "https://student-grow.oss-cn-beijing.aliyuncs.com/image/user_headshot/user_headshot_6.png"
+];
+
 // 获取关注状态
 const concernGet = async () => {
   const { data } = await getConcernOther({
@@ -111,7 +122,32 @@ const concernChange = async () => {
 const UerInfo = async () => {
   const res = await getUserInfo({ username: username });
   data.value = res.data;
+  // 存储/更新
   userStore.userData.user_headshot = res.data.user_headshot;
+
+  // 当前获取没有默认头像
+  if (userStore.userData.user_headshot === "") {
+    try {
+      // 获取图片文件
+      const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
+      const response = await fetch(defaultAvatars[randomIndex]);
+      // 将其转换为 Blob
+      const blob = await response.blob();
+      const file = new File([blob], "user_headshot.png", { type: blob.type }); // 创建 File 对象
+      const formData = new FormData();
+      formData.append("file", file);
+      // 上传用户头像
+      const res = await changeUserHeadshot(formData);
+      // 赋值默认头像
+      data.value.user_headshot = res.data.user_headshot;
+      // 存储
+      userStore.userData.user_headshot = res.data.user_headshot;
+    } catch {
+      data.value.user_headshot = "";
+      userStore.userData.user_headshot = "";
+      // showToast("获取头像失败,请稍后重试");
+    }
+  }
 };
 UerInfo();
 if (routername) {
@@ -130,16 +166,22 @@ if (routername) {
         round
         width="4rem"
         height="4rem"
+        fit="cover"
         :src="data.user_headshot"
+        class="avatar"
         @click="handleImagePreview(data.user_headshot)"
       />
       <!-- 昵称 -->
       <div class="my-name">
         {{ data.name }}
       </div>
+      <div v-if="userStore.ifTeacher" class="teacher">
+        <i-icon icon="ph:chalkboard-teacher" />
+        <span>教师</span>
+      </div>
     </div>
     <!-- 头部总组件 -->
-    <van-cell-group inset>
+    <van-cell-group>
       <div class="user-header">
         <div v-if="!own" name="other">
           <div class="my-attention" @click="concernChange">
@@ -157,16 +199,12 @@ if (routername) {
 
         <div v-else name="self">
           <div class="my-inside" />
-          <div class="change-info" @click="router.push('./editData')">
-            <button>编辑资料</button>
+          <div class="change-info">
+            <button @click="router.push('/editData')">编辑资料</button>
           </div>
         </div>
 
-        <div
-          v-if="(role === '1' || role === 'class') && !own"
-          name="ban"
-          class="user_ban"
-        >
+        <div v-if="role !== 'user' && !own" name="ban" class="user_ban">
           <van-popover
             v-if="!data.ban"
             v-model:show="showPopover"
@@ -185,7 +223,11 @@ if (routername) {
         <!-- 我的座右铭 -->
         <div class="my-motto">
           <i-icon icon="uil:edit-alt" />
-          <van-text-ellipsis :content="data.user_motto" class="my-motto" />
+          <van-text-ellipsis
+            rows="1"
+            :content="data.user_motto"
+            class="my-motto"
+          />
         </div>
         <!-- 我的个人信息 -->
         <div class="user-info">
@@ -208,23 +250,42 @@ if (routername) {
 </template>
 
 <style scoped>
+.teacher {
+  display: flex;
+  justify-content: center;
+  padding: 7px 0px 0px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #3762c1;
+  .i-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
 .my-self {
   position: relative;
   margin-top: 55px;
 }
-
+.avatar {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
 .van-image {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
 }
-
+.van-cell-group {
+  width: 340px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
 .user-header {
   position: relative;
   padding: 10vmin 3.6667vmin 15px;
-  border-radius: 7px;
   overflow: hidden;
 }
 .my-motto {
-  width: 240px;
+  height: 24px;
 }
 .my-motto .i-icon {
   margin-top: 3px;

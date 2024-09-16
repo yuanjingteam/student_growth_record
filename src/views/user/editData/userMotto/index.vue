@@ -8,14 +8,14 @@ const userStore = useUserStore();
 const router = useRouter();
 const text = ref("");
 const formRef = ref();
-
+const showState = ref(false);
 text.value = userStore.userData.user_motto;
 // 更新用户个签
 const submitMotto = async () => {
   try {
     const { code } = await changeUserMotto({
       username: userStore.username,
-      user_motto: text
+      user_motto: text.value
     });
     showToast("修改成功");
     userStore.userData.user_motto = text;
@@ -29,6 +29,10 @@ const rules = [
   {
     validator: value => {
       // 个性签名长度校验
+      if (value.trim().length === 0) {
+        text.value = "";
+        return "请输入内容";
+      }
       if (value.length > 20) {
         return "个性签名不能超过20个字符";
       }
@@ -45,18 +49,7 @@ const rules = [
 
 const onClickRight = async () => {
   await formRef.value.validate();
-
-  showConfirmDialog({
-    title: "提交个签",
-    message: "确认修改个性签名吗"
-  })
-    .then(async () => {
-      // 更新个签
-      await submitMotto();
-    })
-    .catch(() => {
-      // on cancel
-    });
+  showState.value = true;
 };
 </script>
 <template>
@@ -88,5 +81,13 @@ const onClickRight = async () => {
       </van-cell>
     </van-cell-group>
   </van-form>
+  <van-dialog
+    v-model:show="showState"
+    title="提交个签"
+    message="确认修改个性签名吗"
+    show-cancel-button
+    showConfirmButton
+    @confirm="submitMotto"
+  />
 </template>
 <style scoped></style>

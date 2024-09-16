@@ -1,12 +1,16 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { useClassStore, useUserStore } from "@/store";
+import { showDialog } from "vant";
 import { reactive, ref, watch } from "vue";
-import { searchArticleService } from "@/api/article";
+import { getClassDetailService } from "@/api/class";
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const classStore = useClassStore();
+const classList = classStore.classList;
+
+//tab切换栏内容
 const roleList = ref([
   {
     id: "hot",
@@ -19,27 +23,26 @@ const roleList = ref([
     title: "最新"
   }
 ]);
-
-const activeName = ref("最热");
+//获取当前存储的tab
+const currentName = localStorage.getItem("currentTabClassDetail") || "最热";
+//tab内容
+const activeName = ref(currentName);
 
 //获取动态路由的参数
 const classId = route.params.id;
-//声明当前话题
+//声明当前班级名称
 const className = ref();
-const classList = classStore.classList;
-console.log(classList);
-
+//根据id查找班级名称
 const findClassName = classId => {
   const classOne = classList.find(classOne => classOne.class_id == classId);
   return classOne ? classOne.class_name : null;
 };
 className.value = findClassName(classId);
-console.log(className.value);
 
 //获取文章列表的数据
 const classData = reactive({
   key_word: "",
-  class_id: classId,
+  class_name: className.value,
   article_sort: "hot",
   article_count: 8,
   article_page: 0,
@@ -51,11 +54,12 @@ const articleList = ref([]);
 const getArticleList = async () => {
   const {
     data: { content }
-  } = await searchArticleService(classData);
+  } = await getClassDetailService(classData);
   articleList.value = content;
 };
 //监听切换排序方式
 watch(activeName, (newValue, oldValue) => {
+  localStorage.setItem("currentTabClassDetail", newValue);
   classData.article_page = 1;
   if (newValue == "最热") {
     newValue = "hot";
@@ -81,15 +85,24 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   classData.article_page += 1;
-  try {
-    const res = await searchArticleService(classData);
+
+  const {
+    data: { content }
+  } = await getClassDetailService(classData);
+  if (content.length > 0) {
+    articleList.value = [...articleList.value, ...content];
     loading.value = false;
-    articleList.value = [...articleList.value, ...res.data.content];
-  } catch {
+  } else {
     finished.value = true;
   }
 };
-
+const upto = () => {
+  if (userStore.username === "passenger") {
+    showDialog({ message: "使用该功能要先去登录哦~" });
+  } else {
+    router.push("/publish");
+  }
+};
 //监听了刷新事件
 const onRefresh = () => {
   // 清空列表数据
@@ -113,7 +126,7 @@ const onRefresh = () => {
       round
       icon="plus"
       type="primary"
-      @click="router.push('/publish')"
+      @click="upto"
     />
     <div class="title" style="display: flex">
       <i-icon icon="icon-park:message" />
@@ -202,5 +215,12 @@ const onRefresh = () => {
 .van-list {
   background-color: #f0f1f5;
   overflow: hidden;
+}
+.van-tabs {
+  height: 100%;
+}
+.van-tabs >>> .van-tabs__content {
+  height: 100%;
+  background-color: #f0f1f5;
 }
 </style>

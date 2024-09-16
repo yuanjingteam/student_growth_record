@@ -33,7 +33,7 @@ collectAmount.value = props.post.collect_amount;
 const show = ref(false);
 const index = ref(0);
 const images = props.post.article_pics;
-
+//切换图片
 const onChange = newIndex => {
   index.value = newIndex;
 };
@@ -53,17 +53,24 @@ const playVideo = () => {
 };
 
 const router = useRouter();
-const route = useRoute();
+//点击文章内容跳转帖子详情
 const gotoDetail = () => {
   router.push(`/postDetail/${props.articleId}`);
 };
+//点击头像进入主页
 const gotoUser = () => {
-  router.push(`/otherInfo/${props.post.username}`);
+  if (props.post.username != "") {
+    router.push(`/otherInfo/${props.post.username}`);
+  } else {
+    return;
+  }
 };
 
 const userStore = useUserStore();
 //获取当前token
 let token = userStore.token;
+//获取当前用户是否为老师
+let ifTeacher = userStore.ifTeacher;
 
 //未登录去登录弹窗
 const showToLogin = ref(false);
@@ -244,10 +251,25 @@ const confirmDelete = async () => {
         <template #tags>
           <div>
             <div class="info-box">
-              <van-image round :src="post.user_headshot" @click="gotoUser" />
+              <van-image
+                round
+                :src="
+                  post.user_headshot
+                    ? post.user_headshot
+                    : 'https://picsum.photos/200/300'
+                "
+                @click="gotoUser"
+              />
               <div class="info">
                 <div style="display: flex; justify-content: space-between">
-                  <p class="name">{{ post.name }}</p>
+                  <div style="display: flex; align-items: center">
+                    <p class="name">
+                      {{ post.name ? post.name : "用户已被删除" }}
+                    </p>
+                    <van-tag v-if="ifTeacher" plain type="primary"
+                      >教师</van-tag
+                    >
+                  </div>
                   <van-popover
                     v-model:show="showPopover"
                     theme="dark"
@@ -260,12 +282,16 @@ const confirmDelete = async () => {
                     </template>
                   </van-popover>
                 </div>
-                <p class="grade">{{ post.user_class }}</p>
+                <p v-if="post.username != ''" class="grade">
+                  {{ post.user_class }}
+                </p>
               </div>
             </div>
-            <p class="post-content" @click="gotoDetail">
-              {{ post.article_content }}
-            </p>
+            <p
+              class="post-content"
+              @click="gotoDetail"
+              v-html="post.article_content"
+            />
             <div class="video-box">
               <ul class="video">
                 <li
@@ -423,9 +449,14 @@ const confirmDelete = async () => {
 
       .info {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
         .name {
           font-size: 16px;
+          line-height: 30px;
+          position: relative;
         }
 
         .grade {
@@ -520,5 +551,8 @@ const confirmDelete = async () => {
     font-size: 50px;
     color: #fff;
   }
+}
+.van-tag {
+  margin-left: 3px;
 }
 </style>

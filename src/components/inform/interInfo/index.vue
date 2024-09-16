@@ -54,6 +54,7 @@ userNotice();
     </template>
     <template #label>
       <div v-if="unread_count !== 0" class="wid">您有新的消息通知</div>
+      <div v-else class="wid">暂无消息</div>
     </template>
     <template #icon>
       <van-image round width="3rem" height="3rem" :src="base.userImg" />

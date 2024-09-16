@@ -191,7 +191,7 @@ const changeContent = async () => {
             v-if="isEditing"
             type="primary"
             size="small"
-            color="linear-gradient(to right, #ff6034, #ee0a24)"
+            color="#4580ff"
             @click="returnBack"
             >退出编辑</van-button
           >
@@ -199,7 +199,7 @@ const changeContent = async () => {
             v-else
             type="primary"
             size="small"
-            color="linear-gradient(to right, #ff6034, #ee0a24)"
+            color="#4580ff"
             @click="changeState"
             >编辑/修改</van-button
           >
@@ -271,5 +271,6 @@ const changeContent = async () => {
 } */
 .self-title {
   line-height: 32px;
+  font-size: 16px;
 }
 </style>

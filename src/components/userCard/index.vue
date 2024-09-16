@@ -2,13 +2,14 @@
 import { useRouter } from "vue-router";
 import { defineProps, ref } from "vue";
 import { articleDeleteService, articleChangeState } from "@/api/article";
-import { showConfirmDialog, showSuccessToast, showToast } from "vant";
+import { showSuccessToast, showToast } from "vant";
 const props = defineProps({
   article: Object,
   state: {
     // 非必传
     required: false
-  }
+  },
+  isban: Boolean
 });
 const emit = defineEmits(["informRefresh"]);
 
@@ -42,9 +43,9 @@ const isPublic = async () => {
     showSuccessToast("修改成功!");
     midState.value = !midState.value;
     midContent.value = midState.value === true ? "公开" : "私密";
-  } catch (error) {
+    emit("informRefresh");
+  } catch {
     loading.value = false; // 关闭 loading 效果
-    console.error("修改文章状态失败:", error);
     showToast("修改文章状态失败,请稍后重试");
   }
 };
@@ -56,52 +57,47 @@ const isDelete = async () => {
     loading.value = false; // 关闭 loading 效果
     showToast("删除成功");
     emit("informRefresh");
-  } catch (error) {
+  } catch {
     loading.value = false; // 关闭 loading 效果
-    console.error("删除文章失败:", error);
     showToast("删除失败,请稍后重试");
   }
 };
 
+const showDelete = ref(false);
+const showState = ref(false);
+const message = ref("");
 // 选择选项
 const onSelect = async item => {
   if (item.text == midContent.value) {
     return;
   }
   if (item.text === "删除") {
-    showConfirmDialog({
-      message: "确认要删除该文章吗?"
-    })
-      .then(async () => {
-        loading.value = true; // 开启 loading 效果
-        await isDelete();
-      })
-      .catch(() => {
-        // on cancel
-      });
+    showDelete.value = true;
+    message.value = "确定删除文章吗？";
   } else if (item.text === "公开") {
-    showConfirmDialog({
-      message: "确认要公开该文章吗?"
-    })
-      .then(async () => {
-        loading.value = true; // 开启 loading 效果
-        await isPublic();
-      })
-      .catch(() => {
-        // on cancel
-      });
+    message.value = "确定公开文章吗？";
+    showState.value = true;
   } else {
-    showConfirmDialog({
-      message: "确认要隐藏该文章吗?"
-    })
-      .then(async () => {
-        loading.value = true; // 开启 loading 效果
-        await isPublic();
-      })
-      .catch(() => {
-        // on cancel
-      });
+    //隐藏
+    message.value = "确定隐藏文章吗？";
+    showState.value = true;
   }
+};
+
+//确定删除
+const confirmDelete = () => {
+  loading.value = true;
+  isDelete();
+};
+//确定公开/隐藏
+const confirmState = () => {
+  loading.value = true;
+  isPublic();
+};
+
+const formattedContent = content => {
+  // 使用正则表达式替换 <br/> 标签为换行符
+  return content.replace(/<br\s*\/?>/g, "\n");
 };
 </script>
 
@@ -134,10 +130,13 @@ const onSelect = async item => {
             </template>
           </van-popover>
         </div>
-        <div class="article_title">#{{ article.article_topic }}</div>
+        <div class="article_title">
+          <i-icon icon="icon-park:topic" />
+          {{ article.article_topic }}
+        </div>
         <van-text-ellipsis
           rows="4"
-          :content="article.article_content"
+          :content="formattedContent(props.article.article_content)"
           @click="gotoArticleDetail()"
         />
         <div class="info-box">
@@ -146,7 +145,6 @@ const onSelect = async item => {
       </template>
       <template #footer>
         <div class="litle_tag">
-          <span>文章话题：</span>
           <button
             v-for="(item, index) in article.article_tags"
             :key="index"
@@ -156,6 +154,10 @@ const onSelect = async item => {
             <span class="btn-title">#{{ item }}</span>
           </button>
         </div>
+        <span v-if="isban" class="ban">
+          <i-icon class="ban-icon" icon="ph:warning-diamond-fill" />
+          该文章已被封禁
+        </span>
         <van-button size="mini" icon="good-job-o">{{
           article.like_amount
         }}</van-button>
@@ -168,12 +170,36 @@ const onSelect = async item => {
       </template>
     </van-card>
   </div>
+  <van-dialog
+    v-model:show="showState"
+    title="提示"
+    :message="message"
+    show-cancel-button
+    showConfirmButton
+    @confirm="confirmState"
+  />
+  <van-dialog
+    v-model:show="showDelete"
+    title="提示"
+    :message="message"
+    show-cancel-button
+    showConfirmButton
+    @confirm="confirmDelete"
+  />
+  <van-dialog
+    v-model:show="showState"
+    title="提示"
+    :message="message"
+    show-cancel-button
+    showConfirmButton
+    @confirm="confirmState"
+  />
 </template>
 
 <style lang="less" scoped>
 .article_title {
-  background-color: rgb(234, 239, 246);
-  width: 80px;
+  border-radius: 10px;
+  padding: 0 5px;
   font-size: 16px;
   margin-bottom: 15px;
 }
@@ -216,6 +242,7 @@ const onSelect = async item => {
     .litle_tag {
       display: flex;
       justify-content: flex-start;
+      font-size: 14px;
       margin-bottom: 8px;
       span {
         text-align: start;
@@ -226,7 +253,6 @@ const onSelect = async item => {
         background-color: rgba(0, 81, 255, 0.1);
         border-radius: 10px;
         padding: 0 10px;
-        margin: 0 5px;
         .btn-title {
           color: rgba(0, 81, 255);
           white-space: nowrap;
@@ -242,5 +268,16 @@ const onSelect = async item => {
       color: rgba(203, 202, 204, 1);
     }
   }
+}
+.ban {
+  float: left;
+  margin-right: 10px;
+  font-size: 14px;
+}
+.ban-icon {
+  vertical-align: top;
+  color: red;
+  width: 20px;
+  height: 20px;
 }
 </style>

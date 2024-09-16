@@ -3,6 +3,7 @@ import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { getUserHistory } from "@/api/user";
 import { ref } from "vue";
+import { showToast } from "vant";
 const userStore = useUserStore();
 const router = useRouter();
 const myname = userStore.userData.username;
@@ -12,7 +13,7 @@ const refreshing = ref(false);
 const page = ref(1);
 
 const userHistory = ref([]);
-const mystar = async () => {
+const myHistory = async () => {
   try {
     const { data } = await getUserHistory({
       username: myname,
@@ -20,36 +21,38 @@ const mystar = async () => {
       limit: 10
     });
     userHistory.value = [...userHistory.value, ...data.history];
-  } catch {
+    if (data.history.length == 0) {
+      finished.value = true;
+    }
+  } catch (error) {
+    console.log(error);
+
     finished.value = true;
   }
 };
-mystar();
+myHistory();
 const onLoad = async () => {
   if (refreshing.value) {
     userHistory.value = [];
-    page.value = 0;
+    page.value = 1;
     refreshing.value = false;
   }
-  await mystar();
+  await myHistory();
   console.log(page.value, 31313);
-
   loading.value = false;
-
-  // 数据全部加载完成
-  if (userHistory.value.length >= 20) {
-    finished.value = true;
-  }
 };
 // 刷新列表
 const onRefresh = () => {
   // 清空列表数据
   finished.value = false;
-
   // 重新加载数据
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;
   onLoad();
+};
+const formattedContent = content => {
+  // 使用正则表达式替换 <br/> 标签为换行符
+  return content.replace(/<br\s*\/?>/g, "\n");
 };
 </script>
 <template>
@@ -57,12 +60,16 @@ const onRefresh = () => {
     left-text="返回"
     title="浏览记录"
     left-arrow
+    fixed
+    placeholder
+    z-index="3"
     @click-left="router.go(-1)"
   />
   <div class="main">
     <van-pull-refresh
       v-if="userHistory.length > 0"
       v-model="refreshing"
+      style="min-height: 100vh"
       @refresh="onRefresh"
     >
       <van-list
@@ -76,11 +83,16 @@ const onRefresh = () => {
             <template #title
               >{{ item.name }}
               <div class="content">
-                <van-text-ellipsis rows="2" :content="item.article_content" />
+                <van-text-ellipsis
+                  rows="2"
+                  :content="formattedContent(item.article_content)"
+                />
                 <p class="remark">
                   <!-- <span>{{ item.name }}</span> -->
                   <span
-                    ><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span
+                    ><i-icon icon="mage:thumbs-up" />{{
+                      item.like_amount
+                    }}</span
                   >
                   <span
                     ><i-icon icon="lets-icons:comment" />{{
@@ -93,16 +105,14 @@ const onRefresh = () => {
             <template #icon>
               <van-image
                 round
-                width="2rem"
-                height="2rem"
+                width="3rem"
+                height="3rem"
                 :src="item.user_headshot"
               />
             </template>
             <template #right-icon>
               <van-image
                 v-if="item.article_pic"
-                width="8rem"
-                height="6rem"
                 :src="item.article_pic"
                 class="right"
               />
@@ -116,7 +126,6 @@ const onRefresh = () => {
       image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
       :image-size="80"
       description="暂无浏览记录"
-      style="width: 100%; height: 100%"
     />
   </div>
   <van-back-top bottom="100px" />
@@ -126,8 +135,10 @@ const onRefresh = () => {
   background-color: #f0f1f5;
   height: 100%;
 }
-.content {
-  margin-top: 5px;
+.right {
+  width: 110px;
+  height: 90px;
+  object-fit: cover;
 }
 .van-image {
   margin: 0 10px 0 5px;
@@ -139,5 +150,9 @@ const onRefresh = () => {
   span {
     margin: 0 2px;
   }
+}
+.van-empty {
+  width: 100vw;
+  height: 100vh;
 }
 </style>

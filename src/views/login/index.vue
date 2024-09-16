@@ -2,21 +2,25 @@
 import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getVerifyImg, userLogin } from "@/api/user";
+import { getClassByGradeService } from "@/api/class";
 import { useUserStore } from "@/store";
 import { showFailToast, showSuccessToast } from "vant";
 
 const userStore = useUserStore();
 const router = useRouter();
+
 //复选框是否勾选
 const checked = ref(false);
 //是否显示忘记密码弹窗
 const showDialog = ref(false);
 //是否显示协议提示框
 const showTip = ref(false);
-//加载验证码
+//加载验证码loading效果
 const loadingVerify = ref(false);
-//登录加载中
+//登录loading
 const loginLoading = ref(false);
+//图片地址
+const imageUrl = ref("");
 //用户的登录信息
 const userForm = reactive({
   username: "",
@@ -24,7 +28,7 @@ const userForm = reactive({
   verify: "",
   verifyId: ""
 });
-//绑定表单
+//绑定表单用于校验
 const formRef = ref();
 
 //真实验证码
@@ -38,7 +42,7 @@ const convertBase64ToBlob = base64 => {
   }
   return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
 };
-//验证码换一换
+//点击验证码换一换
 const changeVerify = async () => {
   loadingVerify.value = true;
   const { data } = await getVerifyImg();
@@ -51,7 +55,7 @@ const changeVerify = async () => {
   imageUrl.value = URL.createObjectURL(blob);
   loadingVerify.value = false;
 };
-//提交时的表单校验
+//登录提交并进行表单校验
 const onsubmit = async () => {
   loginLoading.value = true;
   try {
@@ -61,29 +65,45 @@ const onsubmit = async () => {
     loginLoading.value = false;
     return;
   }
+  //用户勾选复选框后
   if (checked.value) {
     try {
       const res = await userLogin(userForm);
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
+      localStorage.setItem("ifTeacher", res.data.ifTeacher);
+      // if (res.data.grade == 0) {
+      //   res.data.grade = 2;
+      //   const { data } = getClassByGradeService({ grade: "2" });
+      //   const list = data.grade_list;
+      //   res.data.class = list;
+      // }
+      localStorage.setItem("grade", res.data.grade);
+      localStorage.setItem("class", res.data.class);
+
       userStore.setUserInfo(res.data);
       showSuccessToast("登录成功");
       router.push("/demo");
     } catch (error) {
       showFailToast(`${error.msg}`);
-      userForm.username = "";
-      userForm.password = "";
-      userForm.verify = "";
-      checked.value = false;
+      if (error.code == 500) {
+        userForm.username = "";
+        userForm.password = "";
+        userForm.verify = "";
+      } else if (error.code == 400) {
+        userForm.password = "";
+        userForm.verify = "";
+      } else {
+        userForm.verify = "";
+      }
     }
   } else {
     showTip.value = true;
   }
   loginLoading.value = false;
 };
-//图片地址
-const imageUrl = ref("");
+
 //展示验证码图片
 const showVerify = async () => {
   changeVerify();

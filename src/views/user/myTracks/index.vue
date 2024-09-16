@@ -21,6 +21,9 @@ const getTracks = async () => {
       limit: 10
     });
     inter_info.value = [...inter_info.value, ...data.inter_info];
+    if (data.inter_info.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
     inter_info.value = [];
@@ -51,11 +54,19 @@ const onRefresh = () => {
 };
 </script>
 <template>
-  <van-nav-bar left-text="返回" left-arrow @click-left="router.push('/user')" />
+  <van-nav-bar
+    left-text="返回"
+    left-arrow
+    fixed
+    placeholder
+    z-index="3"
+    @click-left="router.push('/user')"
+  />
   <div class="main">
     <van-pull-refresh
       v-if="inter_info.length > 0"
       v-model="refreshing"
+      style="min-height: 100vh"
       @refresh="onRefresh"
     >
       <van-list
@@ -112,7 +123,6 @@ const onRefresh = () => {
       image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
       :image-size="80"
       description="暂无更多"
-      style="width: 100%; height: 100%"
     />
   </div>
   <van-back-top bottom="100px" />
@@ -135,7 +145,7 @@ const onRefresh = () => {
 }
 
 .content {
-  background-color: pink;
+  background: linear-gradient(to right, #f0f9ff, #d1ecf1);
   padding: 10px;
   border: 1px solid gray;
   border-radius: 5px;
@@ -147,5 +157,9 @@ const onRefresh = () => {
   span {
     margin: 0 2px;
   }
+}
+.van-empty {
+  width: 100vw;
+  height: 100vh;
 }
 </style>

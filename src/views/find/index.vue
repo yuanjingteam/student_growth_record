@@ -7,6 +7,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const useClass = useClassStore();
 const useTopic = useTopicStore();
+
 //是否加载骨架屏
 const loadingTitle = ref(false);
 
@@ -22,6 +23,7 @@ const classData = reactive({
 });
 
 topicData.topicList = useTopic.topicList;
+//重新获取班级数据
 useClass.getClassList();
 classData.classList = useClass.classList;
 
@@ -29,23 +31,19 @@ classData.classList = useClass.classList;
 const btnState = ref(false);
 //热帖数据
 const hotPost = reactive([]);
+//获取热帖列表
 const getHotPost = async articleCount => {
   loadingTitle.value = true;
-  try {
-    const {
-      data: { article_list }
-    } = await getHotPostService({ article_count: articleCount });
-    hotPost.value = article_list;
-  } catch {
-    hotPost.value = [];
-  }
+  const {
+    data: { article_list }
+  } = await getHotPostService({ article_count: articleCount });
+  hotPost.value = article_list;
   loadingTitle.value = false;
 };
+//折叠时先获取三条信息
 getHotPost(3);
 //处理按钮点击事件
 const btnDeal = async state => {
-  console.log(state);
-
   if (state == true) {
     //此时写着是收起
     btnState.value = false;
@@ -57,6 +55,7 @@ const btnDeal = async state => {
   }
 };
 
+//阿拉伯语数字转为英文方法
 function numberToEnglish(number) {
   switch (number) {
     case 1:
@@ -133,7 +132,7 @@ function numberToEnglish(number) {
     <topic-card
       v-if="topicData.topicList"
       :message="topicData.message"
-      :list="topicData.topicList.slice(0, 2)"
+      :list="topicData.topicList.slice(1, 3)"
     />
     <class-card
       :message="classData.message"

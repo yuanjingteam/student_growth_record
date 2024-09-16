@@ -12,22 +12,17 @@ export const useTopicStore = defineStore(
       const {
         data: { topic_list }
       } = await getTopicListService();
+      topic_list.unshift({
+        ID: 0,
+        topic_name: "全部话题",
+        topic_content: ""
+      });
       topicList.value = topic_list;
-      console.log(topicList.value);
-
-      console.log("话题已更新");
     };
-    // const findTopicId = (topicName: String) => {
-    //   const topic = topicList.value.find(
-    //     topic => topic.topic_name === topicName
-    //   );
-    //   return topic ? topic.ID : null;
-    // };
 
     return {
       topicList,
       getTopicList
-      // findTopicId
     };
   },
   {
