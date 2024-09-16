@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { getreportEmail } from "@/api/user";
+import { readEmailNotice, getreportEmail } from "@/api/user";
 // 父传子
 // 给一个默认值
 const props = defineProps({
@@ -13,12 +13,8 @@ const data = ref({
     {
       article_id: 0,
       article_content: "",
-      report_content: [
-        {
-          report_time: "",
-          report_msg: ""
-        }
-      ]
+      report_msg: "",
+      report_time: ""
     }
   ],
   unread_count: 0
@@ -27,7 +23,7 @@ const data = ref({
 // 获取举报邮箱
 const reportEmail = async () => {
   try {
-    const res = await getreportEmail({ page: 1, limit: 1 });
+    const res = await getreportEmail({ limit: 1, page: 1 });
     data.value = res.data;
   } catch {}
 };
@@ -40,9 +36,7 @@ reportEmail();
     </template>
     <template #value>
       <div class="right-content">
-        <!-- <div v-if="data.article_ban.length !== 0" class="va-time">
-          {{ data.article_ban[0].report_content[0].report_time }}
-        </div> -->
+        <div class="va-time">{{ data.article_ban[0].report_time }}</div>
         <div v-if="data.unread_count !== 0">
           <van-badge :content="data.unread_count" max="99" />
         </div>
