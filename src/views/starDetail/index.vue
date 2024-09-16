@@ -54,7 +54,7 @@ const starData = reactive({
   startTime: "",
   endTime: "",
   page: page,
-  limit: 500
+  limit: 100
 });
 
 //成长之星列表
@@ -74,7 +74,7 @@ const getClassStarList = async () => {
     }
     page.value++;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     finished.value = true;
   }
 };
