@@ -1,16 +1,22 @@
 <script setup lang="ts" name="Demo">
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref, watch, onBeforeUpdate } from "vue";
 import CellCard from "@/components/CellCard/index.vue";
 import { getRegisterDay } from "@/api/topic";
 import { showDialog } from "vant";
 
-import { searchArticleService } from "@/api/article";
+import { highSearchArticleService } from "@/api/article";
+import { getClassByGradeService } from "@/api/class";
 import { useTopicStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
 //获取pinia的token
 const token = userStore.token;
+//获取存储的grade
+const gradeDetail = userStore.grade;
+//获取存储的class
+const className = userStore.className;
+
 const topicStore = useTopicStore();
 const router = useRouter();
 
@@ -31,13 +37,35 @@ const activeName = ref(currentName);
 const registerTime = ref("");
 //搜索框数据
 const searchData = reactive({
-  key_word: "",
+  key_words: "",
   topic_name: "",
-  article_sort: "new",
   article_count: 8,
   article_page: 0,
-  username: userStore.username
+  username: userStore.username,
+  sort: "",
+  order: "",
+  start_at: "",
+  end_at: "",
+  class: [],
+  name: "",
+  grade: 0
 });
+searchData.class = className;
+searchData.grade = gradeDetail;
+//对象下拉选项内容
+const object = ref("word");
+const objectOption = [
+  { text: "内容", value: "word" },
+  { text: "用户", value: "user" }
+];
+//年级下拉框内容
+const grade = ref(`${gradeDetail}`);
+const gradeOption = [
+  { text: "大一", value: "1" },
+  { text: "大二", value: "2" },
+  { text: "大三", value: "3" },
+  { text: "大四", value: "4" }
+];
 
 // 防抖函数
 function debounce(func, delay) {
@@ -56,15 +84,34 @@ const registerDay = async () => {
 if (token != "") {
   registerDay();
 }
+//存当前年级的班级列表
+const list = ref([]);
+//获取当前年级的所有班级并存储
+const getClassByGrade = async () => {
+  const { data } = await getClassByGradeService({
+    grade: gradeDetail
+  });
+  list.value = data.grade_list;
+};
+getClassByGrade();
 
 //搜索框事件
 const onSearch = async () => {
+  if (object.value == "user") {
+    searchData.key_words = "";
+    searchData.name = inputValue.value;
+  } else {
+    searchData.name = "";
+    searchData.key_words = inputValue.value;
+  }
+  searchData.order = "asc";
+  searchData.sort = "created_at";
   searchData.article_page = 1;
-  searchData.key_word = inputValue.value;
   searchData.topic_name = activeName.value;
+  // searchData.class = [];
   const {
     data: { content }
-  } = await searchArticleService(searchData);
+  } = await highSearchArticleService(searchData);
   articleList.value = content;
 };
 onSearch();
@@ -75,12 +122,18 @@ const debouncedSearch = debounce(onSearch, 300);
 watch(activeName, async (newValue, oldValue) => {
   localStorage.setItem("currentTabName", newValue);
   searchData.article_page = 1;
-  searchData.key_word = inputValue.value;
+  if (object.value == "user") {
+    searchData.key_words = "";
+    searchData.name = inputValue.value;
+  } else {
+    searchData.name = "";
+    searchData.key_words = inputValue.value;
+  }
   searchData.topic_name = newValue;
 
   const {
     data: { content }
-  } = await searchArticleService(searchData);
+  } = await highSearchArticleService(searchData);
   articleList.value = content;
 });
 
@@ -98,13 +151,19 @@ const onLoad = async () => {
     articleList.value = [];
     refreshing.value = false;
   }
-  searchData.key_word = inputValue.value;
+  if (object.value == "user") {
+    searchData.key_words = "";
+    searchData.name = inputValue.value;
+  } else {
+    searchData.name = "";
+    searchData.key_words = inputValue.value;
+  }
   searchData.topic_name = activeName.value;
   searchData.article_page += 1;
 
   const {
     data: { content }
-  } = await searchArticleService(searchData);
+  } = await highSearchArticleService(searchData);
   if (content.length > 0) {
     articleList.value = [...articleList.value, ...content];
     loading.value = false;
@@ -291,7 +350,6 @@ const resetChoice = () => {
     placeholder="请输入搜索关键词"
     background="#fff"
     class="search"
-    @focus="onFocus"
   >
     <template #action>
       <van-button
@@ -460,7 +518,6 @@ const resetChoice = () => {
       <van-empty v-else image="search" description="没有符合该描述的帖子呢" />
     </van-tab>
   </van-tabs>
-  <!-- <div v-else class="history">历史记录</div> -->
   <van-back-top bottom="100px" />
   <van-calendar
     v-model:show="show"
@@ -513,5 +570,35 @@ span {
 .history {
   height: 100%;
   background-color: #fff;
+}
+
+.van-dropdown-menu >>> .van-dropdown-menu__bar {
+  background-color: #f0f1f5;
+  border-bottom: solid 2px #fff;
+}
+.van-dropdown-menu >>> .van-dropdown-menu__title:after {
+  border-color: transparent transparent #c1c1c1 #c1c1c1;
+}
+
+.showTime {
+  padding: 10px;
+  .time {
+    display: block;
+    background-color: #f0f1f5;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 18px;
+    margin-top: 5px;
+  }
+}
+.choice-btn {
+  display: flex;
+  justify-content: space-evenly;
+  .van-button {
+    margin: 10px 0;
+    width: 150px;
+    height: 30px;
+    font-size: 15px;
+  }
 }
 </style>
