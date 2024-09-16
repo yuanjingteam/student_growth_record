@@ -19,33 +19,12 @@ const userId = userStore.username;
 // 取出初始化的数据
 const files = ref([{ url: userStore.userData.user_headshot }]);
 
-const beforeRead = async (file, event) => {
-  // 检查文件类型是否为图片
-  // 检查文件大小是否超过 2MB
-  // if (file.size > 2 * 1024 * 1024) {
-  //   showToast("图片大小不能超过 2MB");
-  //   return false;
-  // }
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const res = await changeUserHeadshot(formData);
-    files.value[0].url = res.data.user_headshot;
-    userStore.userData.user_headshot = res.data.user_headshot;
-    showToast("修改成功");
-    return true;
-  } catch (error) {
-    showToast("修改失败");
-    event.preventDefault();
-    return false;
-  }
-};
+// Loading效果
+const loading = ref(false);
 
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
 
-// Loading效果
-const loading = ref(false);
 // 初始化数据
 const data = ref({
   name: "",
@@ -54,10 +33,41 @@ const data = ref({
   user_gender: "",
   user_Identity: "",
   user_motto: "",
-  phone_number: "",
+  phone_number: 0,
   user_email: "",
   user_year: currentDate.value.join("-")
 });
+
+// 检查文件类型是否为图片
+// 检查文件大小是否超过 2MB
+// if (file.size > 2 * 1024 * 1024) {
+//   showToast("图片大小不能超过 2MB");
+//   return false;
+// }
+const afterRead = async (file, event) => {
+  // 确保 file 是有效的 File 对象
+  if (!(file.file instanceof File)) {
+    showToast("无效的文件");
+    return false;
+  }
+  try {
+    loading.value = true;
+    const formData = new FormData();
+    formData.append("file", file.file);
+    const res = await changeUserHeadshot(formData);
+    // 更新
+    files.value[0].url = res.data.user_headshot;
+    userStore.userData.user_headshot = res.data.user_headshot;
+    showToast("修改成功");
+    return true;
+  } catch (error) {
+    showToast("修改失败,请稍后重试");
+    event.preventDefault();
+    return false;
+  } finally {
+    loading.value = false; // 上传完成，结束加载
+  }
+};
 
 // 初始化页面
 // 获取用户详细信息
@@ -70,7 +80,7 @@ const baseUserData = async () => {
 baseUserData();
 </script>
 <template>
-  <van-overlay :show="loading">
+  <van-overlay :show="loading" z-index="1000">
     <van-loading vertical>
       <template #icon>
         <van-icon name="star-o" size="30" />
@@ -88,19 +98,30 @@ baseUserData();
     <van-image src="https://www.logo9.net/userfiles/images/9HENANIOSAT.jpg" />
   </div>
   <van-floating-panel v-model:height="height" :anchors="anchors">
-    <div class="camera">
-      <i-icon icon="icon-park:camera" />
-    </div>
-    <div class="userImg">
-      <van-uploader
-        v-model="files"
-        :before-read="beforeRead"
-        reupload
-        max-count="1"
-        :deletable="false"
-        accept="image/*"
-      />
-    </div>
+    <van-uploader
+      :files="files"
+      :after-read="afterRead"
+      reupload
+      max-count="1"
+      :deletable="false"
+      accept="image/*"
+      class="userImg"
+    >
+      <template #default>
+        <div class="avatar">
+          <van-image
+            fit="cover"
+            round
+            width="6.3rem"
+            height="6.3rem"
+            :src="userStore.userData.user_headshot"
+          />
+        </div>
+        <div class="camera">
+          <i-icon icon="icon-park:camera" />
+        </div>
+      </template>
+    </van-uploader>
     <div>
       <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
       <van-cell-group inset>
@@ -138,7 +159,7 @@ baseUserData();
         </van-cell>
         <van-cell is-link @click="router.push('/editData/motto')">
           <template #title>
-            <span class="custom-title both over">个性签名</span>
+            <span class="custom-title">个性签名</span>
           </template>
           <template #value>
             <div class="both over">{{ data.user_motto }}</div>
@@ -146,15 +167,15 @@ baseUserData();
         </van-cell>
         <van-cell is-link @click="router.push('/editData/phone')">
           <template #title>
-            <span class="custom-title both">电话</span>
+            <span class="custom-title">电话</span>
           </template>
           <template #value>
-            <div class="both">{{ data.phone_number }}</div>
+            <div class="both over">{{ data.phone_number }}</div>
           </template>
         </van-cell>
         <van-cell is-link @click="router.push('/editData/email')">
           <template #title>
-            <span class="custom-title both">电子邮箱</span>
+            <span class="custom-title">电子邮箱</span>
           </template>
           <template #value>
             <div class="both over">{{ data.user_email }}</div>
@@ -186,28 +207,33 @@ baseUserData();
   justify-content: center;
   height: 100%;
 }
+.userImg {
+  position: absolute;
+  top: -47px;
+  left: 146px;
+  z-index: 4;
+}
+.avatar {
+  display: flex; /* 使用 Flexbox */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+
+  border-radius: 50px;
+  overflow: hidden;
+}
 .camera {
   position: absolute;
-  top: 5px;
-  left: 205px;
-  z-index: 5;
+  top: 58px;
+  left: 60px;
   background: rgba(216, 214, 214, 0.6);
-  padding: 5px 5px 3px;
+  padding: 5px 4px 2px;
   border-radius: 20px;
 }
 .camera .i-icon {
   width: 20px;
   height: 20px;
 }
-.userImg {
-  position: absolute;
-  top: -45px;
-  left: 146px;
-  z-index: 4;
-}
-.van-uploader >>> .van-uploader__preview-image {
-  border-radius: 50px;
-}
+
 .custom-title {
   width: 10px;
 }
@@ -216,6 +242,7 @@ baseUserData();
 }
 .over {
   width: 100%;
+  padding-left: 9px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -228,8 +255,6 @@ baseUserData();
   height: 100%;
   background-size: cover;
   background-position: center;
-  /* 模糊背景图片 */
-  /* filter: blur(2px); */
 }
 
 .van-cell {

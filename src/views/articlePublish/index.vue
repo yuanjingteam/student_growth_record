@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 
-import { showConfirmDialog, showSuccessToast, showToast } from "vant";
+import { showToast } from "vant";
 import {
   reactive,
   ref,
@@ -68,7 +68,7 @@ const article_state = ref(true);
 const littleTag = ref([]);
 
 // 存储图片/视频
-const assetsFormData = new FormData();
+let assetsFormData = new FormData();
 
 // 文件列表
 const fileList = ref([]);
@@ -164,10 +164,10 @@ const onSelect = item => {
   let selectedIndex = actions.findIndex(action => action.name === item.name);
   defaultIndex = selectedIndex;
   data.article_topic = actions[defaultIndex].name;
+  // 清空
   littleTag.value = [];
+  assetsFormData = new FormData();
   setRef.value = [];
-  // data.article_content = "";
-
   // 移除所有带有 "active" 类的元素
   refs.value.forEach(ref => {
     ref.$el.classList.remove("active");
@@ -262,7 +262,9 @@ const showConfirm = () => {
   isPublished(assetsFormData);
 };
 const showCancel = () => {
+  // 清空提交
   fileList.value = [];
+  assetsFormData = new FormData();
 };
 // 点击发布文章
 const onSubmit = async () => {
@@ -297,12 +299,12 @@ const onSubmit = async () => {
 const isPublished = async baseData => {
   try {
     await newArticlePublish(baseData);
-    loading.value = false; // 关闭 loading 效果
     showToast("发布成功");
     router.push("./demo");
-  } catch {
+  } catch (error) {
+    showToast(error.msg);
+  } finally {
     loading.value = false; // 关闭 loading 效果
-    showToast("发布失败，请稍后重试");
   }
 };
 

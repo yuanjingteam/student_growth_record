@@ -329,8 +329,8 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
 export function getArticlePublish(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/article_get",
-    method: "post",
-    data: JSON.stringify(data)
+    method: "get",
+    params: data
   });
 }
 // 获取用户收藏
@@ -361,11 +361,10 @@ export function changeSelfCotnent(data?: Object): Promise<ListResult> {
 }
 
 // 获取用户积分统计表
-export function getUserPoints(data?: Object): Promise<ListResult> {
+export function getUserPoints(): Promise<ListResult> {
   return http.request({
     url: "/user/points_get",
-    method: "post",
-    data: JSON.stringify(data)
+    method: "get"
   });
 }
 
@@ -400,6 +399,24 @@ export function publishSystemMsg(data?: Object): Promise<ListResult> {
 export function publishManagerMsg(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/message/publish_managerMsg",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 意见反馈
+export function toFeedBack(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "user/advice_get",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 修改密码
+export function toChangePwd(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "user/pwd_update",
     method: "post",
     data: JSON.stringify(data)
   });
