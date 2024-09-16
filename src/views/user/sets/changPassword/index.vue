@@ -15,17 +15,19 @@ const validateNewPassword = value => {
 const validateConfirmPassword = value => {
   return value === newPwd.value; // 确认密码需与新密码一致
 };
-const formRef = ref();
+const formRef = ref(null);
 const changPwd = async () => {
   try {
-    await formRef.value.validate();
     const res = await toChangePwd({
       old_pwd: currPwd.value,
       new_pwd: newPwd.value
     });
-    if (res.code == 200) {
+
+    if (res.code === 200) {
       showToast("修改成功");
       router.go(-1);
+    } else {
+      showToast(res.message || "修改失败"); // 处理其他状态码
     }
   } catch (error) {
     showToast(error.msg);
