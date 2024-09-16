@@ -35,10 +35,6 @@ const checkSystem = async () => {
   router.push("/systemNotice");
   await readSystemNotice();
 };
-const formattedContent = content => {
-  // 使用正则表达式替换 <br/> 标签为换行符
-  return content.replace(/<br\s*\/?>/g, "");
-};
 </script>
 <template>
   <van-cell center @click="checkSystem">
@@ -46,17 +42,11 @@ const formattedContent = content => {
       {{ base.userName }}
     </template>
     <template #label>
-      <div v-if="data.admin_info.length !== 0">
-        <van-text-ellipsis
-          :content="formattedContent(data.admin_info[0].msg_content)"
-        />
-      </div>
+      <van-text-ellipsis :content="data.admin_info[0].msg_content" />
     </template>
     <template #value>
       <div class="right-content">
-        <div v-if="data.admin_info.length !== 0" class="va-time">
-          {{ data.admin_info[0].msg_time }}
-        </div>
+        <div class="va-time">{{ data.admin_info[0].msg_time }}</div>
         <div v-if="data.unread_count !== 0">
           <van-badge :content="data.unread_count" max="99" />
         </div>
