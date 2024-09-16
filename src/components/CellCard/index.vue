@@ -43,7 +43,15 @@ const gotoArticleDetail = () => {
               </p>
               <van-tag v-if="ifTeacher" plain type="primary">教师</van-tag>
             </div>
-            <span class="standout">校级</span>
+            <div v-if="article.article_quality == '1'" class="standout">
+              <span>班级</span><i-icon icon="noto:sports-medal" />
+            </div>
+            <div v-if="article.article_quality == '2'" class="standout">
+              <span>年级</span><i-icon icon="noto:sports-medal" />
+            </div>
+            <div v-if="article.article_quality == '3'" class="standout">
+              <span>校级</span><i-icon icon="noto:sports-medal" />
+            </div>
             <p v-if="article.username != ''" class="grade">
               {{ article.user_class }}
             </p>
@@ -144,6 +152,8 @@ const gotoArticleDetail = () => {
 .standout {
   position: absolute;
   top: 2px;
-  right: 20px;
+  right: 15px;
+  font-size: 13px;
+  color: #e0b21a;
 }
 </style>
