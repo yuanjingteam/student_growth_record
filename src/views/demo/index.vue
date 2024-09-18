@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, watch, onBeforeUpdate } from "vue";
 import CellCard from "@/components/CellCard/index.vue";
 import { getRegisterDay } from "@/api/topic";
-import { showDialog } from "vant";
+import { showDialog, showFailToast } from "vant";
 
 import { highSearchArticleService } from "@/api/article";
 import { getClassByGradeService } from "@/api/class";
@@ -12,10 +12,11 @@ import { useRouter } from "vue-router";
 const userStore = useUserStore();
 //获取pinia的token
 const token = userStore.token;
+//都从本地存储获取，实现数据暂存
 //获取存储的grade
-const gradeDetail = userStore.grade;
-//获取存储的class
-const className = userStore.className;
+const gradeDetail = Number(sessionStorage.getItem("grade"));
+//获取存储的class，将其变成数组形式拿出，直接赋值即可，对应checked3
+const className = JSON.parse(sessionStorage.getItem("checked3"));
 
 const topicStore = useTopicStore();
 const router = useRouter();
@@ -30,7 +31,7 @@ topicList.value = topicStore.topicList;
 //搜索框输入内容
 const inputValue = ref("");
 //获取当前存储的tab
-const currentName = localStorage.getItem("currentTabName") || "学习成绩";
+const currentName = sessionStorage.getItem("currentTabName") || "学习成绩";
 //控制tab栏显示
 const activeName = ref(currentName);
 //初始化记录注册天数
@@ -50,21 +51,22 @@ const searchData = reactive({
   name: "",
   grade: 0
 });
+//便于第一次获取数据，将得到的数据直接赋值
 searchData.class = className;
 searchData.grade = gradeDetail;
 //对象下拉选项内容
-const object = ref("word");
+const object = ref(sessionStorage.getItem("object") || "word");
 const objectOption = [
   { text: "内容", value: "word" },
   { text: "用户", value: "user" }
 ];
-//年级下拉框内容
-const grade = ref(`${gradeDetail}`);
+//年级下拉框内容，初始值为本地值
+const grade = ref(gradeDetail);
 const gradeOption = [
-  { text: "大一", value: "1" },
-  { text: "大二", value: "2" },
-  { text: "大三", value: "3" },
-  { text: "大四", value: "4" }
+  { text: "大一", value: 1 },
+  { text: "大二", value: 2 },
+  { text: "大三", value: 3 },
+  { text: "大四", value: 4 }
 ];
 
 // 防抖函数
@@ -120,7 +122,7 @@ const debouncedSearch = debounce(onSearch, 300);
 
 //监听activeName的变化，从而发送请求
 watch(activeName, async (newValue, oldValue) => {
-  localStorage.setItem("currentTabName", newValue);
+  sessionStorage.setItem("currentTabName", newValue);
   searchData.article_page = 1;
   if (object.value == "user") {
     searchData.key_words = "";
@@ -211,9 +213,9 @@ const minDate = new Date(2024, 5, 1);
 //可供选择的结束时间
 const maxDate = new Date(2025, 6, 1);
 //记录开始时间
-const startDate = ref("" || "2024-05-01");
+const startDate = ref(sessionStorage.getItem("startDate") || "2024-05-01");
 //记录结束时间
-const endDate = ref("" || "2025-06-01");
+const endDate = ref(sessionStorage.getItem("endDate") || "2025-06-01");
 //控制日历框是否弹出
 
 const show = ref(false);
@@ -247,6 +249,7 @@ const itemRef = ref(null);
 
 //点击改变当前选中的年级
 const gradeChange = async grade => {
+  sessionStorage.setItem("grade", grade);
   //一旦修改选中年级则每一次请求都获取全体
   //清空关键字
   searchData.key_words = "";
@@ -256,6 +259,8 @@ const gradeChange = async grade => {
   list.value = [];
   //清空已选中的数组
   checked3.value = [];
+  // console.log(typeof checked3.value);
+
   //修改传递年级数据
   searchData.grade = Number(grade);
   //获取当前年级的所有班级并存储
@@ -263,7 +268,7 @@ const gradeChange = async grade => {
     grade: searchData.grade
   });
   list.value = data.grade_list;
-  checked3.value = data.grade_list;
+  sessionStorage.setItem("checked3", JSON.stringify(data.grade_list));
   searchData.class = data.grade_list;
   //修改当前页
   searchData.article_page = 1;
@@ -273,16 +278,22 @@ const gradeChange = async grade => {
   } = await highSearchArticleService(searchData);
   articleList.value = content;
 };
+//点击改变当前的查找对象
+const objectChange = obj => {
+  sessionStorage.setItem("object", obj);
+};
 
-const checked1 = ref("asc");
-const checked2 = ref("created_at");
+const checked1 = ref("asc" || sessionStorage.getItem("checked1"));
+const checked2 = ref("created_at" || sessionStorage.getItem("checked2"));
 const checked3 = ref(className);
+sessionStorage.setItem("checked3", JSON.stringify(checked3.value));
+
 const openMenu = () => {
-  //获取上次发请求时的值
+  //获取上次发请求时的值,发请求时本地的值才会改变，所以每次打开都从本地拿取
   //没有点击确定则再打开还是原来的值
-  checked1.value = "asc" || `${searchData.order}`;
-  checked2.value = "created_at" || `${searchData.sort}`;
-  checked3.value = className || searchData.class;
+  checked1.value = sessionStorage.getItem("checked1") || "asc";
+  checked2.value = sessionStorage.getItem("checked2") || "created_at";
+  checked3.value = JSON.parse(sessionStorage.getItem("checked3"));
 };
 
 //多选框相关逻辑
@@ -311,14 +322,23 @@ const highSearch = async () => {
 };
 //确认筛选框中的筛选条件
 const confirmChoice = async () => {
-  searchData.order = checked1.value;
-  searchData.sort = checked2.value;
-  searchData.class = checked3.value;
-  searchData.start_at = startDate.value;
-  searchData.end_at = endDate.value;
+  if (checked3.value.length > 0) {
+    searchData.order = checked1.value;
+    sessionStorage.setItem("checked1", checked1.value);
+    searchData.sort = checked2.value;
+    sessionStorage.setItem("checked2", checked2.value);
+    searchData.class = checked3.value;
+    sessionStorage.setItem("checked3", JSON.stringify(checked3.value));
+    searchData.start_at = startDate.value;
+    sessionStorage.setItem("startDate", startDate.value);
+    searchData.end_at = endDate.value;
+    sessionStorage.setItem("endDate", endDate.value);
 
-  highSearch();
-  itemRef.value.toggle();
+    highSearch();
+    itemRef.value.toggle();
+  } else {
+    showFailToast("必须要选择一个班级哦~");
+  }
 };
 //重置筛选框的选择
 const resetChoice = () => {
@@ -369,7 +389,11 @@ const resetChoice = () => {
       :options="gradeOption"
       @change="gradeChange"
     />
-    <van-dropdown-item v-model="object" :options="objectOption" />
+    <van-dropdown-item
+      v-model="object"
+      :options="objectOption"
+      @change="objectChange"
+    />
     <van-dropdown-item ref="itemRef" title="筛选" @open="openMenu">
       <van-tree-select v-model:main-active-index="activeIndex" :items="items">
         <template #content>
