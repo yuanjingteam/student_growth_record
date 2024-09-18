@@ -18,7 +18,7 @@ type GradeResult = {
   code: Number;
   msg: string;
   data: {
-    grade_list: Array<Object>;
+    grade_list: Array<string>;
   };
 };
 export function getClassListService(data?: object): Promise<classList> {

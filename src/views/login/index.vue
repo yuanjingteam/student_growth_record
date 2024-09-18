@@ -68,10 +68,13 @@ const onsubmit = async () => {
   if (checked.value) {
     try {
       const res = await userLogin(userForm);
-      localStorage.setItem("username", res.data.username);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
-      localStorage.setItem("ifTeacher", res.data.ifTeacher);
+      sessionStorage.setItem("username", res.data.username);
+      sessionStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("role", res.data.role);
+      sessionStorage.setItem("ifTeacher", res.data.ifTeacher);
+      //登录页存储这个人的班级，会直接以字符串形式存储
+      sessionStorage.setItem("checked3", JSON.stringify(res.data.class));
+      sessionStorage.setItem("grade", res.data.grade);
       userStore.setUserInfo(res.data);
       showSuccessToast("登录成功");
       router.push("/demo");
@@ -104,7 +107,7 @@ const passengerLogin = () => {
   userStore.username = "passenger";
   userStore.token = "";
   userStore.role = "user";
-  localStorage.setItem("username", "passenger");
+  sessionStorage.setItem("username", "passenger");
   router.push("/demo");
   showSuccessToast("登录成功");
 };
