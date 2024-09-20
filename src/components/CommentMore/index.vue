@@ -3,6 +3,7 @@ import { ref, defineProps, reactive } from "vue";
 import { deleteCommentsService, articleUpvoteService } from "@/api/article";
 import { useUserStore } from "@/store";
 import { showFailToast } from "vant/es";
+import { debounce } from "@/utils/functions";
 
 const userStore = useUserStore();
 let token = userStore.token;
@@ -39,7 +40,7 @@ const confirmDelete = async () => {
     console.log(res);
     emit("reload");
   } catch {
-    showFailToast("没有该权限");
+    showFailToast("您没有该权限");
   }
 };
 
@@ -67,15 +68,6 @@ const likeBtn = async state => {
 };
 // 创建防抖后的点赞
 const debouncedLike = debounce(likeBtn, 400);
-
-// 防抖函数
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func.apply(this, args), delay);
-  };
-}
 </script>
 
 <template>
