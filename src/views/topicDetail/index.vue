@@ -214,7 +214,7 @@ const onRefresh = () => {
 .van-tabs {
   height: 100%;
 }
-.van-tabs >>> .van-tabs__content {
+.van-tab :deep(.van-tabs__content) {
   height: 100%;
   background-color: #f0f1f5;
 }

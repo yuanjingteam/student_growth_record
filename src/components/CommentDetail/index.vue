@@ -340,7 +340,7 @@ const again = () => {
     }
   }
 }
-.van-collapse >>> .van-collapse-item__title {
+.van-collapse :deep(.van-collapse-item__title) {
   background-color: #f0f1f5;
 }
 .van-collapse-item {

@@ -159,7 +159,7 @@ const btnDeal = async state => {
 }
 .star {
   margin-bottom: 10px;
-  .van-cell >>> .van-cell__title {
+  .van-cell :deep(.van-cell__title) {
     font-size: 20px;
     font-weight: 600;
   }
