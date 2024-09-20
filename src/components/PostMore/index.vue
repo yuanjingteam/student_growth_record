@@ -11,6 +11,7 @@ import {
   articleDeleteService
 } from "@/api/article";
 import { showFailToast, showSuccessToast } from "vant";
+import { debounce } from "@/utils/functions";
 
 const props = defineProps({
   post: Object,
@@ -75,14 +76,6 @@ let ifTeacher = userStore.ifTeacher;
 //未登录去登录弹窗
 const showToLogin = ref(false);
 
-// 防抖函数
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func.apply(this, args), delay);
-  };
-}
 //是否展示评论输入框
 const showCommentTable = ref(false);
 

@@ -9,6 +9,7 @@ import {
 import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { showSuccessToast } from "vant";
+import { debounce } from "@/utils/functions";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -47,14 +48,6 @@ const likeBtn = async state => {
 const debouncedLike = debounce(likeBtn, 400);
 
 const emit = defineEmits(["refresh", "reloadCommentTwo"]);
-// 防抖函数
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func.apply(this, args), delay);
-  };
-}
 
 //二级评论列表
 const commentSeList = ref();
@@ -123,10 +116,7 @@ const submitComment = async () => {
 };
 
 //下拉选择框数据
-let actions = [];
-if (userStore.role != "user") {
-  actions = [{ text: "删除" }];
-}
+let actions = [{ text: "删除" }];
 
 const select = (action, index) => {
   if (action.text == "删除") {
@@ -137,12 +127,15 @@ const select = (action, index) => {
 const showDelete = ref(false);
 //确认删除
 const confirmDelete = async () => {
-  const res = await deleteCommentsService({
-    comment_id: props.data.id
-  });
-  showSuccessToast("删除评论成功");
-  console.log(res);
-  emit("refresh");
+  try {
+    const res = await deleteCommentsService({
+      comment_id: props.data.id
+    });
+    showSuccessToast("删除评论成功");
+    emit("refresh");
+  } catch {
+    showFailToast("您没有该权限");
+  }
 };
 //点击评论头像去用户主页
 const gotoUser = () => {

@@ -80,10 +80,16 @@ const onsubmit = async () => {
       router.push("/demo");
     } catch (error) {
       showFailToast(`${error.msg}`);
-      userForm.username = "";
-      userForm.password = "";
-      userForm.verify = "";
-      checked.value = false;
+      if (error.code == 500) {
+        userForm.username = "";
+        userForm.password = "";
+        userForm.verify = "";
+      } else if (error.code == 400) {
+        userForm.password = "";
+        userForm.verify = "";
+      } else {
+        userForm.verify = "";
+      }
     }
   } else {
     showTip.value = true;

@@ -8,6 +8,7 @@ import { highSearchArticleService } from "@/api/article";
 import { getClassByGradeService } from "@/api/class";
 import { useTopicStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
+import { debounce } from "@/utils/functions";
 
 const userStore = useUserStore();
 //获取pinia的token
@@ -69,15 +70,6 @@ const gradeOption = [
   { text: "大四", value: 4 }
 ];
 
-// 防抖函数
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func.apply(this, args), delay);
-  };
-}
-
 //获取注册天数
 const registerDay = async () => {
   const { data } = await getRegisterDay();
@@ -132,6 +124,10 @@ watch(activeName, async (newValue, oldValue) => {
     searchData.key_words = inputValue.value;
   }
   searchData.topic_name = newValue;
+  searchData.order = sessionStorage.getItem("checked1");
+  searchData.sort = sessionStorage.getItem("checked2");
+  searchData.start_at = sessionStorage.getItem("startDate");
+  searchData.end_at = sessionStorage.getItem("endDate");
 
   const {
     data: { content }
@@ -217,13 +213,10 @@ const startDate = ref(sessionStorage.getItem("startDate") || "2024-05-01");
 //记录结束时间
 const endDate = ref(sessionStorage.getItem("endDate") || "2025-06-01");
 //控制日历框是否弹出
-
 const show = ref(false);
 
 //格式化时间
 const formatDate = date => {
-  console.log(date);
-
   const month =
     date.getMonth() + 1 > 10
       ? date.getMonth() + 1
@@ -294,6 +287,8 @@ const openMenu = () => {
   checked1.value = sessionStorage.getItem("checked1") || "asc";
   checked2.value = sessionStorage.getItem("checked2") || "created_at";
   checked3.value = JSON.parse(sessionStorage.getItem("checked3"));
+  startDate.value = sessionStorage.getItem("startDate") || "2024-05-01";
+  endDate.value = sessionStorage.getItem("endDate") || "2025-06-01";
 };
 
 //多选框相关逻辑
@@ -397,20 +392,7 @@ const resetChoice = () => {
     <van-dropdown-item ref="itemRef" title="筛选" @open="openMenu">
       <van-tree-select v-model:main-active-index="activeIndex" :items="items">
         <template #content>
-          <van-radio-group v-if="activeIndex === 0" v-model="checked1">
-            <van-cell title="正序" clickable @click="checked1 = 'asc'">
-              <template #right-icon>
-                <van-radio name="asc" />
-              </template>
-            </van-cell>
-            <van-cell title="倒序" clickable @click="checked1 = 'desc'">
-              <template #right-icon>
-                <van-radio name="desc" />
-              </template>
-            </van-cell>
-          </van-radio-group>
-
-          <van-radio-group v-if="activeIndex === 1" v-model="checked2">
+          <van-radio-group v-if="activeIndex === 0" v-model="checked2">
             <van-cell
               title="创建时间"
               clickable
@@ -471,6 +453,19 @@ const resetChoice = () => {
               </template>
             </van-cell>
           </van-radio-group>
+          <van-radio-group v-if="activeIndex === 1" v-model="checked1">
+            <van-cell title="正序" clickable @click="checked1 = 'asc'">
+              <template #right-icon>
+                <van-radio name="asc" />
+              </template>
+            </van-cell>
+            <van-cell title="倒序" clickable @click="checked1 = 'desc'">
+              <template #right-icon>
+                <van-radio name="desc" />
+              </template>
+            </van-cell>
+          </van-radio-group>
+
           <van-checkbox-group v-if="activeIndex === 2" v-model="checked3">
             <van-cell
               v-for="(item, index) in list"
