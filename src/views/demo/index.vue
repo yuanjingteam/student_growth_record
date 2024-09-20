@@ -22,6 +22,10 @@ const className = JSON.parse(sessionStorage.getItem("checked3"));
 const topicStore = useTopicStore();
 const router = useRouter();
 
+const checked1 = ref("desc" || sessionStorage.getItem("checked1"));
+const checked2 = ref("created_at" || sessionStorage.getItem("checked2"));
+const checked3 = ref(className);
+sessionStorage.setItem("checked3", JSON.stringify(checked3.value));
 //首页帖子列表
 const articleList = ref([]);
 //分类标签tabber栏
@@ -37,6 +41,14 @@ const currentName = sessionStorage.getItem("currentTabName") || "学习成绩";
 const activeName = ref(currentName);
 //初始化记录注册天数
 const registerTime = ref("");
+//可供选择的开始时间
+const minDate = new Date(2024, 5, 1);
+//可供选择的结束时间
+const maxDate = new Date(2025, 6, 1);
+//记录开始时间
+const startDate = ref(sessionStorage.getItem("startDate") || "2024-05-01");
+//记录结束时间
+const endDate = ref(sessionStorage.getItem("endDate") || "2025-06-01");
 //搜索框数据
 const searchData = reactive({
   key_words: "",
@@ -98,11 +110,17 @@ const onSearch = async () => {
     searchData.name = "";
     searchData.key_words = inputValue.value;
   }
-  searchData.order = "asc";
-  searchData.sort = "created_at";
+  searchData.grade = Number(sessionStorage.getItem("grade"));
+  searchData.order = sessionStorage.getItem("checked1") || "desc";
+  console.log(sessionStorage.getItem("checked1"), "44");
+
+  searchData.sort = sessionStorage.getItem("checked2") || "created_at";
+  checked3.value = JSON.parse(sessionStorage.getItem("checked3"));
+  searchData.class = checked3.value;
+  searchData.start_at = sessionStorage.getItem("startDate") || "2024-05-01";
+  searchData.end_at = sessionStorage.getItem("endDate") || "2025-06-01";
   searchData.article_page = 1;
   searchData.topic_name = activeName.value;
-  // searchData.class = [];
   const {
     data: { content }
   } = await highSearchArticleService(searchData);
@@ -191,10 +209,10 @@ const activeIndex = ref(0);
 //左侧筛选框中的数组
 const items = [
   {
-    text: "排序方式"
+    text: "排序字段"
   },
   {
-    text: "排序字段"
+    text: "排序"
   },
   {
     text: "班级"
@@ -204,14 +222,6 @@ const items = [
   }
 ];
 
-//可供选择的开始时间
-const minDate = new Date(2024, 5, 1);
-//可供选择的结束时间
-const maxDate = new Date(2025, 6, 1);
-//记录开始时间
-const startDate = ref(sessionStorage.getItem("startDate") || "2024-05-01");
-//记录结束时间
-const endDate = ref(sessionStorage.getItem("endDate") || "2025-06-01");
 //控制日历框是否弹出
 const show = ref(false);
 
@@ -276,15 +286,10 @@ const objectChange = obj => {
   sessionStorage.setItem("object", obj);
 };
 
-const checked1 = ref("asc" || sessionStorage.getItem("checked1"));
-const checked2 = ref("created_at" || sessionStorage.getItem("checked2"));
-const checked3 = ref(className);
-sessionStorage.setItem("checked3", JSON.stringify(checked3.value));
-
 const openMenu = () => {
   //获取上次发请求时的值,发请求时本地的值才会改变，所以每次打开都从本地拿取
   //没有点击确定则再打开还是原来的值
-  checked1.value = sessionStorage.getItem("checked1") || "asc";
+  checked1.value = sessionStorage.getItem("checked1") || "desc";
   checked2.value = sessionStorage.getItem("checked2") || "created_at";
   checked3.value = JSON.parse(sessionStorage.getItem("checked3"));
   startDate.value = sessionStorage.getItem("startDate") || "2024-05-01";
@@ -337,7 +342,7 @@ const confirmChoice = async () => {
 };
 //重置筛选框的选择
 const resetChoice = () => {
-  checked1.value = "asc";
+  checked1.value = "desc";
   checked2.value = "created_at";
   checked3.value = className;
   startDate.value = "2024-05-01";
@@ -572,12 +577,12 @@ span {
 
 /* 样式穿透,强制找到子组件 */
 
-.van-search >>> .van-search__content {
+.van-search :deep(.van-search__content) {
   background-color: #fff !important;
   background: #fff;
 }
 
-.van-search >>> .van-search__action {
+.van-search :deep(.van-search__action) {
   padding: 0px;
   display: flex;
 }
@@ -591,11 +596,11 @@ span {
   background-color: #fff;
 }
 
-.van-dropdown-menu >>> .van-dropdown-menu__bar {
+.van-dropdown-menu :deep(.van-dropdown-menu__bar) {
   background-color: #f0f1f5;
   border-bottom: solid 2px #fff;
 }
-.van-dropdown-menu >>> .van-dropdown-menu__title:after {
+.van-dropdown-menu :deep(.van-dropdown-menu__title:after) {
   border-color: transparent transparent #c1c1c1 #c1c1c1;
 }
 

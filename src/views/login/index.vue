@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { getVerifyImg, userLogin } from "@/api/user";
 import { useUserStore } from "@/store";
 import { showFailToast, showSuccessToast } from "vant";
+import { getClassByGradeService } from "@/api/class";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -73,8 +74,17 @@ const onsubmit = async () => {
       sessionStorage.setItem("role", res.data.role);
       sessionStorage.setItem("ifTeacher", res.data.ifTeacher);
       //登录页存储这个人的班级，会直接以字符串形式存储
+      //如果这个人没有班级信息，那么默认请求大二的所有班级
+      if (res.data.grade == 0) {
+        res.data.grade = 2;
+        const { data } = await getClassByGradeService({
+          grade: 2
+        });
+        res.data.class = data.grade_list;
+      }
       sessionStorage.setItem("checked3", JSON.stringify(res.data.class));
       sessionStorage.setItem("grade", res.data.grade);
+
       userStore.setUserInfo(res.data);
       showSuccessToast("登录成功");
       router.push("/demo");

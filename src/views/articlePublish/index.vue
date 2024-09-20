@@ -477,9 +477,6 @@ getLittleTag();
 .active {
   --van-grid-item-content-background: #f2f2f2;
 }
-/* .acitve >>> .van-grid-item__content {
-  background: #000;
-} */
 
 .select {
   width: 100%;
