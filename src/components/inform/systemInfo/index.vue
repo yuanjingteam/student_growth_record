@@ -1,8 +1,9 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, defineProps } from "vue";
 import { readSystemNotice, getSystemNotification } from "@/api/user";
 import { showDialog } from "vant";
+import { formattedContent } from "@/utils/functions/modules/formattedContent";
 
 // 父传子
 const props = defineProps({
@@ -34,10 +35,6 @@ systemNotification();
 const checkSystem = async () => {
   router.push("/systemNotice");
   await readSystemNotice();
-};
-const formattedContent = content => {
-  // 使用正则表达式替换 <br/> 标签为换行符
-  return content.replace(/<br\s*\/?>/g, "");
 };
 </script>
 <template>

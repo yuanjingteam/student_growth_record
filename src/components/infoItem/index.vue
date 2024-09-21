@@ -2,7 +2,10 @@
 import { useRouter } from "vue-router";
 import { readUserNotice } from "@/api/user";
 import { useUserStore } from "@/store";
+import { formattedContent } from "@/utils/functions/modules/formattedContent";
 const router = new useRouter();
+import { defineProps } from "vue";
+
 // 父传子
 const props = defineProps({
   data: Object,
@@ -27,10 +30,6 @@ const goto = () => {
   } else {
     router.push(`/otherInfo/${props.data.username}`);
   }
-};
-const formattedContent = st => {
-  // 使用正则表达式替换 <br/> 标签为换行符
-  return st.replace(/<br\s*\/?>/g, "\n");
 };
 </script>
 <template>

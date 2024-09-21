@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { isExternal } from "@/utils/validate";
 import { computed } from "vue";
+import { defineProps } from "vue";
 
 interface Props {
   name: string;

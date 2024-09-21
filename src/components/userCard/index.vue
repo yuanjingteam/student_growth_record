@@ -3,6 +3,8 @@ import { useRouter } from "vue-router";
 import { defineProps, ref } from "vue";
 import { articleDeleteService, articleChangeState } from "@/api/article";
 import { showSuccessToast, showToast } from "vant";
+import { formattedContent } from "@/utils/functions/modules/formattedContent";
+
 const props = defineProps({
   article: Object,
   state: {
@@ -93,11 +95,6 @@ const confirmDelete = () => {
 const confirmState = () => {
   loading.value = true;
   isPublic();
-};
-
-const formattedContent = content => {
-  // 使用正则表达式替换 <br/> 标签为换行符
-  return content.replace(/<br\s*\/?>/g, "\n");
 };
 </script>
 

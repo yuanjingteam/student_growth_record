@@ -1,9 +1,10 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineProps } from "vue";
 import { useRouter } from "vue-router";
 import { readManagerNotice } from "@/api/user";
 import { showDialog } from "vant";
 import { getManagerNotification } from "@/api/user";
+import { formattedContent } from "@/utils/functions/modules/formattedContent";
 
 // 父传子
 const props = defineProps({
@@ -36,10 +37,6 @@ managerNotification();
 const checkManager = async () => {
   router.push("./managerNotice");
   const { code } = await readManagerNotice();
-};
-const formattedContent = content => {
-  // 使用正则表达式替换 <br/> 标签为换行符
-  return content.replace(/<br\s*\/?>/g, "");
 };
 </script>
 <template>

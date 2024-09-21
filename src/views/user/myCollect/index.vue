@@ -3,6 +3,8 @@ import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { getStar } from "@/api/user";
 import { ref, computed } from "vue";
+import { formattedContent } from "@/utils/functions/modules/formattedContent";
+
 const userStore = useUserStore();
 const router = useRouter();
 const myname = userStore.username;
@@ -48,10 +50,6 @@ const onRefresh = () => {
   // 将 loading 设置为 true，表示处于加载状态
   loading.value = true;
   onLoad();
-};
-const formattedContent = content => {
-  // 使用正则表达式替换 <br/> 标签为换行符
-  return content.replace(/<br\s*\/?>/g, "\n");
 };
 </script>
 <template>
