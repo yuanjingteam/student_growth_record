@@ -41,7 +41,9 @@ const gotoArticleDetail = () => {
               <p class="name">
                 {{ article.name ? article.name : "用户已被删除" }}
               </p>
-              <van-tag v-if="ifTeacher" plain type="primary">教师</van-tag>
+              <van-tag plain type="primary">{{
+                article.user_identity
+              }}</van-tag>
             </div>
             <div v-if="article.article_quality == '1'" class="standout">
               <span>班级</span><i-icon icon="noto:sports-medal" />
