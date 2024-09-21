@@ -107,9 +107,9 @@ const getSchoolStarList = async () => {
 };
 
 watch(activeName, (newValue, oldValue) => {
-  ifNewShow.value = false;
-  starData.startTime = "";
-  starData.endTime = "";
+  // ifNewShow.value = false;
+  // starData.startTime = "";
+  // starData.endTime = "";
   // 监听activeName,触发不同的接口请求,更新数据
   finished.value = false;
   page.value = 1;
@@ -193,7 +193,12 @@ const onRefresh = () => {
 };
 
 //重新获取最新评选
-const refreshStar = () => {};
+const refreshStar = () => {
+  ifNewShow.value = false;
+  starData.startTime = "";
+  starData.endTime = "";
+  onRefresh();
+};
 </script>
 
 <template>
@@ -208,11 +213,11 @@ const refreshStar = () => {};
     <span v-else @click="chooseTime"
       >{{ dateStartShow }}-{{ dateEndShow }}</span
     >
-    <!-- <i-icon
+    <i-icon
       class="refresh-btn"
       icon="material-symbols:refresh"
       @click="refreshStar"
-    /> -->
+    />
   </div>
   <van-calendar
     ref="calendarRef"
