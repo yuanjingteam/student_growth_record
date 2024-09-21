@@ -112,13 +112,16 @@ const onSearch = async () => {
   }
   searchData.grade = Number(sessionStorage.getItem("grade"));
   searchData.order = sessionStorage.getItem("checked1") || "desc";
-  console.log(sessionStorage.getItem("checked1"), "44");
-
+  sessionStorage.setItem("checked1", searchData.order);
   searchData.sort = sessionStorage.getItem("checked2") || "created_at";
+  sessionStorage.setItem("checked2", searchData.sort);
   checked3.value = JSON.parse(sessionStorage.getItem("checked3"));
   searchData.class = checked3.value;
   searchData.start_at = sessionStorage.getItem("startDate") || "2024-05-01";
+  sessionStorage.setItem("startDate", searchData.start_at);
   searchData.end_at = sessionStorage.getItem("endDate") || "2025-06-01";
+  sessionStorage.setItem("endDate", searchData.end_at);
+
   searchData.article_page = 1;
   searchData.topic_name = activeName.value;
   const {
