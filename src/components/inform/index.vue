@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import { defineProps } from "vue";
 
 // 父传子
 const props = defineProps({

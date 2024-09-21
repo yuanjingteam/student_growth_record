@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, defineProps } from "vue";
+
 import { getreportEmail } from "@/api/user";
 // 父传子
 // 给一个默认值

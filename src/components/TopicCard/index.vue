@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, defineProps } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 

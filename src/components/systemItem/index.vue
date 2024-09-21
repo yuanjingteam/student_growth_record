@@ -1,15 +1,13 @@
 <script setup>
 import { ref } from "vue";
+import { formattedContent } from "@/utils/functions/modules/formattedContent";
+import { defineProps } from "vue";
 
 const props = defineProps({
   data: Object
 });
 let userImg =
   "https://student-grow.oss-cn-beijing.aliyuncs.com/image/system_2.png";
-const formattedContent = content => {
-  // 使用正则表达式替换 <br/> 标签为换行符
-  return content.replace(/<br\s*\/?>/g, "\n");
-};
 </script>
 <template>
   <van-cell-group inset>
