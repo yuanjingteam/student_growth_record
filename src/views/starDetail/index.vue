@@ -111,7 +111,6 @@ watch(activeName, (newValue, oldValue) => {
   starData.startTime = "";
   starData.endTime = "";
   // 监听activeName,触发不同的接口请求,更新数据
-  // 监听activeName,触发不同的接口请求,更新数据
   finished.value = false;
   page.value = 1;
   starList.value = [];
@@ -192,6 +191,9 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
+
+//重新获取最新评选
+const refreshStar = () => {};
 </script>
 
 <template>
@@ -201,9 +203,16 @@ const onRefresh = () => {
     left-arrow
     @click-left="router.go(-1)"
   />
-  <div class="title" @click="chooseTime">
-    <span v-if="!ifNewShow">最新评选</span>
-    <span v-else>{{ dateStartShow }}-{{ dateEndShow }}</span>
+  <div class="title">
+    <span v-if="!ifNewShow" @click="chooseTime">最新评选</span>
+    <span v-else @click="chooseTime"
+      >{{ dateStartShow }}-{{ dateEndShow }}</span
+    >
+    <!-- <i-icon
+      class="refresh-btn"
+      icon="material-symbols:refresh"
+      @click="refreshStar"
+    /> -->
   </div>
   <van-calendar
     ref="calendarRef"
@@ -292,5 +301,10 @@ const onRefresh = () => {
   display: flex;
   line-height: 35px;
   justify-content: space-around;
+}
+.refresh-btn {
+  position: absolute;
+  right: 15px;
+  margin-top: 8px;
 }
 </style>

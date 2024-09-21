@@ -82,25 +82,25 @@ const showCommentTable = ref(false);
 //点击三个点是否展示选择框
 const showPopover = ref(false);
 //选择框内容
-let actions = [];
-if (userStore.role == "user") {
-  actions = [{ text: "举报" }];
-} else {
-  actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
-}
+let actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
+
 //是否打开举报框
 const showReport = ref(false);
 //是否封禁
 const showBan = ref(false);
 //确认封禁
 const confirmBan = async () => {
-  const res = await articleBanService({
-    article_id: props.articleId,
-    article_ban: true
-  });
-  console.log(res);
-  showSuccessToast("已成功封禁该文章");
-  router.push("/demo");
+  try {
+    const res = await articleBanService({
+      article_id: props.articleId,
+      article_ban: true
+    });
+    console.log(res);
+    showSuccessToast("已成功封禁该文章");
+    router.push("/demo");
+  } catch {
+    showFailToast("您没有该权限");
+  }
 };
 
 //选中选择框后
