@@ -209,7 +209,11 @@ const confirmDelete = async () => {
 //跳转进用户主页
 const gotoUser = () => {
   if (props.post.username != "") {
-    router.push(`/otherInfo/${props.post.username}`);
+    if (props.post.username == userStore.username) {
+      router.push(`/myPublish`);
+    } else {
+      router.push(`/otherInfo/${props.post.username}`);
+    }
   } else {
     return;
   }
