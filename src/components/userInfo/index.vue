@@ -153,6 +153,8 @@ UerInfo();
 if (routername) {
   concernGet();
 }
+// 暴露方法给父组件
+defineExpose({ UerInfo });
 </script>
 
 <template>
