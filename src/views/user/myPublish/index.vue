@@ -11,6 +11,7 @@ const list = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
+
 // 获取我的文章
 const loadData = async () => {
   try {
@@ -47,10 +48,16 @@ const onRefresh = () => {
   loading.value = true;
   onLoad();
 };
-// 子传父重新获取数据
+
+// 声明另一个子组件userInfo绑定
+const userData = ref(null);
 const refresh = async () => {
+  // 子传父重新获取数据
+  // 重新加载当前子组件user-card
   refreshing.value = true;
   onLoad();
+  // 通知另一个组件userInfo刷新
+  userData.value.UerInfo();
 };
 </script>
 
@@ -65,7 +72,7 @@ const refresh = async () => {
       @click-left="router.go(-1)"
     />
     <div class="my-w">
-      <user-info />
+      <user-info ref="userData" />
       <van-pull-refresh
         v-if="list.length > 0"
         v-model="refreshing"
