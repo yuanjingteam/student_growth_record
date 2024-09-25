@@ -11,13 +11,13 @@ export default {
       2,
       "always",
       [
-        "feat",
-        "fix",
-        "perf",
-        "style",
-        "docs",
-        "test",
-        "refactor",
+        "feat", // 新功能
+        "fix", // bug修复
+        "perf", // 性能优化
+        "style", // 样式变动
+        "docs", // 文档更新
+        "test", // 单元测试
+        "refactor", // 功能重构
         "build",
         "ci",
         "chore",
