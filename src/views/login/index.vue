@@ -127,6 +127,8 @@ const passengerLogin = () => {
   router.push("/demo");
   showSuccessToast("登录成功");
 };
+
+console.log(import.meta.env.MODE, 1111111111);
 </script>
 
 <template>
