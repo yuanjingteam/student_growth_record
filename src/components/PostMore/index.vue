@@ -259,9 +259,9 @@ const confirmDelete = async () => {
                     <p class="name">
                       {{ post.name ? post.name : "用户已被删除" }}
                     </p>
-                    <van-tag v-if="ifTeacher" plain type="primary"
-                      >教师</van-tag
-                    >
+                    <van-tag plain type="primary">{{
+                      post.user_identity
+                    }}</van-tag>
                   </div>
                   <van-popover
                     v-model:show="showPopover"
