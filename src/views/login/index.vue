@@ -178,18 +178,18 @@ console.log(import.meta.env.MODE, 1111111111);
           />
         </template>
       </van-field>
+      <van-button
+        round
+        block
+        type="primary"
+        native-type="submit"
+        color="#004ae9"
+        @click="onsubmit"
+      >
+        登录
+      </van-button>
     </van-form>
 
-    <van-button
-      round
-      block
-      type="primary"
-      native-type="submit"
-      color="#004ae9"
-      @click="onsubmit"
-    >
-      登录
-    </van-button>
     <div class="op-box">
       <span style="text-decoration: underline" @click="showDialog = true"
         >忘记密码</span
@@ -265,7 +265,6 @@ console.log(import.meta.env.MODE, 1111111111);
 
   .van-button {
     margin-top: 10px;
-    height: 48px;
   }
 
   .op-box {
