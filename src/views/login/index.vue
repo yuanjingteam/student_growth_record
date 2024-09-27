@@ -234,7 +234,7 @@ console.log(import.meta.env.MODE, 1111111111);
   position: relative;
   overflow: hidden;
   background-color: #fff;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -265,6 +265,7 @@ console.log(import.meta.env.MODE, 1111111111);
 
   .van-button {
     margin-top: 10px;
+    height: 48px;
   }
 
   .op-box {
