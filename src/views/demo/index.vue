@@ -26,6 +26,7 @@ const checked1 = ref("desc" || sessionStorage.getItem("checked1"));
 const checked2 = ref("created_at" || sessionStorage.getItem("checked2"));
 const checked3 = ref(className);
 sessionStorage.setItem("checked3", JSON.stringify(checked3.value));
+const checked4 = ref("学生");
 //首页帖子列表
 const articleList = ref([]);
 //分类标签tabber栏
@@ -36,7 +37,7 @@ topicList.value = topicStore.topicList;
 //搜索框输入内容
 const inputValue = ref("");
 //获取当前存储的tab
-const currentName = sessionStorage.getItem("currentTabName") || "学习成绩";
+const currentName = sessionStorage.getItem("currentTabName") || "全部话题";
 //控制tab栏显示
 const activeName = ref(currentName);
 //初始化记录注册天数
@@ -62,7 +63,8 @@ const searchData = reactive({
   end_at: "",
   class: [],
   name: "",
-  grade: 0
+  grade: 0,
+  role: "学生"
 });
 //便于第一次获取数据，将得到的数据直接赋值
 searchData.class = className;
@@ -222,6 +224,9 @@ const items = [
   },
   {
     text: "时间"
+  },
+  {
+    text: "检索身份"
   }
 ];
 
@@ -473,7 +478,6 @@ const resetChoice = () => {
               </template>
             </van-cell>
           </van-radio-group>
-
           <van-checkbox-group v-if="activeIndex === 2" v-model="checked3">
             <van-cell
               v-for="(item, index) in list"
@@ -497,8 +501,19 @@ const resetChoice = () => {
             <h2>结束时间:</h2>
             <span class="time">{{ endDate }}</span>
           </div>
-        </template></van-tree-select
-      >
+          <van-radio-group v-if="activeIndex === 4" v-model="checked4">
+            <van-cell title="学生" clickable @click="checked1 = 'student'">
+              <template #right-icon>
+                <van-radio name="学生" />
+              </template>
+            </van-cell>
+            <van-cell title="老师" clickable @click="checked1 = 'teacher'">
+              <template #right-icon>
+                <van-radio name="老师" />
+              </template>
+            </van-cell>
+          </van-radio-group> </template
+      ></van-tree-select>
 
       <div class="choice-btn">
         <van-button type="primary" size="small" @click="confirmChoice"

@@ -56,15 +56,9 @@ const changeVerify = async () => {
   loadingVerify.value = false;
 };
 //登录提交并进行表单校验
-const onsubmit = async () => {
+const onSubmit = async () => {
   loginLoading.value = true;
-  try {
-    await formRef.value.validate();
-  } catch {
-    showFailToast("登录失败");
-    loginLoading.value = false;
-    return;
-  }
+  await formRef.value.validate();
   //用户勾选复选框后
   if (checked.value) {
     try {
@@ -119,7 +113,13 @@ const confirmTip = () => {
 };
 
 //游客登录
-const passengerLogin = () => {
+const passengerLogin = async () => {
+  //发送请求默认获取大二
+  const { data } = await getClassByGradeService({
+    grade: 2
+  });
+  sessionStorage.setItem("checked3", JSON.stringify(data.grade_list));
+  sessionStorage.setItem("grade", 2);
   userStore.username = "passenger";
   userStore.token = "";
   userStore.role = "user";
@@ -139,7 +139,7 @@ console.log(import.meta.env.MODE, 1111111111);
     <div class="circle4" />
     <h2>数学科学学院</h2>
     <h1>大学生成长档案</h1>
-    <van-form ref="formRef" inset>
+    <van-form ref="formRef" inset @submit="onSubmit()">
       <van-field
         v-model="userForm.username"
         placeholder="请输入用户账号/学号"
@@ -184,7 +184,6 @@ console.log(import.meta.env.MODE, 1111111111);
         type="primary"
         native-type="submit"
         color="#004ae9"
-        @click="onsubmit"
       >
         登录
       </van-button>
