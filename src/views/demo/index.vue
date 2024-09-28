@@ -42,6 +42,8 @@ const currentName = sessionStorage.getItem("currentTabName") || "全部话题";
 const activeName = ref(currentName);
 //初始化记录注册天数
 const registerTime = ref("");
+//记录当前用户身份
+const role = sessionStorage.getItem("username");
 //可供选择的开始时间
 const minDate = new Date(2024, 5, 1);
 //可供选择的结束时间
@@ -89,7 +91,7 @@ const registerDay = async () => {
   const { data } = await getRegisterDay();
   registerTime.value = data.plus_time;
 };
-if (token != "") {
+if (role != "passenger") {
   registerDay();
 }
 //存当前年级的班级列表
@@ -372,7 +374,7 @@ const resetChoice = () => {
   />
   <div class="topShow">
     <p class="title">我的大学生活</p>
-    <span v-if="token != ''">
+    <span v-if="role != 'passenger'">
       <p>与你相遇の第{{ registerTime }}天</p>
       <i-icon icon="icon-park:read-book" class="text-xl" />
     </span>
