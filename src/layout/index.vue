@@ -34,6 +34,19 @@ const cachedViews = computed(() => {
   font-weight: 400;
   font-style: normal;
 }
+
+/* 深色模式样式 */
+.dark {
+  background-color: black; /* 根元素的背景颜色 */
+  color: white; /* 根元素的字体颜色 */
+}
+
+/* 其他元素的深色模式样式 */
+.dark .app-wrapper {
+  background-color: black;
+  color: white;
+}
+
 .app-wrapper {
   .clearfix();
   position: relative;
