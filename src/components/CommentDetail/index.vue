@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, defineEmits, reactive } from "vue";
+import { ref, defineEmits, reactive } from "vue";
 import {
   getCommentsSecondService,
   articleCommentService,

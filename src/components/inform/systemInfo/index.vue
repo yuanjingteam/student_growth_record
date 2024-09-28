@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 import { readSystemNotice, getSystemNotification } from "@/api/user";
 import { showDialog } from "vant";
 import { formattedContent } from "@/utils/functions/modules/formattedContent";

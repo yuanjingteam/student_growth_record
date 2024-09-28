@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, onMounted, defineProps } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useUserStore } from "@/store";
 import {

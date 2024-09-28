@@ -6,7 +6,6 @@ import {
 } from "@/api/user";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { defineProps } from "vue";
 
 const router = useRouter();
 // 父传子

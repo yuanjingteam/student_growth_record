@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 import { articleDeleteService, articleChangeState } from "@/api/article";
 import { showSuccessToast, showToast } from "vant";
 import { formattedContent } from "@/utils/functions/modules/formattedContent";

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, reactive } from "vue";
+import { ref, reactive } from "vue";
 import { deleteCommentsService, articleUpvoteService } from "@/api/article";
 import { useUserStore } from "@/store";
 import { showFailToast } from "vant/es";
