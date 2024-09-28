@@ -88,8 +88,12 @@ const gradeOption = [
 
 //获取注册天数
 const registerDay = async () => {
-  const { data } = await getRegisterDay();
-  registerTime.value = data.plus_time;
+  try {
+    const { data } = await getRegisterDay();
+    registerTime.value = data.plus_time;
+  } catch {
+    registerTime.value = "";
+  }
 };
 if (role != "passenger") {
   registerDay();
