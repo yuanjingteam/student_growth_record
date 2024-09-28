@@ -26,7 +26,7 @@ const checked1 = ref("desc" || sessionStorage.getItem("checked1"));
 const checked2 = ref("created_at" || sessionStorage.getItem("checked2"));
 const checked3 = ref(className);
 sessionStorage.setItem("checked3", JSON.stringify(checked3.value));
-const checked4 = ref("学生");
+const checked4 = ref("student" || sessionStorage.getItem("checked4"));
 //首页帖子列表
 const articleList = ref([]);
 //分类标签tabber栏
@@ -64,7 +64,7 @@ const searchData = reactive({
   class: [],
   name: "",
   grade: 0,
-  role: "学生"
+  role: ""
 });
 //便于第一次获取数据，将得到的数据直接赋值
 searchData.class = className;
@@ -123,6 +123,8 @@ const onSearch = async () => {
   sessionStorage.setItem("startDate", searchData.start_at);
   searchData.end_at = sessionStorage.getItem("endDate") || "2025-06-01";
   sessionStorage.setItem("endDate", searchData.end_at);
+  searchData.role = sessionStorage.getItem("checked4") || "student";
+  sessionStorage.setItem("checked4", searchData.role);
 
   searchData.article_page = 1;
   searchData.topic_name = activeName.value;
@@ -302,6 +304,7 @@ const openMenu = () => {
   checked3.value = JSON.parse(sessionStorage.getItem("checked3"));
   startDate.value = sessionStorage.getItem("startDate") || "2024-05-01";
   endDate.value = sessionStorage.getItem("endDate") || "2025-06-01";
+  checked4.value = sessionStorage.getItem("checked4") || "student";
 };
 
 //多选框相关逻辑
@@ -341,6 +344,8 @@ const confirmChoice = async () => {
     sessionStorage.setItem("startDate", startDate.value);
     searchData.end_at = endDate.value;
     sessionStorage.setItem("endDate", endDate.value);
+    searchData.role = checked4.value;
+    sessionStorage.setItem("checked4", checked4.value);
 
     highSearch();
     itemRef.value.toggle();
@@ -355,6 +360,7 @@ const resetChoice = () => {
   checked3.value = className;
   startDate.value = "2024-05-01";
   endDate.value = "2025-06-01";
+  checked4.value = "student";
 };
 </script>
 <template>
@@ -502,14 +508,14 @@ const resetChoice = () => {
             <span class="time">{{ endDate }}</span>
           </div>
           <van-radio-group v-if="activeIndex === 4" v-model="checked4">
-            <van-cell title="学生" clickable @click="checked1 = 'student'">
+            <van-cell title="学生" clickable @click="checked4 = 'student'">
               <template #right-icon>
-                <van-radio name="学生" />
+                <van-radio name="student" />
               </template>
             </van-cell>
-            <van-cell title="老师" clickable @click="checked1 = 'teacher'">
+            <van-cell title="老师" clickable @click="checked4 = 'teacher'">
               <template #right-icon>
-                <van-radio name="老师" />
+                <van-radio name="teacher" />
               </template>
             </van-cell>
           </van-radio-group> </template

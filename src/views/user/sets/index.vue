@@ -60,12 +60,12 @@ const loginOut = () => {
       <van-cell is-link>
         <template #title>用户协议 </template>
       </van-cell>
-      <van-cell>
+      <!-- <van-cell>
         <template #title>深色模式</template>
         <template #value>
           <van-switch v-model="checked" />
         </template>
-      </van-cell>
+      </van-cell> -->
       <van-cell title="推荐好友" is-link />
       <van-cell is-link>
         <template #title>隐私政策</template>
