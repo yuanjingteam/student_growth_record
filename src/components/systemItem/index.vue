@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
 import { formattedContent } from "@/utils/functions/modules/formattedContent";
-import { defineProps } from "vue";
 
 const props = defineProps({
   data: Object

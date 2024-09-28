@@ -243,7 +243,7 @@ defineExpose({ UerInfo });
           <div>积分：{{ data.user_point }}</div>
         </div>
         <!-- 职位 -->
-        <div v-if="!own" name="office">
+        <div v-if="!own && data.user_class !== ''" name="office">
           <span class="other">{{ data.user_class }}</span>
         </div>
       </div>

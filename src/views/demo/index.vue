@@ -26,6 +26,7 @@ const checked1 = ref("desc" || sessionStorage.getItem("checked1"));
 const checked2 = ref("created_at" || sessionStorage.getItem("checked2"));
 const checked3 = ref(className);
 sessionStorage.setItem("checked3", JSON.stringify(checked3.value));
+const checked4 = ref("student" || sessionStorage.getItem("checked4"));
 //首页帖子列表
 const articleList = ref([]);
 //分类标签tabber栏
@@ -36,11 +37,13 @@ topicList.value = topicStore.topicList;
 //搜索框输入内容
 const inputValue = ref("");
 //获取当前存储的tab
-const currentName = sessionStorage.getItem("currentTabName") || "学习成绩";
+const currentName = sessionStorage.getItem("currentTabName") || "全部话题";
 //控制tab栏显示
 const activeName = ref(currentName);
 //初始化记录注册天数
 const registerTime = ref("");
+//记录当前用户身份
+const role = sessionStorage.getItem("username");
 //可供选择的开始时间
 const minDate = new Date(2024, 5, 1);
 //可供选择的结束时间
@@ -62,7 +65,8 @@ const searchData = reactive({
   end_at: "",
   class: [],
   name: "",
-  grade: 0
+  grade: 0,
+  role: ""
 });
 //便于第一次获取数据，将得到的数据直接赋值
 searchData.class = className;
@@ -84,10 +88,14 @@ const gradeOption = [
 
 //获取注册天数
 const registerDay = async () => {
-  const { data } = await getRegisterDay();
-  registerTime.value = data.plus_time;
+  try {
+    const { data } = await getRegisterDay();
+    registerTime.value = data.plus_time;
+  } catch {
+    registerTime.value = "";
+  }
 };
-if (token != "") {
+if (role != "passenger") {
   registerDay();
 }
 //存当前年级的班级列表
@@ -121,6 +129,8 @@ const onSearch = async () => {
   sessionStorage.setItem("startDate", searchData.start_at);
   searchData.end_at = sessionStorage.getItem("endDate") || "2025-06-01";
   sessionStorage.setItem("endDate", searchData.end_at);
+  searchData.role = sessionStorage.getItem("checked4") || "student";
+  sessionStorage.setItem("checked4", searchData.role);
 
   searchData.article_page = 1;
   searchData.topic_name = activeName.value;
@@ -222,6 +232,9 @@ const items = [
   },
   {
     text: "时间"
+  },
+  {
+    text: "检索身份"
   }
 ];
 
@@ -297,6 +310,7 @@ const openMenu = () => {
   checked3.value = JSON.parse(sessionStorage.getItem("checked3"));
   startDate.value = sessionStorage.getItem("startDate") || "2024-05-01";
   endDate.value = sessionStorage.getItem("endDate") || "2025-06-01";
+  checked4.value = sessionStorage.getItem("checked4") || "student";
 };
 
 //多选框相关逻辑
@@ -336,6 +350,8 @@ const confirmChoice = async () => {
     sessionStorage.setItem("startDate", startDate.value);
     searchData.end_at = endDate.value;
     sessionStorage.setItem("endDate", endDate.value);
+    searchData.role = checked4.value;
+    sessionStorage.setItem("checked4", checked4.value);
 
     highSearch();
     itemRef.value.toggle();
@@ -350,6 +366,7 @@ const resetChoice = () => {
   checked3.value = className;
   startDate.value = "2024-05-01";
   endDate.value = "2025-06-01";
+  checked4.value = "student";
 };
 </script>
 <template>
@@ -361,7 +378,7 @@ const resetChoice = () => {
   />
   <div class="topShow">
     <p class="title">我的大学生活</p>
-    <span v-if="token != ''">
+    <span v-if="role != 'passenger'">
       <p>与你相遇の第{{ registerTime }}天</p>
       <i-icon icon="icon-park:read-book" class="text-xl" />
     </span>
@@ -473,7 +490,6 @@ const resetChoice = () => {
               </template>
             </van-cell>
           </van-radio-group>
-
           <van-checkbox-group v-if="activeIndex === 2" v-model="checked3">
             <van-cell
               v-for="(item, index) in list"
@@ -497,8 +513,19 @@ const resetChoice = () => {
             <h2>结束时间:</h2>
             <span class="time">{{ endDate }}</span>
           </div>
-        </template></van-tree-select
-      >
+          <van-radio-group v-if="activeIndex === 4" v-model="checked4">
+            <van-cell title="学生" clickable @click="checked4 = 'student'">
+              <template #right-icon>
+                <van-radio name="student" />
+              </template>
+            </van-cell>
+            <van-cell title="老师" clickable @click="checked4 = 'teacher'">
+              <template #right-icon>
+                <van-radio name="teacher" />
+              </template>
+            </van-cell>
+          </van-radio-group> </template
+      ></van-tree-select>
 
       <div class="choice-btn">
         <van-button type="primary" size="small" @click="confirmChoice"

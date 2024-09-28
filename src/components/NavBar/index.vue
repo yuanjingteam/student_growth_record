@@ -1,7 +1,6 @@
 <script setup lang="ts">
 // import { useDarkMode, useToggleDarkMode } from "@/hooks/useToggleDarkMode";
 import { useRouter } from "vue-router";
-import { defineProps } from "vue";
 
 const router = useRouter();
 

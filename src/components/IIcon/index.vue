@@ -1,7 +1,6 @@
 <script setup lang="ts" name="IIcon">
 import { Icon as IconifyIconComp } from "@iconify/vue";
 import type { IconifyIcon } from "@iconify/vue";
-import { defineProps } from "vue";
 
 const props = defineProps<{
   icon: string | IconifyIcon;

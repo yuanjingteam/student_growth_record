@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { store } from "@/store";
+// import { store } from "@/store";
 
 const darkModeKey = "__dark_mode__";
 const isDarkMode = () => {
@@ -46,6 +46,6 @@ export const useDarkModeStore = defineStore({
   }
 });
 
-export function useDarkModeStoreHook() {
-  return useDarkModeStore(store);
-}
+// export function useDarkModeStoreHook() {
+//   return useDarkModeStore(store);
+// }
