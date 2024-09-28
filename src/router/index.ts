@@ -20,7 +20,34 @@ export interface toRouteType extends RouteLocationNormalized {
     noCache?: boolean;
   };
 }
-
+const protectedRoutes = [
+  "articleWait",
+  "Publish",
+  "editData",
+  "email",
+  "motto",
+  "phone",
+  "userFans",
+  "userAttention",
+  "myHistory",
+  "myclass",
+  "myTracks",
+  "integralConverter",
+  "managerPublish",
+  "myPublish",
+  "myCollect",
+  "otherIntroduce",
+  "selfIntroduce",
+  "feedBack",
+  "aboutOur",
+  "sets",
+  "changePwd",
+  "otherInfo",
+  "managerNotice",
+  "systemNotice",
+  "userNotice",
+  "permNotice"
+];
 // 路由全局前置守卫
 router.beforeEach(async (to: toRouteType, from, next) => {
   NProgress.start();
@@ -38,6 +65,13 @@ router.beforeEach(async (to: toRouteType, from, next) => {
     sessionStorage.setItem("checked3", JSON.stringify(data.grade_list));
     sessionStorage.setItem("username", "passenger");
   }
+
+  // 判断当前路由是否在 protectedRoutes 数组中
+  if (!token && protectedRoutes.includes(to.name as string)) {
+    // 如果没有 token，则重定向到登录页面
+    return next({ name: "Login" });
+  }
+
   next();
 });
 
