@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { articleBanService, articleIgnoreService } from "@/api/article";
 import { readEmailNotice } from "@/api/user";

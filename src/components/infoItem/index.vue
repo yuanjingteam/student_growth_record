@@ -4,7 +4,6 @@ import { readUserNotice } from "@/api/user";
 import { useUserStore } from "@/store";
 import { formattedContent } from "@/utils/functions/modules/formattedContent";
 const router = new useRouter();
-import { defineProps } from "vue";
 
 // 父传子
 const props = defineProps({

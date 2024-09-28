@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { readManagerNotice } from "@/api/user";
 import { showDialog } from "vant";
