@@ -32,6 +32,9 @@ importers:
       pinia-plugin-persistedstate:
         specifier: ^3.2.1
         version: 3.2.1(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))
+      terser:
+        specifier: ^5.34.1
+        version: 5.34.1
       vant:
         specifier: ^4.9.0
         version: 4.9.0(vue@3.4.27(typescript@5.4.5))

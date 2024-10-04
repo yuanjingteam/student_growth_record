@@ -2,14 +2,14 @@
 import { useRouter } from "vue-router";
 import { ref, computed } from "vue";
 import { showConfirmDialog, showDialog, showToast } from "vant";
-import { useDarkModeStore, useUserStore, useInformation } from "@/store";
-
+import { useUserStore, useInformation } from "@/store";
+// import {useDarkModeStore}from "@/store";
 const router = new useRouter();
 // const checked = ref(false);
 const show = ref(false);
 const useStore = useUserStore();
 const userInfo = useInformation();
-const darkModeStore = useDarkModeStore();
+// const darkModeStore = useDarkModeStore();
 const showState = ref(false);
 
 const clearAll = () => {
@@ -34,14 +34,14 @@ const clearAll = () => {
   }
 };
 
-const checked = computed({
-  get() {
-    return darkModeStore.darkMode;
-  },
-  set(value) {
-    darkModeStore.toggleDarkMode();
-  }
-});
+// const checked = computed({
+//   get() {
+//     return darkModeStore.darkMode;
+//   },
+//   set(value) {
+//     darkModeStore.toggleDarkMode();
+//   }
+// });
 const loginOut = () => {
   showState.value = true;
 };

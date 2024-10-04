@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => {
       // 生产环境默认不启用 CDN 加速
       enableCDN(env.VITE_CDN_DEPS)
     ],
+
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url))
@@ -87,7 +88,20 @@ export default defineConfig(({ mode }) => {
           entryFileNames: "static/js/[name]-[hash].js",
           assetFileNames: "static/[ext]/[name]-[hash].[ext]"
         }
-      }
+      },
+
+      // 生产环境下压缩
+      terserOptions:
+        mode === "production"
+          ? {
+              compress: {
+                drop_console: true // 去除 console.log
+              },
+              output: {
+                comments: false // 去除注释
+              }
+            }
+          : {}
     }
   };
 });
