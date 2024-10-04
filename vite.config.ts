@@ -14,7 +14,6 @@ import { enableCDN } from "./build/cdn";
 
 // 当前工作目录路径
 const root: string = process.cwd();
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // 环境变量
@@ -77,6 +76,10 @@ export default defineConfig(({ mode }) => {
           rewrite: path => path.replace(/^\/dev-api/, "")
         }
       }
+    },
+
+    esbuild: {
+      drop: ["console", "debugger"]
     },
     build: {
       rollupOptions: {
