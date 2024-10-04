@@ -81,8 +81,8 @@ export default defineConfig(({ mode }) => {
       minify: "terser", // 默认情况下 Vite 已使用 Terser
       terserOptions: {
         compress: {
-          drop_console: import.meta.env.MODE === "production", // 删除 console.log
-          drop_debugger: import.meta.env.MODE === "production" // 删除 debugger
+          drop_console: import.meta.env.MODE === "develop", // 删除 console.log
+          drop_debugger: import.meta.env.MODE === "develop" // 删除 debugger
         },
         output: {
           comments: false // 删除注释
