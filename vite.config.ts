@@ -76,18 +76,11 @@ export default defineConfig(({ mode }) => {
         }
       }
     },
+
+    esbuild: {
+      drop: ["console", "debugger"]
+    },
     build: {
-      // 启用 Terser 压缩
-      minify: "terser", // 默认情况下 Vite 已使用 Terser
-      terserOptions: {
-        compress: {
-          drop_console: import.meta.env.MODE === "develop", // 删除 console.log
-          drop_debugger: import.meta.env.MODE === "develop" // 删除 debugger
-        },
-        output: {
-          comments: false // 删除注释
-        }
-      },
       rollupOptions: {
         output: {
           chunkFileNames: "static/js/[name]-[hash].js",
