@@ -159,7 +159,6 @@ watch(activeName, async (newValue, oldValue) => {
   searchData.sort = sessionStorage.getItem("checked2");
   searchData.start_at = sessionStorage.getItem("startDate");
   searchData.end_at = sessionStorage.getItem("endDate");
-  searchData.role = sessionStorage.getItem("checked4");
 
   const {
     data: { content }
