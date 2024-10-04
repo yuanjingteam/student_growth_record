@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => {
       // 生产环境默认不启用 CDN 加速
       enableCDN(env.VITE_CDN_DEPS)
     ],
+
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url))
@@ -77,10 +78,18 @@ export default defineConfig(({ mode }) => {
       }
     },
 
-    esbuild: {
-      drop: ["console", "debugger"]
-    },
+    // esbuild: {
+    //   drop: mode === "production" ? ["console", "debugger"] : []
+    // },
     build: {
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          //生产环境时移除console
+          drop_console: mode === "production",
+          drop_debugger: mode === "production"
+        }
+      },
       rollupOptions: {
         output: {
           chunkFileNames: "static/js/[name]-[hash].js",
