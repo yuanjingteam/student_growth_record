@@ -88,20 +88,20 @@ export default defineConfig(({ mode }) => {
           entryFileNames: "static/js/[name]-[hash].js",
           assetFileNames: "static/[ext]/[name]-[hash].[ext]"
         }
-      },
+      }
 
-      // 生产环境下压缩
-      terserOptions:
-        mode === "development"
-          ? {
-              compress: {
-                drop_console: true // 去除 console.log
-              },
-              output: {
-                comments: false // 去除注释
-              }
-            }
-          : {}
+      // // 生产环境下压缩
+      // terserOptions:
+      //   mode === "development" || "production"
+      //     ? {
+      //         compress: {
+      //           drop_console: true // 去除 console.log
+      //         },
+      //         output: {
+      //           comments: false // 去除注释
+      //         }
+      //       }
+      //     : {}
     }
   };
 });
