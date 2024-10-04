@@ -78,9 +78,9 @@ export default defineConfig(({ mode }) => {
       }
     },
 
-    esbuild: {
-      drop: ["console", "debugger"]
-    },
+    // esbuild: {
+    //   drop: mode === "production" ? ["console", "debugger"] : []
+    // },
     build: {
       rollupOptions: {
         output: {
@@ -88,20 +88,15 @@ export default defineConfig(({ mode }) => {
           entryFileNames: "static/js/[name]-[hash].js",
           assetFileNames: "static/[ext]/[name]-[hash].[ext]"
         }
+      },
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          //生产环境时移除console
+          drop_console: mode === "development",
+          drop_debugger: mode === "development"
+        }
       }
-
-      // // 生产环境下压缩
-      // terserOptions:
-      //   mode === "development" || "production"
-      //     ? {
-      //         compress: {
-      //           drop_console: true // 去除 console.log
-      //         },
-      //         output: {
-      //           comments: false // 去除注释
-      //         }
-      //       }
-      //     : {}
     }
   };
 });
