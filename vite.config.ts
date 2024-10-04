@@ -82,19 +82,19 @@ export default defineConfig(({ mode }) => {
     //   drop: mode === "production" ? ["console", "debugger"] : []
     // },
     build: {
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          //生产环境时移除console
+          drop_console: mode === "production",
+          drop_debugger: mode === "production"
+        }
+      },
       rollupOptions: {
         output: {
           chunkFileNames: "static/js/[name]-[hash].js",
           entryFileNames: "static/js/[name]-[hash].js",
           assetFileNames: "static/[ext]/[name]-[hash].[ext]"
-        }
-      },
-      minify: "terser",
-      terserOptions: {
-        compress: {
-          //生产环境时移除console
-          drop_console: mode === "development",
-          drop_debugger: mode === "development"
         }
       }
     }
