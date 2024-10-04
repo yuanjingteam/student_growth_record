@@ -32,6 +32,9 @@ importers:
       pinia-plugin-persistedstate:
         specifier: ^3.2.1
         version: 3.2.1(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))
+      terser:
+        specifier: ^5.34.1
+        version: 5.34.1
       vant:
         specifier: ^4.9.0
         version: 4.9.0(vue@3.4.27(typescript@5.4.5))
@@ -63,6 +66,9 @@ importers:
       '@rushstack/eslint-patch':
         specifier: ^1.10.2
         version: 1.10.2
+      '@types/ali-oss':
+        specifier: ^6.16.11
+        version: 6.16.11
       '@types/node':
         specifier: ^20.12.12
         version: 20.12.12
@@ -77,10 +83,10 @@ importers:
         version: 7.9.0(eslint@9.8.0)(typescript@5.4.5)
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
-        version: 5.0.4(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        version: 5.0.4(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))(vue@3.4.27(typescript@5.4.5))
       '@vitejs/plugin-vue-jsx':
         specifier: ^3.1.0
-        version: 3.1.0(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        version: 3.1.0(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))(vue@3.4.27(typescript@5.4.5))
       '@vue/eslint-config-typescript':
         specifier: ^13.0.0
         version: 13.0.0(eslint-plugin-vue@9.26.0(eslint@9.8.0))(eslint@9.8.0)(typescript@5.4.5)
@@ -149,25 +155,25 @@ importers:
         version: 0.27.0(@babel/parser@7.24.5)(rollup@4.17.2)(vue@3.4.27(typescript@5.4.5))
       vite:
         specifier: ^5.2.11
-        version: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)
+        version: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)
       vite-plugin-cdn2:
         specifier: ^1.1.0
         version: 1.1.0(rollup@4.17.2)
       vite-plugin-compression:
         specifier: ^0.5.1
-        version: 0.5.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))
+        version: 0.5.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))
       vite-plugin-html:
         specifier: ^3.2.2
-        version: 3.2.2(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))
+        version: 3.2.2(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))
       vite-plugin-mock-dev-server:
         specifier: ^1.5.0
-        version: 1.5.0(rollup@4.17.2)(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))
+        version: 1.5.0(rollup@4.17.2)(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))
       vite-plugin-svg-icons:
         specifier: ^2.0.1
-        version: 2.0.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))
+        version: 2.0.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))
       vite-plugin-vue-setup-extend:
         specifier: ^0.4.0
-        version: 0.4.0(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))
+        version: 0.4.0(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))
       vue-eslint-parser:
         specifier: ^9.4.2
         version: 9.4.2(eslint@9.8.0)
@@ -753,6 +759,9 @@ packages:
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
+
+  '@types/ali-oss@6.16.11':
+    resolution: {integrity: sha512-/AyemPZy93ZXGzEokMsoPFgjH37snpzH4X/fwans/n63HLaCleriCG3PyrkHCPkgHEc9vj9Uo6paqsBN3vJ3OA==}
 
   '@types/conventional-commits-parser@5.0.0':
     resolution: {integrity: sha512-loB369iXNmAZglwWATL+WRe+CRMmmBPtpolYzIebFaX4YA3x+BEfLqhUAV9WanycKI3TG1IMr5bMJDajDKLlUQ==}
@@ -3602,8 +3611,8 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  terser@5.31.0:
-    resolution: {integrity: sha512-Q1JFAoUKE5IMfI4Z/lkE/E6+SwgzO+x4tq4v1AyBLRj8VSYvRO6A/rQrPg1yud4g0En9EKI1TvFRF2tQFcoUkg==}
+  terser@5.34.1:
+    resolution: {integrity: sha512-FsJZ7iZLd/BXkz+4xrRTGJ26o/6VTjQytUk8b8OxkwcD2I+79VPJlz7qss1+zE7h8GNIScFqXcDyJ/KqBYZFVA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -4614,6 +4623,8 @@ snapshots:
 
   '@trysound/sax@0.2.0': {}
 
+  '@types/ali-oss@6.16.11': {}
+
   '@types/conventional-commits-parser@5.0.0':
     dependencies:
       '@types/node': 20.12.12
@@ -4721,19 +4732,19 @@ snapshots:
     dependencies:
       vue: 3.4.27(typescript@5.4.5)
 
-  '@vitejs/plugin-vue-jsx@3.1.0(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
+  '@vitejs/plugin-vue-jsx@3.1.0(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
       '@babel/core': 7.24.5
       '@babel/plugin-transform-typescript': 7.24.5(@babel/core@7.24.5)
       '@vue/babel-plugin-jsx': 1.2.2(@babel/core@7.24.5)
-      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)
+      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)
       vue: 3.4.27(typescript@5.4.5)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@5.0.4(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
+  '@vitejs/plugin-vue@5.0.4(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
-      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)
+      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)
       vue: 3.4.27(typescript@5.4.5)
 
   '@volar/language-core@2.2.4':
@@ -4892,10 +4903,6 @@ snapshots:
     dependencies:
       jsonparse: 1.3.1
       through: 2.3.8
-
-  acorn-jsx@5.3.2(acorn@8.11.3):
-    dependencies:
-      acorn: 8.11.3
 
   acorn-jsx@5.3.2(acorn@8.12.1):
     dependencies:
@@ -5903,8 +5910,8 @@ snapshots:
 
   espree@9.6.1:
     dependencies:
-      acorn: 8.11.3
-      acorn-jsx: 5.3.2(acorn@8.11.3)
+      acorn: 8.12.1
+      acorn-jsx: 5.3.2(acorn@8.12.1)
       eslint-visitor-keys: 3.4.3
 
   esquery@1.5.0:
@@ -6289,7 +6296,7 @@ snapshots:
       he: 1.2.0
       param-case: 3.0.4
       relateurl: 0.2.7
-      terser: 5.31.0
+      terser: 5.34.1
 
   html-tags@3.3.1: {}
 
@@ -6813,7 +6820,7 @@ snapshots:
 
   mlly@1.7.0:
     dependencies:
-      acorn: 8.11.3
+      acorn: 8.12.1
       pathe: 1.1.2
       pkg-types: 1.1.1
       ufo: 1.5.3
@@ -7730,10 +7737,10 @@ snapshots:
     transitivePeerDependencies:
       - ts-node
 
-  terser@5.31.0:
+  terser@5.34.1:
     dependencies:
       '@jridgewell/source-map': 0.3.6
-      acorn: 8.11.3
+      acorn: 8.12.1
       commander: 2.20.3
       source-map-support: 0.5.21
 
@@ -8013,16 +8020,16 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-compression@0.5.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)):
+  vite-plugin-compression@0.5.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)):
     dependencies:
       chalk: 4.1.2
       debug: 4.3.4
       fs-extra: 10.1.0
-      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)
+      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-html@3.2.2(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)):
+  vite-plugin-html@3.2.2(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)):
     dependencies:
       '@rollup/pluginutils': 4.2.1
       colorette: 2.0.20
@@ -8036,9 +8043,9 @@ snapshots:
       html-minifier-terser: 6.1.0
       node-html-parser: 5.4.2
       pathe: 0.2.0
-      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)
+      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)
 
-  vite-plugin-mock-dev-server@1.5.0(rollup@4.17.2)(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)):
+  vite-plugin-mock-dev-server@1.5.0(rollup@4.17.2)(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)):
     dependencies:
       '@pengzhanbo/utils': 1.1.2
       '@rollup/pluginutils': 5.1.0(rollup@4.17.2)
@@ -8056,7 +8063,7 @@ snapshots:
       mime-types: 2.1.35
       path-to-regexp: 6.2.2
       picocolors: 1.0.1
-      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)
+      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)
       ws: 8.17.0
     transitivePeerDependencies:
       - bufferutil
@@ -8064,7 +8071,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  vite-plugin-svg-icons@2.0.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)):
+  vite-plugin-svg-icons@2.0.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)):
     dependencies:
       '@types/svgo': 2.6.4
       cors: 2.8.5
@@ -8074,17 +8081,17 @@ snapshots:
       pathe: 0.2.0
       svg-baker: 1.7.0
       svgo: 2.8.0
-      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)
+      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-vue-setup-extend@0.4.0(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)):
+  vite-plugin-vue-setup-extend@0.4.0(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)):
     dependencies:
       '@vue/compiler-sfc': 3.4.27
       magic-string: 0.25.9
-      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0)
+      vite: 5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)
 
-  vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.31.0):
+  vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
@@ -8093,7 +8100,7 @@ snapshots:
       '@types/node': 20.12.12
       fsevents: 2.3.3
       less: 4.2.0
-      terser: 5.31.0
+      terser: 5.34.1
 
   vue-demi@0.14.7(vue@3.4.27(typescript@5.4.5)):
     dependencies:
