@@ -14,7 +14,6 @@ import { enableCDN } from "./build/cdn";
 
 // 当前工作目录路径
 const root: string = process.cwd();
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // 环境变量
@@ -78,6 +77,17 @@ export default defineConfig(({ mode }) => {
       }
     },
     build: {
+      // 启用 Terser 压缩
+      minify: "terser", // 默认情况下 Vite 已使用 Terser
+      terserOptions: {
+        compress: {
+          drop_console: true, // 删除 console.log
+          drop_debugger: true // 删除 debugger
+        },
+        output: {
+          comments: false // 删除注释
+        }
+      },
       rollupOptions: {
         output: {
           chunkFileNames: "static/js/[name]-[hash].js",
