@@ -11,6 +11,7 @@ import vueSetupExtend from "vite-plugin-vue-setup-extend";
 import viteCompression from "vite-plugin-compression";
 import { createHtmlPlugin } from "vite-plugin-html";
 import { enableCDN } from "./build/cdn";
+import removeConsole from "vite-plugin-remove-console";
 
 // 当前工作目录路径
 const root: string = process.cwd();
@@ -49,7 +50,8 @@ export default defineConfig(({ mode }) => {
         }
       }),
       // 生产环境默认不启用 CDN 加速
-      enableCDN(env.VITE_CDN_DEPS)
+      enableCDN(env.VITE_CDN_DEPS),
+      removeConsole()
     ],
     resolve: {
       alias: {
