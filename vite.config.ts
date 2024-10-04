@@ -92,7 +92,7 @@ export default defineConfig(({ mode }) => {
 
       // 生产环境下压缩
       terserOptions:
-        mode === "production"
+        mode === "development"
           ? {
               compress: {
                 drop_console: true // 去除 console.log
