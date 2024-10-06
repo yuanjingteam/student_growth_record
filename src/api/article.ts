@@ -117,7 +117,7 @@ export function articleDeleteService(data?: object): Promise<ListResult> {
 // 改变文章私密状态
 export function articleChangeState(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/article/state",
+    url: "/article/status",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -153,6 +153,14 @@ export function getArticleTags(): Promise<ListResult> {
 export function getLittleTags(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/publish/get_tags",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+//高级筛选文章
+export function highSearchArticleService(data?: object): Promise<Search> {
+  return http.request({
+    url: "/article/filter",
     method: "post",
     data: JSON.stringify(data)
   });

@@ -14,7 +14,6 @@ import { enableCDN } from "./build/cdn";
 
 // 当前工作目录路径
 const root: string = process.cwd();
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // 环境变量
@@ -52,6 +51,7 @@ export default defineConfig(({ mode }) => {
       // 生产环境默认不启用 CDN 加速
       enableCDN(env.VITE_CDN_DEPS)
     ],
+
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url))
@@ -63,9 +63,6 @@ export default defineConfig(({ mode }) => {
       // doc: https://github.com/pengzhanbo/vite-plugin-mock-dev-server
       proxy: {
         "^/dev-api": {
-          // 作用: 指定代理请求要转发到的目标服务器 URL。在这个例子中,
-          //  是指向本地的 http://127.0.0.1:4523/m1/4869431-0-default 服务器。
-          // target: "http://192.168.10.7:8881",
           target:
             // "http://127.0.0.1:4523/m1/4869431-0-default" ||
             "http://192.168.10.7:8881",
@@ -80,7 +77,19 @@ export default defineConfig(({ mode }) => {
         }
       }
     },
+
+    // esbuild: {
+    //   drop: mode === "production" ? ["console", "debugger"] : []
+    // },
     build: {
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          //生产环境时移除console
+          drop_console: mode === "production",
+          drop_debugger: mode === "production"
+        }
+      },
       rollupOptions: {
         output: {
           chunkFileNames: "static/js/[name]-[hash].js",

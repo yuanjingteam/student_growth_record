@@ -191,7 +191,14 @@ export function getSystemNotification(data?: Object): Promise<adminList> {
     data: JSON.stringify(data)
   });
 }
-
+// 获取管理员消息列表
+export function getManagerNotification(data?: Object): Promise<adminList> {
+  return http.request({
+    url: "/message/get_manager",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
 // 获取举报邮箱
 export function getreportEmail(data?: Object): Promise<ListResult> {
   return http.request({
@@ -222,7 +229,7 @@ export function readManagerNotice(data?: Object): Promise<ListResult> {
 // 已读邮箱消息
 export function readEmailNotice(data?: Object): Promise<ListResult> {
   return http.request({
-    url: "/report_box/getlist",
+    url: "/report_box/ack",
     method: "post",
     data: JSON.stringify(data)
   });
@@ -322,8 +329,8 @@ export function getUserTracks(data?: Object): Promise<ListResult> {
 export function getArticlePublish(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/user/article_get",
-    method: "post",
-    data: JSON.stringify(data)
+    method: "get",
+    params: data
   });
 }
 // 获取用户收藏
@@ -354,11 +361,10 @@ export function changeSelfCotnent(data?: Object): Promise<ListResult> {
 }
 
 // 获取用户积分统计表
-export function getUserPoints(data?: Object): Promise<ListResult> {
+export function getUserPoints(): Promise<ListResult> {
   return http.request({
     url: "/user/points_get",
-    method: "post",
-    data: JSON.stringify(data)
+    method: "get"
   });
 }
 
@@ -393,6 +399,24 @@ export function publishSystemMsg(data?: Object): Promise<ListResult> {
 export function publishManagerMsg(data?: Object): Promise<ListResult> {
   return http.request({
     url: "/message/publish_managerMsg",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 意见反馈
+export function toFeedBack(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "user/advice_get",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
+// 修改密码
+export function toChangePwd(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "user/pwd_update",
     method: "post",
     data: JSON.stringify(data)
   });

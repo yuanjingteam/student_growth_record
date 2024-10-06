@@ -1,23 +1,25 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { readEmailNotice, getreportEmail } from "@/api/user";
-import { useUserStore } from "@/store";
+
+import { getreportEmail } from "@/api/user";
 // 父传子
 // 给一个默认值
 const props = defineProps({
   base: Object
 });
 const router = useRouter();
-const userStore = useUserStore();
-const username = userStore.username;
 const data = ref({
   article_ban: [
     {
       article_id: 0,
       article_content: "",
-      report_msg: "dawdwa",
-      report_time: ""
+      report_content: [
+        {
+          report_time: "",
+          report_msg: ""
+        }
+      ]
     }
   ],
   unread_count: 0
@@ -25,25 +27,26 @@ const data = ref({
 
 // 获取举报邮箱
 const reportEmail = async () => {
-  const res = await getreportEmail({ page: 1, limit: 1 });
-  data.value = res.data;
+  try {
+    const res = await getreportEmail({ page: 1, limit: 1 });
+    data.value = res.data;
+  } catch {}
 };
 reportEmail();
-
-const checkEmaill = async () => {
-  router.push("./permNotice");
-  const { code } = await readEmailNotice();
-};
 </script>
 <template>
-  <van-cell center @click="checkEmaill">
+  <van-cell center @click="router.push('/permNotice')">
     <template #title>
       {{ base.userName }}
     </template>
     <template #value>
       <div class="right-content">
-        <div class="va-time">{{ data.article_ban[0].report_time }}</div>
-        <van-badge :content="data.unread_count" max="99" />
+        <!-- <div v-if="data.article_ban.length !== 0" class="va-time">
+          {{ data.article_ban[0].report_content[0].report_time }}
+        </div> -->
+        <div v-if="data.unread_count !== 0">
+          <van-badge :content="data.unread_count" max="99" />
+        </div>
       </div>
     </template>
     <template #label>

@@ -2,7 +2,9 @@
 import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { getStar } from "@/api/user";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { formattedContent } from "@/utils/functions/modules/formattedContent";
+
 const userStore = useUserStore();
 const router = useRouter();
 const myname = userStore.username;
@@ -16,9 +18,13 @@ const mystar = async () => {
   try {
     const { data } = await getStar({
       username: myname,
-      page: page.value++
+      page: page.value++,
+      limit: 10
     });
     userStar.value = [...userStar.value, ...data.star];
+    if (data.star.length == 0) {
+      finished.value = true;
+    }
   } catch {
     finished.value = true;
   }
@@ -27,7 +33,7 @@ mystar();
 const onLoad = async () => {
   if (refreshing.value) {
     userStar.value = [];
-    page.value = 0;
+    page.value = 1;
     refreshing.value = false;
   }
   await mystar();
@@ -51,12 +57,16 @@ const onRefresh = () => {
     left-text="返回"
     title="我的收藏"
     left-arrow
+    fixed
+    placeholder
+    z-index="3"
     @click-left="router.go(-1)"
   />
   <div class="main">
     <van-pull-refresh
       v-if="userStar.length > 0"
       v-model="refreshing"
+      style="min-height: 100vh"
       @refresh="onRefresh"
     >
       <van-list
@@ -70,11 +80,14 @@ const onRefresh = () => {
             <template #title
               >{{ item.name }}
               <div class="content">
-                <van-text-ellipsis rows="2" :content="item.article_content" />
+                <van-text-ellipsis
+                  rows="2"
+                  :content="formattedContent(item.article_content)"
+                />
                 <p class="remark">
                   <span>{{ item.name }}</span>
                   <span
-                    ><i-icon icon="ph:eye-bold" />{{ item.like_total }}</span
+                    ><i-icon icon="ph:eye-bold" />{{ item.like_amount }}</span
                   >
                   <span
                     ><i-icon icon="lets-icons:comment" />{{
@@ -95,8 +108,6 @@ const onRefresh = () => {
             <template #right-icon>
               <van-image
                 v-if="item.article_pic"
-                width="8rem"
-                height="6rem"
                 :src="item.article_pic"
                 class="right"
               />
@@ -110,9 +121,9 @@ const onRefresh = () => {
       image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
       :image-size="80"
       description="还没有收藏的文章哦,去主页逛逛吧~"
-      style="width: 100%; height: 100%"
     />
   </div>
+  <van-back-top bottom="100px" />
 </template>
 <style scoped>
 .main {
@@ -121,6 +132,11 @@ const onRefresh = () => {
 }
 .content {
   margin-top: 2px;
+}
+.right {
+  width: 110px;
+  height: 90px;
+  object-fit: cover;
 }
 .van-image {
   margin: 2px 10px 0 5px;
@@ -131,5 +147,9 @@ const onRefresh = () => {
   span {
     margin: 0 2px;
   }
+}
+.van-empty {
+  width: 100vw;
+  height: 100vh;
 }
 </style>

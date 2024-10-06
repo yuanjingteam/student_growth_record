@@ -3,7 +3,8 @@ import { ref, watch } from "vue";
 import { changeUserHeadshot, getUserData } from "@/api/user";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
-import { showDialog } from "vant";
+import { showToast } from "vant";
+
 // 路由
 const router = useRouter();
 // 调用 useUserStore 函数,获取 Pinia 中的 useCounterStore 实例
@@ -18,32 +19,55 @@ const userId = userStore.username;
 // 取出初始化的数据
 const files = ref([{ url: userStore.userData.user_headshot }]);
 
-watch(files, async (newValue, oldValue) => {
-  console.log(newValue, oldValue);
-  const formData = new FormData();
-  formData.append("file", files.value[0].file);
-  const { code } = await changeUserHeadshot(formData);
-  if (code == 200) {
-    userStore.userData.user_headshot = formData;
-  }
-});
+// Loading效果
+const loading = ref(false);
+
 // 当前日期
 const currentDate = ref(["2021", "01", "13"]);
 
-// Loading效果
-const loading = ref(false);
 // 初始化数据
 const data = ref({
   name: "",
-  user_headshot: "",
+  user_headshot: "https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg",
   user_class: "",
   user_gender: "",
   user_Identity: "",
   user_motto: "",
-  phone_number: "",
+  phone_number: 0,
   user_email: "",
   user_year: currentDate.value.join("-")
 });
+
+// 检查文件类型是否为图片
+// 检查文件大小是否超过 2MB
+// if (file.size > 2 * 1024 * 1024) {
+//   showToast("图片大小不能超过 2MB");
+//   return false;
+// }
+const afterRead = async (file, event) => {
+  // 确保 file 是有效的 File 对象
+  if (!(file.file instanceof File)) {
+    showToast("无效的文件");
+    return false;
+  }
+  try {
+    loading.value = true;
+    const formData = new FormData();
+    formData.append("file", file.file);
+    const res = await changeUserHeadshot(formData);
+    // 更新
+    files.value[0].url = res.data.user_headshot;
+    userStore.userData.user_headshot = res.data.user_headshot;
+    showToast("修改成功");
+    return true;
+  } catch (error) {
+    showToast("修改失败,请稍后重试");
+    event.preventDefault();
+    return false;
+  } finally {
+    loading.value = false; // 上传完成，结束加载
+  }
+};
 
 // 初始化页面
 // 获取用户详细信息
@@ -56,7 +80,7 @@ const baseUserData = async () => {
 baseUserData();
 </script>
 <template>
-  <van-overlay :show="loading">
+  <van-overlay :show="loading" z-index="1000">
     <van-loading vertical>
       <template #icon>
         <van-icon name="star-o" size="30" />
@@ -66,128 +90,150 @@ baseUserData();
   </van-overlay>
   <!-- 其他内容 -->
 
-  <van-nav-bar left-text="返回" left-arrow @click-left="router.go(-1)" />
-  <div class="bg">
-    <div class="bg">
-      <van-image src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
-    </div>
-    <div class="main" />
-    <van-floating-panel v-model:height="height" :anchors="anchors">
-      <div class="camera">
-        <i-icon icon="icon-park:camera" />
-      </div>
-      <div class="userImg">
-        <van-uploader
-          v-model="files"
-          reupload
-          max-count="1"
-          :deletable="false"
-        />
-      </div>
-      <div>
-        <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
-        <van-cell-group inset>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">学号</span>
-            </template>
-            <template #value>
-              <div class="both">{{ userId }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">姓名</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.name }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">性别</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.user_gender }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">班级</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.user_class }}</div>
-            </template>
-          </van-cell>
-          <van-cell is-link @click="router.push('/editData/motto')">
-            <template #title>
-              <span class="custom-title both over">个性签名</span>
-            </template>
-            <template #value>
-              <div class="both over">{{ data.user_motto }}</div>
-            </template>
-          </van-cell>
-          <van-cell is-link @click="router.push('/editData/phone')">
-            <template #title>
-              <span class="custom-title both">电话</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.phone_number }}</div>
-            </template>
-          </van-cell>
-          <van-cell is-link @click="router.push('/editData/email')">
-            <template #title>
-              <span class="custom-title both">电子邮箱</span>
-            </template>
-            <template #value>
-              <div class="both over">{{ data.user_email }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template #title>
-              <span class="custom-title">入学年份</span>
-            </template>
-            <template #value>
-              <div class="both">{{ data.user_year }}</div>
-            </template>
-          </van-cell>
-        </van-cell-group>
-      </div>
-      <!-- <template #header> dada </template> -->
-    </van-floating-panel>
+  <div class="return" @click="router.go(-1)">
+    <i-icon icon="ep:arrow-left-bold" />返回
   </div>
+  <!-- <van-nav-bar left-text="返回" left-arrow  /> -->
+  <div class="bg">
+    <van-image src="https://www.logo9.net/userfiles/images/9HENANIOSAT.jpg" />
+  </div>
+  <van-floating-panel v-model:height="height" :anchors="anchors">
+    <van-uploader
+      :files="files"
+      :after-read="afterRead"
+      reupload
+      max-count="1"
+      :deletable="false"
+      accept="image/*"
+      class="userImg"
+    >
+      <template #default>
+        <div class="avatar">
+          <van-image
+            fit="cover"
+            round
+            width="6.3rem"
+            height="6.3rem"
+            :src="userStore.userData.user_headshot"
+          />
+        </div>
+        <div class="camera">
+          <i-icon icon="icon-park:camera" />
+        </div>
+      </template>
+    </van-uploader>
+    <div>
+      <!-- <p>面板显示高度 {{ height.toFixed(0) }} px</p> -->
+      <van-cell-group inset>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">学号</span>
+          </template>
+          <template #value>
+            <div class="both">{{ userId }}</div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">姓名</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.name }}</div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">性别</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.user_gender }}</div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">班级</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.user_class }}</div>
+          </template>
+        </van-cell>
+        <van-cell is-link @click="router.push('/editData/motto')">
+          <template #title>
+            <span class="custom-title">个性签名</span>
+          </template>
+          <template #value>
+            <div class="both over">{{ data.user_motto }}</div>
+          </template>
+        </van-cell>
+        <van-cell is-link @click="router.push('/editData/phone')">
+          <template #title>
+            <span class="custom-title">电话</span>
+          </template>
+          <template #value>
+            <div class="both over">{{ data.phone_number }}</div>
+          </template>
+        </van-cell>
+        <van-cell is-link @click="router.push('/editData/email')">
+          <template #title>
+            <span class="custom-title">电子邮箱</span>
+          </template>
+          <template #value>
+            <div class="both over">{{ data.user_email }}</div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <span class="custom-title">入学年份</span>
+          </template>
+          <template #value>
+            <div class="both">{{ data.user_year }}</div>
+          </template>
+        </van-cell>
+      </van-cell-group>
+    </div>
+    <!-- <template #header> dada </template> -->
+  </van-floating-panel>
 </template>
 
 <style scoped>
+.return {
+  position: relative;
+  padding: 8px 5px 10px;
+  width: 60px;
+  height: 30px;
+  z-index: 5;
+}
 .van-loading {
   justify-content: center;
   height: 100%;
 }
+.userImg {
+  position: absolute;
+  top: -47px;
+  left: 146px;
+  z-index: 4;
+}
+.avatar {
+  display: flex; /* 使用 Flexbox */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+
+  border-radius: 50px;
+  overflow: hidden;
+}
 .camera {
   position: absolute;
-  top: 0;
-  left: 200px;
-  z-index: 5;
-  background: rgba(216, 214, 214, 0.9);
-  padding: 5px 5px;
+  top: 58px;
+  left: 60px;
+  background: rgba(216, 214, 214, 0.6);
+  padding: 5px 4px 2px;
   border-radius: 20px;
 }
 .camera .i-icon {
   width: 20px;
   height: 20px;
 }
-/* .van-floating-panel {
-  position: relative;
-} */
-.userImg {
-  position: absolute;
-  top: -45px;
-  left: 146px;
-  z-index: 4;
-}
-.van-uploader >>> .van-uploader__preview-image {
-  border-radius: 50px;
-}
+
 .custom-title {
   width: 10px;
 }
@@ -196,20 +242,10 @@ baseUserData();
 }
 .over {
   width: 100%;
+  padding-left: 9px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-.van-nav-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1; /* 确保导航栏位于背景图片上方 */
-  --van-nav-bar-background: rgba(255, 255, 255, 0.8); /* 设置半透明背景 */
-  --van-nav-bar-icon-color: black;
-  --van-nav-bar-text-color: black;
-  --van-nav-bar-border-color: transparent; /* 去除底部边框 */
 }
 .bg {
   position: absolute;
@@ -219,7 +255,6 @@ baseUserData();
   height: 100%;
   background-size: cover;
   background-position: center;
-  filter: blur(2px); /* 模糊背景图片 */
 }
 
 .van-cell {

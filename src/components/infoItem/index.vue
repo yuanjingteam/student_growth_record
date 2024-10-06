@@ -1,7 +1,10 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { readUserNotice } from "@/api/user";
+import { useUserStore } from "@/store";
+import { formattedContent } from "@/utils/functions/modules/formattedContent";
 const router = new useRouter();
+
 // 父传子
 const props = defineProps({
   data: Object,
@@ -10,7 +13,8 @@ const props = defineProps({
   state1: String,
   state2: String
 });
-
+const userStore = useUserStore();
+const username = userStore.username;
 const checkOne = async () => {
   router.push(`/postDetail/${props.data.article_id}`);
   console.log(props.type, 34280452834);
@@ -18,6 +22,13 @@ const checkOne = async () => {
     msg_id: props.data.msg_id,
     type: props.type
   });
+};
+const goto = () => {
+  if (username === props.data.username) {
+    router.push(`/myPublish`);
+  } else {
+    router.push(`/otherInfo/${props.data.username}`);
+  }
 };
 </script>
 <template>
@@ -35,14 +46,19 @@ const checkOne = async () => {
           <div v-else>
             <span>{{ state1 }}</span>
           </div>
-          <van-text-ellipsis :content="data.content" />
+          <div v-if="data.content">
+            <van-text-ellipsis :content="formattedContent(data.content)" />
+          </div>
+          <div v-else>
+            <van-text-ellipsis content="" />
+          </div>
         </div>
       </template>
       <template #value>
         <div>
           <i-icon :icon="icon" />
         </div>
-        <div>{{ data.post_time }}</div>
+        <div class="post_time">{{ data.post_time }}</div>
       </template>
       <template #icon>
         <van-image
@@ -50,7 +66,7 @@ const checkOne = async () => {
           width="4rem"
           height="4rem"
           :src="data.user_headshot"
-          @click="router.push(`/otherInfo/${data.username}`)"
+          @click="goto"
         />
       </template>
     </van-cell>
@@ -58,9 +74,12 @@ const checkOne = async () => {
 </template>
 
 <style scoped>
+.post_time {
+  width: 70px;
+}
 .van-text-ellipsis {
   color: black;
-  width: 240px;
+  width: 210px;
 }
 .van-image {
   margin-right: 5px;

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, reactive } from "vue";
+import { ref, defineEmits, reactive } from "vue";
 import {
   getCommentsSecondService,
   articleCommentService,
@@ -7,18 +7,21 @@ import {
   articleUpvoteService
 } from "@/api/article";
 import { useUserStore } from "@/store";
+import { useRouter } from "vue-router";
+import { showSuccessToast } from "vant";
+import { debounce } from "@/utils/functions";
 
+const router = useRouter();
 const userStore = useUserStore();
 //获取token
 const token = userStore.token;
+const showToLogin = ref(false);
 const props = defineProps({
   data: Object
 });
-console.log(props.data);
-
 //是否点赞
 const ifLike = ref(false);
-ifLike.value = props.data.is_like;
+ifLike.value = props.data.comment_if_like;
 //点赞数量
 const likeAmount = ref();
 likeAmount.value = props.data.comment_like_num;
@@ -44,15 +47,7 @@ const likeBtn = async state => {
 // 创建防抖后的点赞
 const debouncedLike = debounce(likeBtn, 400);
 
-const emit = defineEmits(["refresh"]);
-// 防抖函数
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func.apply(this, args), delay);
-  };
-}
+const emit = defineEmits(["refresh", "reloadCommentTwo"]);
 
 //二级评论列表
 const commentSeList = ref();
@@ -63,7 +58,7 @@ const commentSeData = reactive({
   username: userStore.username,
   comment_id: props.data.id,
   page: 1,
-  limit: 3
+  limit: 500
 });
 //控制当前哪个下拉框展开
 const activeNames = ref(["0"]);
@@ -87,6 +82,14 @@ const showCommentDetail = ref(false);
 const handleComment = () => {
   showCommentDetail.value = true;
 };
+
+//子传父，重新发起请求接收二级评论
+const reloadCommentSec = async () => {
+  const {
+    data: { comment_se_list }
+  } = await getCommentsSecondService(commentSeData);
+  commentSeList.value = comment_se_list;
+};
 //评论内容
 const comment = ref("");
 //是否展示评论输入框
@@ -108,19 +111,12 @@ const submitComment = async () => {
     comment_content: comment.value
   });
   console.log(res);
+  emit("refresh");
+  reloadCommentSec();
 };
-//子传父，重新发起请求接收二级评论
-const reloadCommentSec = async () => {
-  const {
-    data: { comment_se_list }
-  } = await getCommentsSecondService(commentSeData);
-  commentSeList.value = comment_se_list;
-};
+
 //下拉选择框数据
-let actions = [];
-if (userStore.role != "user") {
-  actions = [{ text: "删除" }];
-}
+let actions = [{ text: "删除" }];
 
 const select = (action, index) => {
   if (action.text == "删除") {
@@ -131,11 +127,27 @@ const select = (action, index) => {
 const showDelete = ref(false);
 //确认删除
 const confirmDelete = async () => {
-  const res = await deleteCommentsService({
-    comment_id: props.data.id
-  });
-  console.log(res);
+  try {
+    const res = await deleteCommentsService({
+      comment_id: props.data.id
+    });
+    showSuccessToast("删除评论成功");
+    emit("refresh");
+  } catch {
+    showFailToast("您没有该权限");
+  }
+};
+//点击评论头像去用户主页
+const gotoUser = () => {
+  router.push(`/otherInfo/${props.data.username}`);
+};
+//重新获取一级评论
+const again = () => {
+  showCommentDetail.value = false;
+  activeNames.value = ["0"];
+  commentFold.value = !commentFold.value;
   emit("refresh");
+  reloadCommentSec();
 };
 </script>
 
@@ -149,6 +161,7 @@ const confirmDelete = async () => {
             :src="data.user_headshot"
             width="3rem"
             height="3rem"
+            @click="gotoUser"
           />
           <div class="info">
             <div class="info-row">
@@ -221,8 +234,8 @@ const confirmDelete = async () => {
         v-for="(item, index) in commentSeList"
         :key="index"
         :comment_com="item"
-        :commentId="data.id"
-        @reload="reloadCommentSec"
+        :commentId="item.id"
+        @reload="again"
       />
     </div>
   </van-action-sheet>
@@ -254,6 +267,16 @@ const confirmDelete = async () => {
     show-cancel-button
     showConfirmButton
     @confirm="confirmDelete"
+  />
+  <van-dialog
+    v-model:show="showToLogin"
+    title="提示"
+    message="请先登录才能进行该操作哦"
+    confirmButtonText="去登录"
+    cancelButtonText="再逛逛"
+    show-cancel-button
+    showConfirmButton
+    @confirm="router.push('/login')"
   />
 </template>
 
@@ -317,7 +340,7 @@ const confirmDelete = async () => {
     }
   }
 }
-.van-collapse >>> .van-collapse-item__title {
+.van-collapse :deep(.van-collapse-item__title) {
   background-color: #f0f1f5;
 }
 .van-collapse-item {

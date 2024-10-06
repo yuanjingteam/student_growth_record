@@ -11,6 +11,7 @@ import {
   articleDeleteService
 } from "@/api/article";
 import { showFailToast, showSuccessToast } from "vant";
+import { debounce } from "@/utils/functions";
 
 const props = defineProps({
   post: Object,
@@ -33,7 +34,7 @@ collectAmount.value = props.post.collect_amount;
 const show = ref(false);
 const index = ref(0);
 const images = props.post.article_pics;
-
+//切换图片
 const onChange = newIndex => {
   index.value = newIndex;
 };
@@ -53,54 +54,53 @@ const playVideo = () => {
 };
 
 const router = useRouter();
-const route = useRoute();
+//点击文章内容跳转帖子详情
 const gotoDetail = () => {
   router.push(`/postDetail/${props.articleId}`);
 };
+//点击头像进入主页
 const gotoUser = () => {
-  router.push(`/otherInfo/${props.post.username}`);
+  if (props.post.username != "") {
+    router.push(`/otherInfo/${props.post.username}`);
+  } else {
+    return;
+  }
 };
 
 const userStore = useUserStore();
 //获取当前token
 let token = userStore.token;
+//获取当前用户是否为老师
+let ifTeacher = userStore.ifTeacher;
 
 //未登录去登录弹窗
 const showToLogin = ref(false);
 
-// 防抖函数
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func.apply(this, args), delay);
-  };
-}
 //是否展示评论输入框
 const showCommentTable = ref(false);
 
 //点击三个点是否展示选择框
 const showPopover = ref(false);
 //选择框内容
-let actions = [];
-if (userStore.role == "user") {
-  actions = [{ text: "举报" }];
-} else {
-  actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
-}
+let actions = [{ text: "举报" }, { text: "封禁" }, { text: "删除" }];
+
 //是否打开举报框
 const showReport = ref(false);
 //是否封禁
 const showBan = ref(false);
 //确认封禁
 const confirmBan = async () => {
-  const res = await articleBanService({
-    article_id: props.articleId,
-    article_ban: true
-  });
-  console.log(res);
-  showSuccessToast("已成功封禁该文章");
-  router.push("/demo");
+  try {
+    const res = await articleBanService({
+      article_id: props.articleId,
+      article_ban: true
+    });
+    console.log(res);
+    showSuccessToast("已成功封禁该文章");
+    router.push("/demo");
+  } catch {
+    showFailToast("您没有该权限");
+  }
 };
 
 //选中选择框后
@@ -244,10 +244,25 @@ const confirmDelete = async () => {
         <template #tags>
           <div>
             <div class="info-box">
-              <van-image round :src="post.user_headshot" @click="gotoUser" />
+              <van-image
+                round
+                :src="
+                  post.user_headshot
+                    ? post.user_headshot
+                    : 'https://picsum.photos/200/300'
+                "
+                @click="gotoUser"
+              />
               <div class="info">
                 <div style="display: flex; justify-content: space-between">
-                  <p class="name">{{ post.name }}</p>
+                  <div style="display: flex; align-items: center">
+                    <p class="name">
+                      {{ post.name ? post.name : "用户已被删除" }}
+                    </p>
+                    <van-tag plain type="primary">{{
+                      post.user_identity
+                    }}</van-tag>
+                  </div>
                   <van-popover
                     v-model:show="showPopover"
                     theme="dark"
@@ -260,12 +275,16 @@ const confirmDelete = async () => {
                     </template>
                   </van-popover>
                 </div>
-                <p class="grade">{{ post.user_class }}</p>
+                <p v-if="post.username != ''" class="grade">
+                  {{ post.user_class }}
+                </p>
               </div>
             </div>
-            <p class="post-content" @click="gotoDetail">
-              {{ post.article_content }}
-            </p>
+            <p
+              class="post-content"
+              @click="gotoDetail"
+              v-html="post.article_content"
+            />
             <div class="video-box">
               <ul class="video">
                 <li
@@ -423,9 +442,14 @@ const confirmDelete = async () => {
 
       .info {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
         .name {
           font-size: 16px;
+          line-height: 30px;
+          position: relative;
         }
 
         .grade {
@@ -485,11 +509,6 @@ const confirmDelete = async () => {
       font-size: 12px;
       color: rgba(166, 168, 173, 1);
     }
-    .time2 {
-      margin-left: 280px;
-      font-size: 12px;
-      color: rgba(166, 168, 173, 1);
-    }
   }
 }
 
@@ -508,8 +527,8 @@ const confirmDelete = async () => {
     li {
       height: 100px;
       display: flex;
+      align-items: center;
       border-radius: 8px;
-      // justify-content: center;
       overflow: hidden;
     }
   }
@@ -525,5 +544,8 @@ const confirmDelete = async () => {
     font-size: 50px;
     color: #fff;
   }
+}
+.van-tag {
+  margin-left: 3px;
 }
 </style>

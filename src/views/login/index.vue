@@ -4,19 +4,23 @@ import { useRouter } from "vue-router";
 import { getVerifyImg, userLogin } from "@/api/user";
 import { useUserStore } from "@/store";
 import { showFailToast, showSuccessToast } from "vant";
+import { getClassByGradeService } from "@/api/class";
 
 const userStore = useUserStore();
 const router = useRouter();
+
 //复选框是否勾选
 const checked = ref(false);
 //是否显示忘记密码弹窗
 const showDialog = ref(false);
 //是否显示协议提示框
 const showTip = ref(false);
-//加载验证码
+//加载验证码loading效果
 const loadingVerify = ref(false);
-//登录加载中
+//登录loading
 const loginLoading = ref(false);
+//图片地址
+const imageUrl = ref("");
 //用户的登录信息
 const userForm = reactive({
   username: "",
@@ -24,7 +28,7 @@ const userForm = reactive({
   verify: "",
   verifyId: ""
 });
-//绑定表单
+//绑定表单用于校验
 const formRef = ref();
 
 //真实验证码
@@ -38,7 +42,7 @@ const convertBase64ToBlob = base64 => {
   }
   return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
 };
-//验证码换一换
+//点击验证码换一换
 const changeVerify = async () => {
   loadingVerify.value = true;
   const { data } = await getVerifyImg();
@@ -51,39 +55,52 @@ const changeVerify = async () => {
   imageUrl.value = URL.createObjectURL(blob);
   loadingVerify.value = false;
 };
-//提交时的表单校验
-const onsubmit = async () => {
+//登录提交并进行表单校验
+const onSubmit = async () => {
   loginLoading.value = true;
-  try {
-    await formRef.value.validate();
-  } catch {
-    showFailToast("登录失败");
-    loginLoading.value = false;
-    return;
-  }
+  await formRef.value.validate();
+  //用户勾选复选框后
   if (checked.value) {
     try {
       const res = await userLogin(userForm);
-      localStorage.setItem("username", res.data.username);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
+      sessionStorage.setItem("username", res.data.username);
+      sessionStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("role", res.data.role);
+      sessionStorage.setItem("ifTeacher", res.data.ifTeacher);
+      //登录页存储这个人的班级，会直接以字符串形式存储
+      //如果这个人没有班级信息，那么默认请求大二的所有班级
+      if (res.data.grade == 0) {
+        res.data.grade = 2;
+        const { data } = await getClassByGradeService({
+          grade: 2
+        });
+        res.data.class = data.grade_list;
+      }
+      sessionStorage.setItem("checked3", JSON.stringify(res.data.class));
+      sessionStorage.setItem("grade", res.data.grade);
+
       userStore.setUserInfo(res.data);
       showSuccessToast("登录成功");
       router.push("/demo");
     } catch (error) {
       showFailToast(`${error.msg}`);
-      userForm.username = "";
-      userForm.password = "";
-      userForm.verify = "";
-      checked.value = false;
+      if (error.code == 500) {
+        userForm.username = "";
+        userForm.password = "";
+        userForm.verify = "";
+      } else if (error.code == 400) {
+        userForm.password = "";
+        userForm.verify = "";
+      } else {
+        userForm.verify = "";
+      }
     }
   } else {
     showTip.value = true;
   }
   loginLoading.value = false;
 };
-//图片地址
-const imageUrl = ref("");
+
 //展示验证码图片
 const showVerify = async () => {
   changeVerify();
@@ -96,14 +113,22 @@ const confirmTip = () => {
 };
 
 //游客登录
-const passengerLogin = () => {
+const passengerLogin = async () => {
+  //发送请求默认获取大二
+  const { data } = await getClassByGradeService({
+    grade: 2
+  });
+  sessionStorage.setItem("checked3", JSON.stringify(data.grade_list));
+  sessionStorage.setItem("grade", 2);
   userStore.username = "passenger";
   userStore.token = "";
   userStore.role = "user";
-  localStorage.setItem("username", "passenger");
+  sessionStorage.setItem("username", "passenger");
   router.push("/demo");
   showSuccessToast("登录成功");
 };
+
+console.log(import.meta.env.MODE, 1111111111);
 </script>
 
 <template>
@@ -114,7 +139,7 @@ const passengerLogin = () => {
     <div class="circle4" />
     <h2>数学科学学院</h2>
     <h1>大学生成长档案</h1>
-    <van-form ref="formRef" inset>
+    <van-form ref="formRef" inset @submit="onSubmit()">
       <van-field
         v-model="userForm.username"
         placeholder="请输入用户账号/学号"
@@ -153,18 +178,17 @@ const passengerLogin = () => {
           />
         </template>
       </van-field>
+      <van-button
+        round
+        block
+        type="primary"
+        native-type="submit"
+        color="#004ae9"
+      >
+        登录
+      </van-button>
     </van-form>
 
-    <van-button
-      round
-      block
-      type="primary"
-      native-type="submit"
-      color="#004ae9"
-      @click="onsubmit"
-    >
-      登录
-    </van-button>
     <div class="op-box">
       <span style="text-decoration: underline" @click="showDialog = true"
         >忘记密码</span

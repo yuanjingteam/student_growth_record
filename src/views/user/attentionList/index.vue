@@ -79,7 +79,7 @@ const changeRole = throttle(async (othername, index) => {
     left-arrow
     @click-left="router.go(-1)"
   />
-  <van-cell-group>
+  <van-cell-group v-if="attentionList.length !== 0">
     <van-cell v-for="(item, index) in attentionList" :key="index">
       <template #title>{{ item.name }}</template>
       <template v-if="item.username !== myname" #value>
@@ -101,6 +101,12 @@ const changeRole = throttle(async (othername, index) => {
       </template>
     </van-cell>
   </van-cell-group>
+  <van-empty
+    v-else
+    image="https://fastly.jsdelivr.net/npm/@vant/assets/custom-empty-image.png"
+    image-size="80"
+    description="还没有关注任何用户"
+  />
 </template>
 <style scoped>
 button {

@@ -2,7 +2,7 @@
 import tabbar from "@/components/Tabbar/index.vue";
 import NavBar from "@/components/NavBar/index.vue";
 import { useCachedViewStoreHook } from "@/store/modules/cachedView";
-import { useDarkMode } from "@/hooks/useToggleDarkMode";
+// import { useDarkMode } from "@/hooks/useToggleDarkMode";
 import { computed } from "vue";
 
 const cachedViews = computed(() => {
@@ -12,7 +12,8 @@ const cachedViews = computed(() => {
 
 <template>
   <div class="app-wrapper">
-    <van-config-provider :theme="useDarkMode() ? 'dark' : 'light'">
+    <!-- :theme="useDarkMode() ? 'dark' : 'light'" -->
+    <van-config-provider>
       <router-view v-slot="{ Component }">
         <keep-alive :include="cachedViews">
           <component :is="Component" />
@@ -34,6 +35,19 @@ const cachedViews = computed(() => {
   font-weight: 400;
   font-style: normal;
 }
+
+/* 深色模式样式 */
+.dark {
+  background-color: black; /* 根元素的背景颜色 */
+  color: white; /* 根元素的字体颜色 */
+}
+
+/* 其他元素的深色模式样式 */
+.dark .app-wrapper {
+  background-color: black;
+  color: white;
+}
+
 .app-wrapper {
   .clearfix();
   position: relative;

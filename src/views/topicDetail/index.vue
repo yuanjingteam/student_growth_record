@@ -2,6 +2,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { useTopicStore, useUserStore } from "@/store";
 import { reactive, ref, watch } from "vue";
+import { showDialog } from "vant";
 import { searchArticleService } from "@/api/article";
 const route = useRoute();
 const router = useRouter();
@@ -80,15 +81,24 @@ const onLoad = async () => {
     refreshing.value = false;
   }
   articleData.article_page += 1;
-  try {
-    const res = await searchArticleService(articleData);
+
+  const {
+    data: { content }
+  } = await searchArticleService(articleData);
+  if (content.length > 0) {
+    articleList.value = [...articleList.value, ...content];
     loading.value = false;
-    articleList.value = [...articleList.value, ...res.data.content];
-  } catch {
+  } else {
     finished.value = true;
   }
 };
-
+const upto = () => {
+  if (userStore.username === "passenger") {
+    showDialog({ message: "使用该功能要先去登录哦~" });
+  } else {
+    router.push("/publish");
+  }
+};
 //监听了刷新事件
 const onRefresh = () => {
   // 清空列表数据
@@ -111,7 +121,7 @@ const onRefresh = () => {
       round
       icon="plus"
       type="primary"
-      @click="router.push('/publish')"
+      @click="upto"
     />
     <div class="title" style="display: flex">
       <i-icon icon="icon-park:message" />
@@ -149,6 +159,7 @@ const onRefresh = () => {
       </van-pull-refresh>
     </van-tab>
   </van-tabs>
+
   <van-back-top bottom="100px" />
 </template>
 <style scoped>
@@ -199,5 +210,12 @@ const onRefresh = () => {
 .van-list {
   background-color: #f0f1f5;
   overflow: hidden;
+}
+.van-tabs {
+  height: 100%;
+}
+.van-tab :deep(.van-tabs__content) {
+  height: 100%;
+  background-color: #f0f1f5;
 }
 </style>
