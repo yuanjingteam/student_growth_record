@@ -133,7 +133,8 @@ const likeBtn = async state => {
     }
     const res = await articleUpvoteService({
       id: props.articleId,
-      like_type: 0
+      like_type: 0,
+      tar_username: props.post.username
     });
     console.log(res);
   } else {
@@ -153,7 +154,8 @@ const collectBtn = async state => {
       collectAmount.value--;
     }
     const res = await articleCollectService({
-      article_id: props.articleId
+      article_id: props.articleId,
+      tar_username: props.post.username
     });
     console.log(res);
   } else {
@@ -179,9 +181,10 @@ const reportRef = ref({});
 const submitComment = async () => {
   await commentRef.value.validate();
   const res = await articleCommentService({
-    comment_type: "0",
+    comment_type: 0,
     id: props.articleId,
-    comment_content: comment.value
+    comment_content: comment.value,
+    tar_username: props.post.username
   });
   console.log(res);
   showSuccessToast("发布评论成功");

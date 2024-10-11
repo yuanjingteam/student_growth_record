@@ -59,7 +59,8 @@ const likeBtn = async state => {
     }
     const res = await articleUpvoteService({
       id: props.comment_com.id,
-      like_type: 1
+      like_type: 1,
+      tar_username: props.comment_com.username
     });
     console.log(res);
   } else {
