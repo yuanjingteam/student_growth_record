@@ -42,8 +42,7 @@ const delInfo = async (id: string) => {
         <van-text-ellipsis :content="data.msg_time" />
       </template>
       <template #right-icon>
-        <!-- userStore.role === 'manager' -->
-        <div v-if="true">
+        <div v-if="userStore.role === 'college'">
           <van-popover
             v-model:show="showPopover"
             :actions="actions"
