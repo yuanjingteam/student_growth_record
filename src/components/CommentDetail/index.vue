@@ -19,6 +19,8 @@ const showToLogin = ref(false);
 const props = defineProps({
   data: Object
 });
+console.log(props.data, "11111111111111");
+
 //是否点赞
 const ifLike = ref(false);
 ifLike.value = props.data.comment_if_like;
@@ -37,7 +39,8 @@ const likeBtn = async state => {
     }
     const res = await articleUpvoteService({
       id: props.data.id,
-      like_type: 1
+      like_type: 1,
+      tar_username: props.data.username
     });
     console.log(res);
   } else {
@@ -106,9 +109,10 @@ const submitComment = async () => {
   await commentRef.value.validate();
   showCommentTable.value = !showCommentTable.value;
   const res = await articleCommentService({
-    comment_type: "1",
+    comment_type: 1,
     id: props.data.id,
-    comment_content: comment.value
+    comment_content: comment.value,
+    tar_username: props.data.username
   });
   console.log(res);
   emit("refresh");

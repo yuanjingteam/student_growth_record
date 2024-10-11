@@ -17,3 +17,7 @@ export enum ResultEnum {
   SUCCESS = 200,
   ERROR = 1
 }
+
+export enum OriginEnum {
+  ORIGIN = "http://8.154.36.180:8905"
+}
