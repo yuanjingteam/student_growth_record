@@ -41,9 +41,6 @@ importers:
       vconsole:
         specifier: ^3.15.1
         version: 3.15.1
-      vite-plugin-remove-console:
-        specifier: ^2.2.0
-        version: 2.2.0
       vue:
         specifier: ^3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -147,9 +144,6 @@ importers:
       tailwindcss:
         specifier: ^3.4.3
         version: 3.4.3
-      terser:
-        specifier: ^5.34.1
-        version: 5.34.1
       typescript:
         specifier: ~5.4.5
         version: 5.4.5
@@ -3878,9 +3872,6 @@ packages:
     engines: {node: ^18 || >= 20}
     peerDependencies:
       vite: '>=3.0.0'
-
-  vite-plugin-remove-console@2.2.0:
-    resolution: {integrity: sha512-qgjh5pz75MdE9Kzs8J0kBwaCfifHV0ezRbB9rpGsIOxam+ilcGV7WOk91vFJXquzRmiKrFh3Hxlh0JJWAmXTbQ==}
 
   vite-plugin-svg-icons@2.0.1:
     resolution: {integrity: sha512-6ktD+DhV6Rz3VtedYvBKKVA2eXF+sAQVaKkKLDSqGUfnhqXl3bj5PPkVTl3VexfTuZy66PmINi8Q6eFnVfRUmA==}
@@ -8072,8 +8063,6 @@ snapshots:
       - rollup
       - supports-color
       - utf-8-validate
-
-  vite-plugin-remove-console@2.2.0: {}
 
   vite-plugin-svg-icons@2.0.1(vite@5.2.11(@types/node@20.12.12)(less@4.2.0)(terser@5.34.1)):
     dependencies:

@@ -81,7 +81,12 @@ loadData();
         finished-text="没有更多了"
         @load="onLoad"
       >
-        <manage-item v-for="(item, index) in list" :key="index" :data="item" />
+        <manage-item
+          v-for="(item, index) in list"
+          :key="index"
+          :data="item"
+          @refresh="onRefresh"
+        />
       </van-list>
     </van-pull-refresh>
   </div>

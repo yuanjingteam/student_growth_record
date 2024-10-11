@@ -2,7 +2,7 @@ import { http } from "@/utils/http";
 
 type ListResult = {
   code: number;
-  message: string;
+  msg: string;
   data: Object;
 };
 
@@ -41,18 +41,39 @@ type UserData = {
 };
 
 // 系统通知列表
+type systemList = {
+  code: 0;
+  data: {
+    admin_info: [
+      {
+        ID: string;
+        msg_content: string;
+        msg_time: string;
+        username: string;
+        user_headshot: string;
+      }
+    ];
+    unread_count: number;
+  };
+  msg: string;
+};
+
 type adminList = {
   code: 0;
   data: {
     admin_info: [
       {
-        a_id: string;
-        a_content: string;
-        not_time: string;
+        ID: string;
+        msg_content: string;
+        msg_time: string;
+        username: string;
+        user_headshot: string;
+        info_id: string;
       }
     ];
     unread_count: number;
   };
+  msg: string;
 };
 
 // 点赞列表
@@ -184,7 +205,7 @@ export function changeUserEmail(data?: Object): Promise<ListResult> {
 }
 
 // 获取系统消息列表
-export function getSystemNotification(data?: Object): Promise<adminList> {
+export function getSystemNotification(data?: Object): Promise<systemList> {
   return http.request({
     url: "/message/get_system",
     method: "post",
@@ -199,6 +220,16 @@ export function getManagerNotification(data?: Object): Promise<adminList> {
     data: JSON.stringify(data)
   });
 }
+
+// 删除管理员消息
+export function delManagerInfo(data?: Object): Promise<ListResult> {
+  return http.request({
+    url: "/manager/del_manager",
+    method: "post",
+    data: JSON.stringify(data)
+  });
+}
+
 // 获取举报邮箱
 export function getreportEmail(data?: Object): Promise<ListResult> {
   return http.request({
@@ -209,20 +240,18 @@ export function getreportEmail(data?: Object): Promise<ListResult> {
 }
 
 // 已读系统消息
-export function readSystemNotice(data?: Object): Promise<ListResult> {
+export function readSystemNotice(): Promise<ListResult> {
   return http.request({
     url: "/message/ack_systemMsg",
-    method: "post",
-    data: JSON.stringify(data)
+    method: "post"
   });
 }
 
 // 已读管理员消息
-export function readManagerNotice(data?: Object): Promise<ListResult> {
+export function readManagerNotice(): Promise<ListResult> {
   return http.request({
     url: "/message/ack_managerMsg",
-    method: "post",
-    data: JSON.stringify(data)
+    method: "post"
   });
 }
 

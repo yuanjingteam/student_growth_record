@@ -236,8 +236,6 @@ const changeContent = async () => {
   height: 100%;
 }
 .my-w {
-  overflow: hidden;
-  height: 100%;
   margin: 0 5px;
 }
 .van-nav-bar {
