@@ -8,6 +8,7 @@ const router = new useRouter();
 // const checked = ref(false);
 const show = ref(false);
 const useStore = useUserStore();
+const inforStore = useInformation();
 const userInfo = useInformation();
 // const darkModeStore = useDarkModeStore();
 const showState = ref(false);
@@ -27,6 +28,8 @@ const clearAll = () => {
         .replace(/^ +/, "")
         .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
+    // 关闭SSE连接
+    inforStore.closeConnection();
     showToast("登出成功");
     router.push("./login");
   } catch {

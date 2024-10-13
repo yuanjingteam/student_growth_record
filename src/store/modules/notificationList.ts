@@ -178,17 +178,14 @@ export const useInformation = defineStore(
           default:
             console.warn("未知通知类型：", chunk.notice_type);
         }
-      },
-      onclose: () => {
-        console.log("连接已关闭");
       }
     };
 
     // 初始化 SSE 连接
+    let eventSource: EventSource;
     const initializeSSE = () => {
-      const eventSource = new EventSource(sseChatParams.url);
-
       // 监听连接打开事件
+      eventSource = new EventSource(sseChatParams.url);
       eventSource.onopen = sseChatParams.onopen;
 
       // 监听消息事件
@@ -198,14 +195,17 @@ export const useInformation = defineStore(
       eventSource.onerror = event => {
         console.error("SSE 连接发生错误：", event);
       };
+    };
 
-      // 可选：处理连接关闭
-      eventSource.close = sseChatParams.onclose;
+    // 关闭 SSE 连接
+    const closeConnection = () => {
+      eventSource.close();
+      console.log("SSE 连接已手动关闭");
     };
 
     // 初始化消息
     initNotifications();
-    // 调用函数以初始化 SSE
+    // 初始化 SSE
     initializeSSE();
 
     return {
@@ -223,7 +223,8 @@ export const useInformation = defineStore(
       userComNotification,
       userStarNotification,
       reportEmail,
-      initNotifications
+      initNotifications,
+      closeConnection
     };
   },
   {
