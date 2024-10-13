@@ -1,10 +1,11 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { ref } from "vue";
-import { readSystemNotice, getSystemNotification } from "@/api/user";
-import { showDialog } from "vant";
+import { ref, watch } from "vue";
+import { readSystemNotice } from "@/api/user";
 import { formattedContent } from "@/utils/functions/modules/formattedContent";
+import { useInformation } from "@/store";
 
+const infoStore = useInformation();
 // 父传子
 const props = defineProps({
   base: Object
@@ -20,22 +21,23 @@ const data = ref({
   ],
   unread_count: 0
 });
-
 // 获取系统消息
-const systemNotification = async () => {
-  const res = await getSystemNotification({
-    page: 1,
-    limit: 1
-  });
-  data.value = res.data;
-};
-systemNotification();
-
+data.value = infoStore.systemData;
 // 是否已读
 const checkSystem = async () => {
   router.push("/systemNotice");
   await readSystemNotice();
+
+  // 获取最新
+  infoStore.systemNotice();
 };
+
+watch(
+  () => infoStore.systemData,
+  newVal => {
+    data.value = newVal; // 更新 data.value
+  }
+);
 </script>
 <template>
   <van-cell center @click="checkSystem">

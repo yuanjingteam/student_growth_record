@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { readUserNotice } from "@/api/user";
-import { useUserStore } from "@/store";
+import { useUserStore, useInformation } from "@/store";
 import { formattedContent } from "@/utils/functions/modules/formattedContent";
 const router = new useRouter();
 
@@ -14,14 +14,22 @@ const props = defineProps({
   state2: String
 });
 const userStore = useUserStore();
+const inforStore = useInformation();
 const username = userStore.username;
 const checkOne = async () => {
   router.push(`/postDetail/${props.data.article_id}`);
-  console.log(props.type, 34280452834);
+  // 已读当前项
   await readUserNotice({
     msg_id: props.data.msg_id,
     type: props.type
   });
+  if (props.type == 0) {
+    inforStore.userThumNotification();
+  } else if (props.type == 1) {
+    inforStore.userComNotification();
+  } else {
+    inforStore.userStarNotification();
+  }
 };
 const goto = () => {
   if (username === props.data.username) {

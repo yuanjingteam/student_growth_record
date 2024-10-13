@@ -1,8 +1,10 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useInformation } from "@/store";
 
-import { getreportEmail } from "@/api/user";
+const infoStore = useInformation();
+const unread_count = ref(0);
 // 父传子
 // 给一个默认值
 const props = defineProps({
@@ -29,7 +31,9 @@ const data = ref({
 const reportEmail = async () => {
   try {
     const res = await getreportEmail({ page: 1, limit: 1 });
-    data.value = res.data;
+    unread_count.value = res.data.unread_count;
+    // 暂时用这种方法代替
+    infoStore.email_count = unread_count;
   } catch {}
 };
 reportEmail();
@@ -44,15 +48,15 @@ reportEmail();
         <!-- <div v-if="data.article_ban.length !== 0" class="va-time">
           {{ data.article_ban[0].report_content[0].report_time }}
         </div> -->
-        <div v-if="data.unread_count !== 0">
-          <van-badge :content="data.unread_count" max="99" />
+        <div v-if="unread_count.value !== 0">
+          <van-badge :content="unread_count.value" max="99" />
         </div>
       </div>
     </template>
     <template #label>
       <div class="wid">
-        <div v-if="data.unread_count !== 0">有待处理的消息</div>
-        <div v-if="data.unread_count === 0">
+        <div v-if="unread_count.value !== 0">有待处理的消息</div>
+        <div v-if="unread_count.value === 0">
           没有待处理的消息,去别的地方逛逛吧~
         </div>
       </div>

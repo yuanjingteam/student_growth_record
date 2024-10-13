@@ -1,27 +1,11 @@
-<template>
-  <!-- 本组件为页面底部导航栏 -->
-  <van-tabbar
-    v-model="active"
-    :placeholder="true"
-    :route="true"
-    fixed
-    active-color="#000"
-    inactive-color="#999"
-  >
-    <van-tabbar-item
-      v-for="(item, index) in tabbarData"
-      :key="index"
-      :icon="item.icon"
-      :to="item.to"
-    >
-      {{ item.title }}
-    </van-tabbar-item>
-  </van-tabbar>
-</template>
-
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onBeforeMount, computed } from "vue";
+import { useInformation } from "@/store";
 const active = ref(0);
+
+const infoStore = useInformation();
+const total = computed(() => infoStore.total); // 计算属性获取 total
+
 const tabbarData = reactive([
   {
     icon: "wap-home",
@@ -53,3 +37,37 @@ const tabbarData = reactive([
   }
 ]);
 </script>
+
+<template>
+  <!-- 本组件为页面底部导航栏 -->
+  <van-tabbar
+    v-model="active"
+    :placeholder="true"
+    :route="true"
+    fixed
+    active-color="#000"
+    inactive-color="#999"
+  >
+    <van-tabbar-item
+      v-for="(item, index) in tabbarData"
+      :key="index"
+      :icon="item.icon"
+      :to="item.to"
+    >
+      <template v-if="item.title == '通知'">
+        <div v-if="total != 0">
+          <van-badge :content="total" :offset="[5, -26]">
+            {{ item.title }}
+          </van-badge>
+        </div>
+        <div v-else>
+          {{ item.title }}
+        </div>
+      </template>
+      <template v-else>
+        {{ item.title }}
+        <!-- 默认样式 -->
+      </template>
+    </van-tabbar-item>
+  </van-tabbar>
+</template>

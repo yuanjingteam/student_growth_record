@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { readManagerNotice } from "@/api/user";
-import { showDialog } from "vant";
-import { getManagerNotification } from "@/api/user";
 import { formattedContent } from "@/utils/functions/modules/formattedContent";
+import { useInformation } from "@/store";
 
+const infoStore = useInformation();
 // 父传子
 const props = defineProps({
   base: Object
@@ -23,21 +23,24 @@ const data = ref({
 });
 
 // 获取管理员消息
-const managerNotification = async () => {
-  try {
-    const res = await getManagerNotification({
-      page: 1,
-      limit: 1
-    });
-    data.value = res.data;
-  } catch {}
-};
-managerNotification();
+data.value = infoStore.managerData;
+
 // 是否已读
 const checkManager = async () => {
   router.push("./managerNotice");
-  const { code } = await readManagerNotice();
+  await readManagerNotice();
+
+  // 获取最新
+  infoStore.managerNotice();
 };
+
+// 监听 infoStore.managerData 的变化
+watch(
+  () => infoStore.managerData,
+  newVal => {
+    data.value = newVal; // 更新 data.value
+  }
+);
 </script>
 <template>
   <van-cell center @click="checkManager">

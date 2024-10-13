@@ -58,10 +58,11 @@ type systemList = {
   msg: string;
 };
 
+// 管理员通知列表
 type adminList = {
   code: 0;
   data: {
-    admin_info: [
+    manager_info: [
       {
         ID: string;
         msg_content: string;
@@ -78,7 +79,7 @@ type adminList = {
 
 // 点赞列表
 type thumbsList = {
-  code: 0;
+  code: number;
   data: {
     thumbsUp: [
       {
@@ -90,38 +91,62 @@ type thumbsList = {
     ];
     unread_count: number;
   };
+  msg: string;
 };
 
 // 收藏列表
 type starList = {
-  code: 0;
+  code: number;
   data: {
     star: [
       {
-        username: "";
-        article_content: "";
-        user_headshot: "";
-        not_time: "";
+        username: string;
+        article_content: string;
+        user_headshot: string;
+        not_time: string;
       }
     ];
-    unread_count: 0;
+    unread_count: number;
   };
+  msg: string;
 };
 
 // 评论列表
 type comList = {
-  code: 0;
+  code: number;
   data: {
     comments: [
       {
-        username: "";
-        article_content: "";
-        user_headshot: "";
-        not_time: "";
+        username: string;
+        article_content: string;
+        user_headshot: string;
+        not_time: string;
       }
     ];
-    unread_count: 0;
+    unread_count: number;
   };
+  msg: string;
+};
+
+//举报邮箱列表
+type emailList = {
+  code: number;
+  data: {
+    article_ban: [
+      {
+        article_id: number;
+        article_content: string;
+        report_content: [
+          {
+            report_time: string;
+            report_msg: string;
+          }
+        ];
+      }
+    ];
+    unread_count: number;
+  };
+  msg: string;
 };
 
 // 获取用户信息
@@ -231,7 +256,7 @@ export function delManagerInfo(data?: Object): Promise<ListResult> {
 }
 
 // 获取举报邮箱
-export function getreportEmail(data?: Object): Promise<ListResult> {
+export function getreportEmail(data?: Object): Promise<emailList> {
   return http.request({
     url: "/report_box/getlist",
     method: "post",
