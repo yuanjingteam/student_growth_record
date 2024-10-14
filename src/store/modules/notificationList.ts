@@ -8,6 +8,7 @@ import {
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
+import { showToast } from "vant";
 // import { showToast } from "vant";
 //用户信息管理
 export const useInformation = defineStore(
@@ -48,88 +49,72 @@ export const useInformation = defineStore(
     // 默认活跃的tab栏
     const activeTab = ref(0);
 
+    // 通用的获取未读通知数量的函数
+    const fetchNotificationCount = async (fetchFunction, refData, refCount) => {
+      try {
+        const res = await fetchFunction({ page: 1, limit: 1 });
+        if (refData != null) {
+          refData.value = res.data;
+        }
+        refCount.value = res.data.unread_count;
+      } catch (error) {
+        console.error("获取通知时发生错误：", error);
+      }
+    };
+
     // 获取系统消息
-    const systemNotice = async () => {
-      const res = await getSystemNotification({
-        page: 1,
-        limit: 1
-      });
-      systemData.value = res.data;
-      system_count.value = res.data.unread_count;
+    const systemNotice = () => {
+      fetchNotificationCount(getSystemNotification, systemData, system_count);
     };
 
     // 获取管理员消息
-    const managerNotice = async () => {
-      try {
-        const res = await getManagerNotification({
-          page: 1,
-          limit: 1
-        });
-        managerData.value = res.data;
-        manager_count.value = res.data.unread_count;
-      } catch {}
+    const managerNotice = () => {
+      fetchNotificationCount(
+        getManagerNotification,
+        managerData,
+        manager_count
+      );
     };
 
-    // 获取缩略图通知的未读消息数量
-    const userThumNotification = async () => {
-      const res1 = await getUserThumNotification({
-        page: 1,
-        limit: 1
-      });
-      const thumUnreadCount = res1.data.unread_count;
-      if (thumUnreadCount !== undefined) {
-        thumb.value = thumUnreadCount;
-      }
+    // 获取点赞通知的未读消息数量
+    const userThumNotification = () => {
+      fetchNotificationCount(getUserThumNotification, null, thumb);
     };
 
     // 获取评论通知的未读消息数量
-    const userComNotification = async () => {
-      const res2 = await getUserComNotification({
-        page: 1,
-        limit: 1
-      });
-      const comUnreadCount = res2.data.unread_count;
-      if (comUnreadCount !== undefined) {
-        comment.value = comUnreadCount;
-      }
+    const userComNotification = () => {
+      fetchNotificationCount(getUserComNotification, null, comment);
     };
 
-    // 获取关注通知的未读消息数量
-    const userStarNotification = async () => {
-      const res3 = await getUserStarNotification({
-        page: 1,
-        limit: 1
-      });
-
-      const starUnreadCount = res3.data.unread_count;
-      if (starUnreadCount !== undefined) {
-        star.value = starUnreadCount;
-      }
-    };
-
-    // 获取页面消息
-    const userNotice = async () => {
-      userThumNotification();
-      userComNotification();
-      userStarNotification();
+    // 获取收藏通知的未读消息数量
+    const userStarNotification = () => {
+      fetchNotificationCount(getUserStarNotification, null, star);
     };
 
     // 获取举报邮箱消息
     const reportEmail = async () => {
-      try {
-        const res = await getreportEmail({ page: 1, limit: 1 });
-        email_count.value = res.data.unread_count;
-      } catch {}
+      fetchNotificationCount(getreportEmail, null, email_count);
+    };
+
+    // 获取页面消息
+    const userNotice = async () => {
+      await Promise.all([
+        userThumNotification(),
+        userComNotification(),
+        userStarNotification()
+      ]);
     };
 
     // 当前用户身份
     const storedRole = sessionStorage.getItem("role");
     const username = sessionStorage.getItem("username");
     // 初始化函数
-    const initNotifications = async () => {
-      await Promise.all([systemNotice(), managerNotice(), userNotice()]);
+    const initNotifications = () => {
+      systemNotice();
+      managerNotice();
+      userNotice();
       if (storedRole !== "user") {
-        await reportEmail();
+        reportEmail();
       }
       // 打印 total，确保它是最新的
       console.log("Total after initialization:", total.value);
@@ -139,7 +124,7 @@ export const useInformation = defineStore(
     // 定义SSE链接参数
     const sseChatParams = {
       onopen: () => {
-        console.log("建立无敌 SSE 连接成功");
+        console.log("建立 SSE 连接成功");
       },
       url:
         import.meta.env.VITE_BASE_API +
@@ -147,37 +132,40 @@ export const useInformation = defineStore(
         encodeURIComponent(username),
       onmessage: event => {
         // 收到消息
-        console.log("收到消息：", event.data);
-
-        // 假设 event.data 是 JSON 格式的字符串，解析它
         const chunk = JSON.parse(event.data);
+        console.log("收到的类型：", chunk.NoticeType, 222);
 
         // 根据 notice_type 处理不同的通知类型
-        switch (chunk.notice_type) {
-          case "0":
+        switch (chunk.NoticeType) {
+          case 0:
             userThumNotification();
             break;
-          case "1":
+          case 1:
             userStarNotification();
             break;
-          case "2":
+          case 2:
             userComNotification();
             break;
-          case "3":
+          case 3:
             systemNotice();
             break;
-          case "4":
+          case 4:
             managerNotice();
             break;
-          case "5":
+          case 5:
             // 暂时搁置,用其他方法代替
             if (storedRole !== "user") {
               reportEmail();
             }
             break;
           default:
-            console.warn("未知通知类型：", chunk.notice_type);
+            console.warn("未知通知类型：", chunk.NoticeType);
         }
+        showToast({
+          message: "您有新的消息通知",
+
+          position: "top"
+        });
       }
     };
 
@@ -223,7 +211,6 @@ export const useInformation = defineStore(
       userComNotification,
       userStarNotification,
       reportEmail,
-      initNotifications,
       closeConnection
     };
   },

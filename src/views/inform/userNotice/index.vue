@@ -7,6 +7,7 @@ import {
   getUserComNotification,
   getUserStarNotification
 } from "@/api/user";
+import { showToast } from "vant";
 // 路由
 const router = useRouter();
 const useInfor = useInformation();
