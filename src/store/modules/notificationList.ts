@@ -191,10 +191,12 @@ export const useInformation = defineStore(
       console.log("SSE 连接已手动关闭");
     };
 
-    // 初始化消息
-    initNotifications();
-    // 初始化 SSE
-    initializeSSE();
+    if (username != "passenger") {
+      // 初始化消息
+      initNotifications();
+      // 初始化 SSE
+      initializeSSE();
+    }
 
     return {
       systemData,

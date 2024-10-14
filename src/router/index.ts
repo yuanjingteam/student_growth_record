@@ -65,6 +65,9 @@ router.beforeEach(async (to: toRouteType, from, next) => {
     sessionStorage.setItem("checked3", JSON.stringify(data.grade_list));
     sessionStorage.setItem("username", "passenger");
   }
+  // if (to.name != "Login") {
+  //   sessionStorage.setItem("username", "passenger");
+  // }
 
   // 判断当前路由是否在 protectedRoutes 数组中
   if (!token && protectedRoutes.includes(to.name as string)) {

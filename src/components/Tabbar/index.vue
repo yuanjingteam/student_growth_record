@@ -55,7 +55,7 @@ const tabbarData = reactive([
       :to="item.to"
     >
       <template v-if="item.title == '通知'">
-        <div v-if="total != 0">
+        <div v-if="total && total != 0">
           <van-badge :content="total" :offset="[5, -26]">
             {{ item.title }}
           </van-badge>
